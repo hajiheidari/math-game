@@ -1,0 +1,86 @@
+# Changelog
+
+## 0.7.1 — Bundled fonts
+- Vazirmatn (Persian, Arabic) and Noto Nastaliq Urdu (Urdu), from the official google/fonts
+  repo, SIL OFL 1.1; theme font follows the language. OFL texts are bundled and shown on the
+  licenses page.
+
+## 0.7.0 — Step 7: polish
+- Interactive tutorial (2 mini puzzles: single equation incl. a wrong-tile explanation, then a
+  crossing) before the first game; skippable; replay from Settings → How to play. Ads/consent
+  start only after it.
+- Animations: placed tile pops in, wrong cell shakes, result stars pop in one by one. All skipped
+  when the OS asks for reduced motion.
+- Sounds (tap, correct, wrong, win) synthesized by `app/tool/make_sounds.js` (no third-party
+  audio, 44 KB total) via `audioplayers`; vibration via haptics. Both switchable in Settings.
+- Game board/tile bank moved to `game/game_widgets.dart` (shared by game and tutorial).
+- 5 new tests (tutorial flow + skip in fa/ar/ur, sound/vibration settings).
+
+## 0.6.0 — Step 6: ads with consent, IAP
+- AdMob (`google_mobile_ads`) behind an `AdService` interface; web/desktop/tests run ad-free.
+- Start order, after onboarding and not on the first frame (menu + 1 s): Google UMP consent →
+  iOS ATT prompt → SDK init. Max ad content rating **T** for every band; 13–17 get teen
+  treatment, 13–15 are tagged under the age of consent. "Privacy choices" in Settings when UMP
+  requires it.
+- Hints: coins first (start with 3; +1 per level, +2 per daily), then a rewarded ad.
+- Lost level: one extra life per level via a rewarded ad.
+- Interstitial only when pressing "Next level": never during the first 3 won levels, then at
+  most once every 3 (shown after levels 4, 7, 10...). Never in daily puzzles.
+- "Remove ads" non-consumable (`in_app_purchase`, product `remove_ads`) + Restore purchases;
+  removes interstitials, rewarded ads stay optional. Cached locally.
+- Privacy policy link in Settings (URL placeholder), draft policy in `docs/privacy-policy.md`,
+  `docs/RELEASE_CHECKLIST.md` for everything needing store/AdMob accounts.
+- No analytics at all. All ids are Google TEST ids.
+- 10 new tests (pacing 4/7/10, remove ads, coins, audience, start timing, rewarded hint,
+  no-ad message, extra life once).
+
+## 0.5.0 — Step 5: Daily Puzzle + streak
+- Daily card on the menu: today's date, streak, one button per difficulty (seed = date + band +
+  difficulty); solved ones are disabled until tomorrow. Unfinished dailies resume (per-day slot).
+- Streak = consecutive days with at least one solved daily, kept alive until today ends; best
+  streak; stored globally (`daily` = {date: bitmask of difficulties}) so a band change keeps it.
+- Calendar screen: month grid of solved days, today ringed, month navigation.
+- Persian uses the Solar Hijri (Jalali) calendar for dates and the calendar (week starts
+  Saturday); other languages use Gregorian with localized month names.
+- Saved games are now per slot (`game/level/...`, `game/daily/...`).
+- 10 new tests (Jalali conversion incl. 30-year round trip, streak logic, daily flow, fa/ar/ur).
+
+## 0.4.0 — Step 4: Levels mode + local progress
+- Progress per band x difficulty: next level and best stars per level (`progress/<band>/<diff>`,
+  a digit string like "3321"). Levels unlock in order; replays only improve stars.
+- Unfinished level is saved (tiles, hints, mistakes, time) on every move, on background and on
+  leaving; reopening the level resumes it. Lost/won levels clear it. Snapshots that don't fit the
+  puzzle (generator change) are ignored.
+- Level select screen: "Continue · Level N" + grid of completed levels with stars (replay).
+- Menu cards show next level and total stars.
+- 7 new tests (store, snapshot round trip, full win → next level → resume after relaunch).
+
+## 0.3.0 — Step 3: age gate, bands and difficulties from config
+- First-launch age gate: neutral dropdown (5–99), nothing preselected, Continue disabled until
+  chosen, language switch available. Under 13 → "This app is for ages 13 and up", stored as a
+  single `blocked` flag (all other data wiped); survives relaunch, no way back.
+- 13+ stores only the band id (`band`), never the age.
+- Menu: the player's band with Easy/Medium/Hard/Expert cards (equation range, operators) → game.
+- Settings: language, digits, age group (13+ bands only). Design preview kept as a debug-only entry.
+- Language/digits persist; first run follows the device language when supported.
+- Added `shared_preferences`. 8 new tests (controller + age gate/menu/settings widget flows).
+
+## 0.2.0 — Step 2: game screen
+- Playable level: drag & drop tiles onto blanks, or tap tile then cell (or cell then tile).
+- Instant check: correct tile stays; wrong tile = mistake, red flash, tile returns to the bank.
+  Mistake limit from config loses the level.
+- Timer (shown only where the config says so; always counted for stars), pause (hides the board;
+  auto-pause when the app goes to background), undo, restart, sort bank, hint (fills the selected
+  cell or the first open one; free for now, ads/coins in step 6).
+- Result dialog: stars, time, mistakes; Next level / Try again / Menu.
+- `GameController` holds all rules without widgets; 11 controller tests + 7 widget tests
+  (solve in all 4 languages, drag & drop, pause, lose + retry).
+
+## 0.1.0 — Step 1: generator, solver, tests (+ localization foundation)
+- `numcross_engine` package: bands/difficulty config (13–15, 16–17, 18+ x Easy/Medium/Hard/Expert),
+  layout builder, filler, unique-solution solver, generator with decoys, seeded Levels and Daily
+  puzzles, stars.
+- 86 engine tests: equation validity, band rules (no negatives, exact division, 12x12 tables),
+  uniqueness, deterministic seeding with golden values, <300 ms generation.
+- Flutter app shell with English, Persian, Arabic, Urdu (RTL), digit setting (Western/local),
+  LTR board inside RTL UI, design-preview screen. 8 app tests (ARB key parity, digits, RTL rendering).

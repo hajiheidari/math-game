@@ -1,0 +1,45 @@
+name: numcross
+description: "NumCross — math crossword puzzles for ages 13+."
+publish_to: 'none'
+
+# Semantic version; bumped after every build-order step.
+version: 0.7.1+8
+
+environment:
+  sdk: ^3.13.4
+
+dependencies:
+  app_tracking_transparency: ^2.0.7
+  audioplayers: ^6.8.1
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+  google_mobile_ads: ^9.1.0
+  in_app_purchase: ^3.3.1
+  intl: any
+  numcross_engine:
+    path: ../packages/numcross_engine
+  shared_preferences: ^2.5.5
+  url_launcher: ^6.3.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/sounds/
+    - assets/fonts/Vazirmatn-OFL.txt
+    - assets/fonts/NotoNastaliqUrdu-OFL.txt
+  # Bundled so Persian/Arabic/Urdu look the same on every phone (SIL OFL 1.1).
+  fonts:
+    - family: Vazirmatn
+      fonts:
+        - asset: assets/fonts/Vazirmatn.ttf
+    - family: NotoNastaliqUrdu
+      fonts:
+        - asset: assets/fonts/NotoNastaliqUrdu.ttf
+  generate: true

@@ -1,0 +1,146 @@
+{
+  "@@locale": "en",
+  "appTitle": "NumCross",
+  "ageGateTitle": "How old are you?",
+  "ageGatePickerHint": "Select your age",
+  "ageGateContinue": "Continue",
+  "ageGateBlocked": "This app is for ages {minAge} and up.",
+  "@ageGateBlocked": {
+    "placeholders": {
+      "minAge": {
+        "type": "String"
+      }
+    }
+  },
+  "menuLevels": "Levels",
+  "menuDaily": "Daily Puzzle",
+  "ageGroup": "Age group",
+  "bandRange": "{from}–{to}",
+  "@bandRange": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "bandAndUp": "{from}+",
+  "@bandAndUp": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      }
+    }
+  },
+  "difficultyEasy": "Easy",
+  "difficultyMedium": "Medium",
+  "difficultyHard": "Hard",
+  "difficultyExpert": "Expert",
+  "levelNumber": "Level {number}",
+  "@levelNumber": {
+    "placeholders": {
+      "number": {
+        "type": "String"
+      }
+    }
+  },
+  "mistakesCounter": "Mistakes: {count}/{max}",
+  "@mistakesCounter": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "pause": "Pause",
+  "resume": "Resume",
+  "undo": "Undo",
+  "restart": "Restart",
+  "sortBank": "Sort",
+  "hint": "Hint",
+  "tiles": "Tiles",
+  "levelComplete": "Level complete!",
+  "outOfMistakes": "Out of mistakes",
+  "nextLevel": "Next level",
+  "tryAgain": "Try again",
+  "watchAdForHint": "Watch an ad for a hint",
+  "streakDays": "{count, plural, =1{{countText}-day streak} other{{countText}-day streak}}",
+  "@streakDays": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "countText": {
+        "type": "String"
+      }
+    }
+  },
+  "settings": "Settings",
+  "language": "Language",
+  "digits": "Digits",
+  "digitsAuto": "Automatic",
+  "digitsWestern": "Western",
+  "digitsNative": "Local",
+  "sound": "Sound",
+  "haptics": "Vibration",
+  "privacyPolicy": "Privacy policy",
+  "removeAds": "Remove ads",
+  "previewTitle": "Design preview",
+  "showSolution": "Show solution",
+  "time": "Time",
+  "mistakesLabel": "Mistakes",
+  "paused": "Paused",
+  "play": "Play",
+  "menu": "Menu",
+  "chooseDifficulty": "Choose a difficulty",
+  "equationsRange": "{from}–{to} equations",
+  "@equationsRange": {
+    "placeholders": {
+      "from": {
+        "type": "String"
+      },
+      "to": {
+        "type": "String"
+      }
+    }
+  },
+  "continuePlaying": "Continue",
+  "levelsCompleted": "Completed: {count}",
+  "@levelsCompleted": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "dailyComplete": "Daily puzzle solved!",
+  "calendar": "Calendar",
+  "bestStreak": "Best streak: {count}",
+  "@bestStreak": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "noHintsAvailable": "No hints available right now. Try again in a moment.",
+  "watchAd": "Watch ad",
+  "extraLife": "Watch an ad for one more mistake",
+  "restorePurchases": "Restore purchases",
+  "adsRemoved": "Ads removed. Thank you!",
+  "privacyChoices": "Privacy choices",
+  "purchaseUnavailable": "Purchases aren't available right now.",
+  "tutorialTitle": "How to play",
+  "tutorialStep1": "Drag a number from the tiles into the empty box, or tap the number and then the box. The equation must be true.",
+  "tutorialStep2": "Some boxes belong to two equations: across and down. The number has to make both true.",
+  "tutorialWrong": "Not quite. In the game, wrong tiles count as mistakes. Try another one.",
+  "tutorialDone": "You're ready!",
+  "tutorialDoneBody": "Rows read left to right, columns top to bottom. Stuck? Use a hint.",
+  "startPlaying": "Start playing",
+  "skip": "Skip"
+}
