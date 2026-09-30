@@ -80,8 +80,8 @@ class NumCrossApp extends StatelessWidget {
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
             ],
-            theme: _theme(Brightness.light, locale.language.fontFamily),
-            darkTheme: _theme(Brightness.dark, locale.language.fontFamily),
+            theme: _theme(Brightness.light, locale.language),
+            darkTheme: _theme(Brightness.dark, locale.language),
             home: switch (app.gate) {
               GateState.needsAge => const AgeGateScreen(),
               GateState.blocked => const BlockedScreen(),
@@ -94,14 +94,41 @@ class NumCrossApp extends StatelessWidget {
   }
 }
 
-ThemeData _theme(Brightness brightness, String? fontFamily) => ThemeData(
-  fontFamily: fontFamily,
-  colorScheme: ColorScheme.fromSeed(
-    seedColor: const Color(0xFF2F5D8A),
-    brightness: brightness,
-  ),
-  useMaterial3: true,
-);
+ThemeData _theme(Brightness brightness, AppLanguage language) {
+  final base = ThemeData(
+    fontFamily: language.fontFamily,
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: const Color(0xFF2F5D8A),
+      brightness: brightness,
+    ),
+    useMaterial3: true,
+  );
+  final height = language.lineHeight;
+  if (height == null) return base;
+  TextTheme tall(TextTheme t) => t.merge(
+    TextTheme(
+      displayLarge: TextStyle(height: height),
+      displayMedium: TextStyle(height: height),
+      displaySmall: TextStyle(height: height),
+      headlineLarge: TextStyle(height: height),
+      headlineMedium: TextStyle(height: height),
+      headlineSmall: TextStyle(height: height),
+      titleLarge: TextStyle(height: height),
+      titleMedium: TextStyle(height: height),
+      titleSmall: TextStyle(height: height),
+      bodyLarge: TextStyle(height: height),
+      bodyMedium: TextStyle(height: height),
+      bodySmall: TextStyle(height: height),
+      labelLarge: TextStyle(height: height),
+      labelMedium: TextStyle(height: height),
+      labelSmall: TextStyle(height: height),
+    ),
+  );
+  return base.copyWith(
+    textTheme: tall(base.textTheme),
+    primaryTextTheme: tall(base.primaryTextTheme),
+  );
+}
 
 /// Shows the bundled fonts' OFL licenses on the licenses page.
 void _registerFontLicenses() {

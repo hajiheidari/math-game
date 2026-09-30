@@ -3,7 +3,7 @@ description: "NumCross — math crossword puzzles for ages 13+."
 publish_to: 'none'
 
 # Semantic version; bumped after every build-order step.
-version: 0.7.1+8
+version: 0.7.2+9
 
 environment:
   sdk: ^3.13.4

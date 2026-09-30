@@ -21,12 +21,25 @@ class AppLanguage {
   /// Bundled font for this script; null = platform default.
   final String? fontFamily;
 
+  /// Line height forced on every theme text style; null keeps Material's.
+  /// Nastaliq is much taller than Material's line boxes assume, so without
+  /// this stacked lines (a title over its subtitle) overlap.
+  final double? lineHeight;
+
+  /// Font for numbers and operators on the board and tiles when it differs
+  /// from [fontFamily]; Nastaliq's digits sit low and look out of place.
+  final String? numeralFont;
+
+  String? get numeralFontFamily => numeralFont ?? fontFamily;
+
   const AppLanguage({
     required this.code,
     required this.nativeName,
     required this.defaultDigits,
     required this.nativeDigits,
     this.fontFamily,
+    this.lineHeight,
+    this.numeralFont,
   });
 
   Locale get locale => Locale(code);
@@ -60,6 +73,8 @@ const List<AppLanguage> kLanguages = [
     defaultDigits: DigitSet.western,
     nativeDigits: DigitSet.persian,
     fontFamily: 'NotoNastaliqUrdu',
+    lineHeight: 1.9,
+    numeralFont: 'Vazirmatn',
   ),
 ];
 

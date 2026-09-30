@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.7.2 — Urdu layout check
+- Visual browser check of Urdu (Noto Nastaliq): stacked text overlapped (the levels heading ran
+  into its subtitle), because Material's line heights are too short for Nastaliq. Urdu now gets
+  a 1.9 line height on every theme text style (`AppLanguage.lineHeight`).
+- Board numbers, operators and tiles in Urdu use Vazirmatn (`AppLanguage.numeralFont`):
+  Nastaliq's digits sat low in the cells. Other languages are unchanged.
+- 1 new test.
+
 ## 0.7.1 — Bundled fonts
 - Vazirmatn (Persian, Arabic) and Noto Nastaliq Urdu (Urdu), from the official google/fonts
   repo, SIL OFL 1.1; theme font follows the language. OFL texts are bundled and shown on the

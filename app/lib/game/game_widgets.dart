@@ -185,7 +185,7 @@ class TileFace extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 4),
           child: Text(
             text,
-            style: TextStyle(
+            style: numeralStyle(context).copyWith(
               fontSize: 20,
               fontWeight: FontWeight.w600,
               color: selected ? s.onPrimary : s.onSurface,

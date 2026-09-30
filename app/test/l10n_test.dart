@@ -17,6 +17,18 @@ Set<String> _keys(Map<String, dynamic> arb) =>
     arb.keys.where((k) => !k.startsWith('@')).toSet();
 
 void main() {
+  test('Urdu gets tall line height and a non-Nastaliq numeral font', () {
+    final ur = languageForCode('ur');
+    expect(ur.lineHeight, greaterThanOrEqualTo(1.8));
+    expect(ur.numeralFontFamily, 'Vazirmatn');
+    // Other languages keep Material's heights and their own font for numbers.
+    for (final code in ['en', 'fa', 'ar']) {
+      final lang = languageForCode(code);
+      expect(lang.lineHeight, isNull, reason: code);
+      expect(lang.numeralFontFamily, lang.fontFamily, reason: code);
+    }
+  });
+
   test('every language has every string (no missing or extra keys)', () {
     final english = _keys(_arb('en'));
     for (final lang in kLanguages) {

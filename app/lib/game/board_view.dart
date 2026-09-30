@@ -5,6 +5,16 @@ import 'package:numcross_engine/numcross_engine.dart';
 
 import '../i18n/locale_controller.dart';
 
+/// Base style for board and tile numbers: the language's numeral font at a
+/// plain line height (a tall-script theme height would push digits down).
+TextStyle numeralStyle(BuildContext context) {
+  final language = LocaleScope.of(context).language;
+  return TextStyle(
+    fontFamily: language.numeralFontFamily,
+    height: language.lineHeight == null ? null : 1.2,
+  );
+}
+
 typedef NumberCellBuilder = Widget Function(
   BuildContext context,
   Pos pos,
@@ -62,7 +72,7 @@ class BoardGrid extends StatelessWidget {
                                   info.kind == CellKind.equals
                                       ? '='
                                       : info.op!.symbol,
-                                  style: TextStyle(
+                                  style: numeralStyle(context).copyWith(
                                     fontSize: size * 0.5,
                                     color: scheme.onSurfaceVariant,
                                   ),
@@ -143,7 +153,7 @@ class CellFace extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 2),
               child: Text(
                 text,
-                style: TextStyle(
+                style: numeralStyle(context).copyWith(
                   fontSize: size * 0.42,
                   fontWeight: FontWeight.w600,
                   color: fg,
