@@ -7,6 +7,7 @@ import 'app/app_controller.dart';
 import 'app/feedback.dart';
 import 'app/app_prefs.dart';
 import 'app/app_scope.dart';
+import 'app/crash_guard.dart';
 import 'i18n/languages.dart';
 import 'i18n/locale_controller.dart';
 import 'l10n/app_localizations.dart';
@@ -16,11 +17,12 @@ import 'monetization/store_purchase_service.dart';
 import 'screens/age_gate_screen.dart';
 import 'screens/menu_screen.dart';
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  _registerFontLicenses();
-  final prefs = await AppPrefs.load();
-  runApp(AdadiApp.fromPrefs(prefs));
+void main() {
+  CrashGuard.run(() async {
+    _registerFontLicenses();
+    final prefs = await AppPrefs.load();
+    runApp(CrashOverlay(child: AdadiApp.fromPrefs(prefs)));
+  });
 }
 
 class AdadiApp extends StatelessWidget {

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.8.1 — On-screen error reports
+- The 0.8.0 test APK installed on a Galaxy S23 Ultra (Android 14) but did not run. To find out
+  why without a cable/logcat, errors are now shown on screen with Copy/Share:
+  - Dart: `CrashGuard` (lib/app/crash_guard.dart) catches startup, framework and async errors
+    and shows the report over the app (Continue dismisses non-fatal ones).
+  - Native: `AdadiApplication` catches uncaught Android exceptions, also those before Flutter
+    starts, and opens `CrashActivity` in a separate `:crash` process with the stack trace.
+- 1 new test.
+
 ## 0.8.0 — Name and icon: Adadi
 - The app is now **Adadi** (عددی / عددي, "numeric" in Persian, Arabic and Urdu). The working
   title NumCross was dropped because another math-crossword app already uses it on Google Play.
