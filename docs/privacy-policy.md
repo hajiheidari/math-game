@@ -1,14 +1,13 @@
 # Adadi — Privacy Policy
 
-> Source text of the hosted page `docs/privacy/index.html` (English + Persian). Before
-> publishing, replace the bracketed parts in both files, host the page at a public URL, and put
-> that URL in `app/lib/monetization/ad_config.dart` (`kPrivacyPolicyUrl`) and in both store
-> listings. Keep this file and the page in sync.
+> Source text of the hosted page `docs/privacy/index.html` (English + Persian). Host that page
+> at a public URL and put the URL in `app/lib/monetization/ad_config.dart` (`kPrivacyPolicyUrl`)
+> and in both store listings. Keep this file and the page in sync; update the date on changes.
 
-_Last updated: [DATE]_
+_Last updated: October 1, 2026_
 
 Adadi ("the app") is a math puzzle game for people aged 13 and over, published by
-[PUBLISHER NAME] ("we", "us"). This policy explains what information the app handles and why.
+Amir HajiHeidari ("we", "us"). This policy explains what information the app handles and why.
 
 ## Summary
 - We do not run servers, accounts or analytics. We receive no data about you.
@@ -76,4 +75,4 @@ If the app changes how it handles information, we will update this page and the 
 date above.
 
 ## Contact
-Questions about this policy: [CONTACT EMAIL]
+Questions about this policy: a.a.hajiheidari@gmail.com

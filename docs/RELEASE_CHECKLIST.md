@@ -25,7 +25,7 @@ Things that need your accounts or a Mac/Android SDK; the code is ready for them.
 - [ ] Test buy + restore with sandbox/test accounts.
 
 ## Privacy & store forms
-- [ ] Fill the remaining [BRACKETED] parts (publisher, email, date) of `docs/privacy/index.html` (EN + FA, ready-to-host page; source text in
+- [ ] Host `docs/privacy/index.html` (EN + FA, ready-to-host page; source text in
       `docs/privacy-policy.md`), host it, and set `kPrivacyPolicyUrl` in `ad_config.dart`.
 - [ ] Apple: age rating 13+ (answer the questionnaire accordingly); App Privacy: identifiers +
       usage data for third-party advertising (AdMob), no data linked to identity.
