@@ -3,7 +3,9 @@
 Things that need your accounts or a Mac/Android SDK; the code is ready for them.
 
 ## Identity
-- [ ] Final app name (NumCross is a placeholder; check it is free in both stores and as a trademark).
+- [ ] Final app name. NumCross is taken: a math-crossword game with that name is already on Google Play
+      (com.bigcake.android.calccross). Shortlist: Numweave, Adadi, Barabar; check the pick in both stores and
+      as a trademark.
 - [ ] Application id / bundle id (currently `com.numcross.numcross`): `app/android/app/build.gradle.kts`
       (`applicationId`) and the Xcode project.
 - [ ] App icon and store art (teen/adult look, no mascots).
@@ -22,7 +24,8 @@ Things that need your accounts or a Mac/Android SDK; the code is ready for them.
 - [ ] Test buy + restore with sandbox/test accounts.
 
 ## Privacy & store forms
-- [ ] Host `docs/privacy-policy.md` (after review) and set `kPrivacyPolicyUrl` in `ad_config.dart`.
+- [ ] Fill the [BRACKETED] parts of `docs/privacy/index.html` (EN + FA, ready-to-host page; source text in
+      `docs/privacy-policy.md`), host it, and set `kPrivacyPolicyUrl` in `ad_config.dart`.
 - [ ] Apple: age rating 13+ (answer the questionnaire accordingly); App Privacy: identifiers +
       usage data for third-party advertising (AdMob), no data linked to identity.
 - [ ] Google Play: target audience 13–15, 16–17, 18+ (no under-13); do **not** join
