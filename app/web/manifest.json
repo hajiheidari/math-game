@@ -1,11 +1,11 @@
 {
-    "name": "numcross",
-    "short_name": "numcross",
+    "name": "Adadi — math crossword",
+    "short_name": "Adadi",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#1f4468",
+    "theme_color": "#2f5d8a",
+    "description": "Math crossword puzzles: place the numbers so every equation is true.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

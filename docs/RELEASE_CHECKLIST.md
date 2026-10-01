@@ -3,12 +3,13 @@
 Things that need your accounts or a Mac/Android SDK; the code is ready for them.
 
 ## Identity
-- [ ] Final app name. NumCross is taken: a math-crossword game with that name is already on Google Play
-      (com.bigcake.android.calccross). Shortlist: Numweave, Adadi, Barabar; check the pick in both stores and
-      as a trademark.
-- [ ] Application id / bundle id (currently `com.numcross.numcross`): `app/android/app/build.gradle.kts`
-      (`applicationId`) and the Xcode project.
-- [ ] App icon and store art (teen/adult look, no mascots).
+- [x] App name: **Adadi** (عددی). Before publishing, search both stores once more and consider a
+      trademark check. Suggested store title: "Adadi: Math Crossword" (fa: «عددی: جدول ریاضی»).
+- [x] Application id / bundle id: `com.adadi.game`. It cannot change after the first upload; if you own a
+      domain and prefer e.g. `com.yourdomain.adadi`, change it now in `app/android/app/build.gradle.kts`
+      (`namespace`, `applicationId`, MainActivity package) and the Xcode project.
+- [x] App icon (`app/branding/`, regenerate with `node tool/make_icons.js`).
+- [ ] Store art: screenshots and feature graphic.
 
 ## AdMob (replace Google TEST ids)
 - [ ] Android app id → `app/android/app/src/main/AndroidManifest.xml` (`APPLICATION_ID`).
@@ -24,7 +25,7 @@ Things that need your accounts or a Mac/Android SDK; the code is ready for them.
 - [ ] Test buy + restore with sandbox/test accounts.
 
 ## Privacy & store forms
-- [ ] Fill the [BRACKETED] parts of `docs/privacy/index.html` (EN + FA, ready-to-host page; source text in
+- [ ] Fill the remaining [BRACKETED] parts (publisher, email, date) of `docs/privacy/index.html` (EN + FA, ready-to-host page; source text in
       `docs/privacy-policy.md`), host it, and set `kPrivacyPolicyUrl` in `ad_config.dart`.
 - [ ] Apple: age rating 13+ (answer the questionnaire accordingly); App Privacy: identifiers +
       usage data for third-party advertising (AdMob), no data linked to identity.

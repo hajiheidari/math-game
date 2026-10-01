@@ -1,4 +1,8 @@
-# NumCross — technical design
+# Adadi — technical design
+
+(Code-level names keep the earlier working title: the `numcross` Dart package,
+`numcross_engine`, and the `numcross/v1` puzzle seed namespace. Renaming the namespace
+would change every daily puzzle.)
 
 Math crossword for ages 13+ (iOS + Android, Flutter). Brief: `math-crossword-claude-code-prompt.md` v1.1.
 

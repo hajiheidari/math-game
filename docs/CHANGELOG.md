@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.8.0 — Name and icon: Adadi
+- The app is now **Adadi** (عددی / عددي, "numeric" in Persian, Arabic and Urdu). The working
+  title NumCross was dropped because another math-crossword app already uses it on Google Play.
+  In-app title per language; Android launcher label localized (`res/values-*/strings.xml`);
+  iOS display name, web title and manifest updated.
+- Bundle id / application id: `com.adadi.game` (Android namespace and MainActivity package moved).
+- App icon: five tiles in a cross (+, ×, −, = around an amber 7). Source in `app/branding/*.svg`
+  (glyphs drawn as shapes, no font); `node tool/make_icons.js` renders the iOS set, Android legacy
+  + adaptive icons and web icons. The 1024 iOS icon has no alpha channel.
+- Privacy page filled with the name. Internal code names (`numcross` package, `numcross/v1` seed
+  namespace) are unchanged so daily puzzles stay the same.
+
 ## 0.7.2 — Urdu layout check
 - Visual browser check of Urdu (Noto Nastaliq): stacked text overlapped (the levels heading ran
   into its subtitle), because Material's line heights are too short for Nastaliq. Urdu now gets

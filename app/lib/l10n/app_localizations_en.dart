@@ -10,7 +10,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get appTitle => 'NumCross';
+  String get appTitle => 'Adadi';
 
   @override
   String get ageGateTitle => 'How old are you?';

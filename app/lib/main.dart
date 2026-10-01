@@ -20,18 +20,18 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   _registerFontLicenses();
   final prefs = await AppPrefs.load();
-  runApp(NumCrossApp.fromPrefs(prefs));
+  runApp(AdadiApp.fromPrefs(prefs));
 }
 
-class NumCrossApp extends StatelessWidget {
+class AdadiApp extends StatelessWidget {
   final LocaleController locale;
   final AppController app;
 
-  const NumCrossApp({super.key, required this.locale, required this.app});
+  const AdadiApp({super.key, required this.locale, required this.app});
 
   /// Restores saved language/digits (or the device language on first run)
   /// and saves them whenever they change.
-  factory NumCrossApp.fromPrefs(AppPrefs prefs) {
+  factory AdadiApp.fromPrefs(AppPrefs prefs) {
     final device =
         WidgetsBinding.instance.platformDispatcher.locale.languageCode;
     final locale = LocaleController(
@@ -51,7 +51,7 @@ class NumCrossApp extends StatelessWidget {
       ads: mobile ? AdMobAdService() : null,
       purchases: mobile ? StorePurchaseService() : null,
     );
-    return NumCrossApp(
+    return AdadiApp(
       locale: locale,
       app: AppController(
         prefs,

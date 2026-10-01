@@ -26,10 +26,10 @@ void mockStorage([
 
 /// The app as `main()` builds it, reading the mocked storage.
 /// [lang] overrides the saved/device language; [now] fixes the clock.
-Future<NumCrossApp> launchApp({String? lang, DateTime Function()? now}) async {
+Future<AdadiApp> launchApp({String? lang, DateTime Function()? now}) async {
   final prefs = await AppPrefs.load();
-  if (lang == null && now == null) return NumCrossApp.fromPrefs(prefs);
-  return NumCrossApp(
+  if (lang == null && now == null) return AdadiApp.fromPrefs(prefs);
+  return AdadiApp(
     locale: LocaleController(
       initial: languageForCode(lang ?? prefs.languageCode),
       digitMode: prefs.digitMode,

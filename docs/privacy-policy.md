@@ -1,4 +1,4 @@
-# [APP NAME] — Privacy Policy
+# Adadi — Privacy Policy
 
 > Source text of the hosted page `docs/privacy/index.html` (English + Persian). Before
 > publishing, replace the bracketed parts in both files, host the page at a public URL, and put
@@ -7,7 +7,7 @@
 
 _Last updated: [DATE]_
 
-[APP NAME] ("the app") is a math puzzle game for people aged 13 and over, published by
+Adadi ("the app") is a math puzzle game for people aged 13 and over, published by
 [PUBLISHER NAME] ("we", "us"). This policy explains what information the app handles and why.
 
 ## Summary

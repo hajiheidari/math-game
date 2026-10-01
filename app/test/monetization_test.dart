@@ -83,10 +83,10 @@ Future<Monetization> newMoney(
   );
 }
 
-Future<NumCrossApp> appWith(FakeAds ads, Map<String, Object> storage) async {
+Future<AdadiApp> appWith(FakeAds ads, Map<String, Object> storage) async {
   mockStorage(storage);
   final prefs = await AppPrefs.load();
-  return NumCrossApp(
+  return AdadiApp(
     locale: LocaleController(initial: languageForCode('en')),
     app: AppController(
       prefs,

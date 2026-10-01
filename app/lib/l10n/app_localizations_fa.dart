@@ -10,7 +10,7 @@ class AppLocalizationsFa extends AppLocalizations {
   AppLocalizationsFa([String locale = 'fa']) : super(locale);
 
   @override
-  String get appTitle => 'NumCross';
+  String get appTitle => 'عددی';
 
   @override
   String get ageGateTitle => 'چند سال دارید؟';

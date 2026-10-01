@@ -10,7 +10,7 @@ class AppLocalizationsUr extends AppLocalizations {
   AppLocalizationsUr([String locale = 'ur']) : super(locale);
 
   @override
-  String get appTitle => 'NumCross';
+  String get appTitle => 'عددی';
 
   @override
   String get ageGateTitle => 'آپ کی عمر کتنی ہے؟';

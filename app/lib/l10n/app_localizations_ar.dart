@@ -10,7 +10,7 @@ class AppLocalizationsAr extends AppLocalizations {
   AppLocalizationsAr([String locale = 'ar']) : super(locale);
 
   @override
-  String get appTitle => 'NumCross';
+  String get appTitle => 'عددي';
 
   @override
   String get ageGateTitle => 'كم عمرك؟';
