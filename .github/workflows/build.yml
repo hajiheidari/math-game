@@ -55,9 +55,12 @@ jobs:
         working-directory: app
         run: |
           flutter pub get
-          flutter build apk --release
+          # One APK per CPU type keeps each ~20 MB: arm64 fits almost every
+          # phone from the last ~8 years, armv7 is for older/cheaper ones.
+          flutter build apk --release --split-per-abi
           version=$(grep '^version:' pubspec.yaml | cut -d' ' -f2 | cut -d+ -f1)
-          cp build/app/outputs/flutter-apk/app-release.apk "../adadi-$version.apk"
+          cp build/app/outputs/flutter-apk/app-arm64-v8a-release.apk "../adadi-$version-arm64.apk"
+          cp build/app/outputs/flutter-apk/app-armeabi-v7a-release.apk "../adadi-$version-armv7.apk"
       - uses: actions/upload-artifact@v4
         with:
           name: android-apk
@@ -66,13 +69,13 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          notes="Test build from ${GITHUB_SHA::7}. Android: download the .apk on the phone and install it (allow installs from this source). Signed with a debug key, for testing only."
+          notes="Test build from ${GITHUB_SHA::7}. Android: download the -arm64.apk on the phone (the -armv7.apk only if arm64 will not install, on old phones) and install it, allowing installs from this source. Signed with a debug key, for testing only."
           if ! gh release view test-build >/dev/null 2>&1; then
             gh release create test-build --prerelease --title "Test build" --notes "$notes" --target "$GITHUB_SHA"
           else
             gh release edit test-build --notes "$notes"
           fi
-          # Keep only the newest APK on the release.
+          # Keep only the newest APKs on the release.
           for a in $(gh release view test-build --json assets --jq '.assets[].name' | grep '\.apk$' || true); do
             gh release delete-asset test-build "$a" -y
           done
