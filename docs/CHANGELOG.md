@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.8.2 — Fix: release build crashed at launch
+- Every release APK crashed before showing anything: R8 stripped WorkManager's Room database
+  class (`WorkDatabase_Impl`, loaded by reflection; WorkManager comes with Google Mobile Ads).
+  Found by running the APK on an Android 14 emulator in CI, where the new crash screen showed
+  the stack trace. Fixed with keep rules in `app/android/app/proguard-rules.pro`.
+- CI: `.github/workflows/emulator.yml` installs and launches the release APK on an Android 14
+  (Google APIs) emulator on every push, uploads screenshots + logcat, and fails if the app
+  crashes or exits.
+
 ## 0.8.1 — On-screen error reports
 - The 0.8.0 test APK installed on a Galaxy S23 Ultra (Android 14) but did not run. To find out
   why without a cable/logcat, errors are now shown on screen with Copy/Share:

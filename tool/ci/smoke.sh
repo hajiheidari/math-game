@@ -30,4 +30,11 @@ done
 adb logcat -d -v time > "$OUT/logcat.txt"
 echo "===== crashes / errors ====="
 grep -nE "FATAL EXCEPTION|AndroidRuntime|E/flutter|F/libc|DEBUG   :|Adadi|com.adadi.game" "$OUT/logcat.txt" | head -300
+
+# Fail the job unless the app is still up and not on the crash screen.
+if tail -2 "$OUT/status.txt" | grep -qE "NOT RUNNING|CrashActivity"; then
+  echo "SMOKE TEST FAILED: app crashed or exited"
+  exit 1
+fi
+echo "SMOKE TEST PASSED"
 exit 0
