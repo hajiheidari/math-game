@@ -55,7 +55,10 @@ jobs:
           arch: x86_64
           disable-animations: true
           disk-size: 4096M
-          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot
+          ram-size: 3072M
+          cores: 3
+          emulator-boot-timeout: 900
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot -camera-back none -camera-front none
           script: bash tool/ci/emulator.sh adadi-x64.apk
       - uses: actions/upload-artifact@v4
         if: always()
