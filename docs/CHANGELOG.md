@@ -8,6 +8,11 @@
 - CI: `.github/workflows/emulator.yml` installs and launches the release APK on an Android 14
   (Google APIs) emulator on every push, uploads screenshots + logcat, and fails if the app
   crashes or exits.
+- CI: full player-journey test on the emulator (`app/integration_test/app_flow_test.dart`):
+  age gate, interactive tutorial, menu with real AdMob test ads starting, level 1 solved, level 2
+  finished with a hint, daily puzzle, calendar, settings, then menu + game in fa/ar/ur. One
+  screenshot per screen (artifact `smoke/flow/`). Locally without a device:
+  copy it into `test/` and run with `--dart-define=ON_HOST=true`.
 
 ## 0.8.1 — On-screen error reports
 - The 0.8.0 test APK installed on a Galaxy S23 Ultra (Android 14) but did not run. To find out

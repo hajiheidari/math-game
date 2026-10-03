@@ -1,6 +1,8 @@
-# Runs the release APK on an Android emulator (Android 14, with Google Play
-# services like a real phone), takes screenshots and saves logcat, so startup
-# problems can be found without a physical device.
+# On an Android 14 emulator with Google Play services (like a real phone):
+# 1. smoke: installs and launches the release APK, checks it stays up;
+# 2. flow: full player journey (integration_test/app_flow_test.dart) with a
+#    screenshot of every screen.
+# Screenshots + logcat are uploaded as the "smoke" artifact.
 name: Emulator smoke test
 
 on:
@@ -15,7 +17,7 @@ concurrency:
 jobs:
   smoke:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
       - name: Free disk space (the emulator needs several GB)
@@ -54,7 +56,7 @@ jobs:
           disable-animations: true
           disk-size: 4096M
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot
-          script: bash tool/ci/smoke.sh adadi-x64.apk
+          script: bash tool/ci/emulator.sh adadi-x64.apk
       - uses: actions/upload-artifact@v4
         if: always()
         with:
