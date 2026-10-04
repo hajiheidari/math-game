@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.8.4 — Battery: stop per-frame redraws after sounds
+- audioplayers' default position updater schedules a callback every frame while a player is
+  "playing"; low-latency players (our sound effects) never report completion, so after the first
+  sound the app redrew at 60 fps for the rest of the session. Found by the emulator journey test
+  ("animation still running" at teardown). The updater is now disabled (position is unused).
+- The emulator journey test now passes all steps: 23 screenshots from age gate to Urdu game.
+
 ## 0.8.3 — Small-phone layout fixes (found by the emulator journey test)
 - Age screen: the age picker sized itself to the widest number, so the "Select your age" hint
   overflowed on 320 dp phones (en 26 px, fa 120 px, ur 88 px). Now fills the width.

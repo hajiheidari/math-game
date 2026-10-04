@@ -25,6 +25,10 @@ class AssetSoundPlayer implements SoundPlayer {
       final player = _players.putIfAbsent(sound, () {
         final p = AudioPlayer()..setPlayerMode(PlayerMode.lowLatency);
         p.setReleaseMode(ReleaseMode.stop);
+        // Low-latency mode never reports completion, so the default
+        // per-frame position updater would keep the app redrawing every
+        // frame after the first sound (battery drain). Position is unused.
+        p.positionUpdater = null;
         return p;
       });
       await player.stop();
