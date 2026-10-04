@@ -39,14 +39,20 @@ jobs:
         with:
           channel: stable
           cache: true
-      - name: Build release APK for the emulator (x86_64)
+      - name: Build APKs for the emulator (x86_64)
         working-directory: app
         run: |
           flutter pub get
           flutter build apk --release --target-platform android-x64
           cp build/app/outputs/flutter-apk/app-release.apk ../adadi-x64.apk
+          # Journey test app, built now so no Gradle runs next to the emulator.
+          flutter build apk --debug --target-platform android-x64 -t integration_test/app_flow_test.dart
+          cp build/app/outputs/flutter-apk/app-debug.apk ../adadi-flow-x64.apk
+          # Private-repo runners have 2 cores / ~7 GB: free Gradle's memory.
+          (cd android && ./gradlew --stop) || true
+          pkill -f KotlinCompileDaemon || true
           rm -rf build/app/intermediates build/app/tmp
-          df -h /
+          df -h /; free -m
       - name: Run on emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -55,8 +61,8 @@ jobs:
           arch: x86_64
           disable-animations: true
           disk-size: 4096M
-          ram-size: 3072M
-          cores: 3
+          ram-size: 2048M
+          cores: 2
           emulator-boot-timeout: 900
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -no-snapshot -camera-back none -camera-front none
           script: bash tool/ci/emulator.sh adadi-x64.apk

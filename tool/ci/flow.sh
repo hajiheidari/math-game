@@ -8,6 +8,7 @@ adb logcat -c
 cd app
 SCREENSHOT_DIR="$OUT/flow" flutter drive \
   -d emulator-5554 \
+  --use-application-binary="$PWD/../adadi-flow-x64.apk" \
   --driver=test_driver/integration_test.dart \
   --target=integration_test/app_flow_test.dart 2>&1 | tee "$OUT/flow.txt"
 status=${PIPESTATUS[0]}
