@@ -18,27 +18,24 @@ class CrashGuard {
   /// Runs [body] (which should end in runApp) with every error hook set.
   /// If [body] itself throws, an error-only app is started instead.
   static void run(Future<void> Function() body) {
-    runZonedGuarded(
-      () async {
-        WidgetsFlutterBinding.ensureInitialized();
-        FlutterError.onError = (details) {
-          FlutterError.presentError(details);
-          _record(details.exception, details.stack, details.context);
-        };
-        PlatformDispatcher.instance.onError = (error, stack) {
-          _record(error, stack);
-          return true;
-        };
-        ErrorWidget.builder = (details) => _InlineError(details.exception);
-        try {
-          await body();
-        } catch (e, s) {
-          _record(e, s, 'while starting the app');
-          runApp(const CrashView(fatal: true));
-        }
-      },
-      (error, stack) => _record(error, stack),
-    );
+    runZonedGuarded(() async {
+      WidgetsFlutterBinding.ensureInitialized();
+      FlutterError.onError = (details) {
+        FlutterError.presentError(details);
+        _record(details.exception, details.stack, details.context);
+      };
+      PlatformDispatcher.instance.onError = (error, stack) {
+        _record(error, stack);
+        return true;
+      };
+      ErrorWidget.builder = (details) => _InlineError(details.exception);
+      try {
+        await body();
+      } catch (e, s) {
+        _record(e, s, 'while starting the app');
+        runApp(const CrashView(fatal: true));
+      }
+    }, (error, stack) => _record(error, stack));
   }
 
   static void _record(Object error, StackTrace? stack, [Object? context]) {
@@ -46,8 +43,10 @@ class CrashGuard {
     if (report.value != null) return;
     final b = StringBuffer()
       ..writeln('Adadi error report')
-      ..writeln('Platform: ${defaultTargetPlatform.name}, '
-          'release: $kReleaseMode')
+      ..writeln(
+        'Platform: ${defaultTargetPlatform.name}, '
+        'release: $kReleaseMode',
+      )
       ..writeln();
     if (context != null) b.writeln('Context: $context');
     b
@@ -112,7 +111,10 @@ class CrashView extends StatelessWidget {
                     padding: const EdgeInsets.all(16),
                     child: SelectableText(
                       text,
-                      style: const TextStyle(fontFamily: 'monospace', fontSize: 12),
+                      style: const TextStyle(
+                        fontFamily: 'monospace',
+                        fontSize: 12,
+                      ),
                     ),
                   ),
                 ),

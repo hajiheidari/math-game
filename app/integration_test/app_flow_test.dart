@@ -40,8 +40,34 @@ Future<void> shot(WidgetTester tester, String name) async {
 }
 
 Future<void> tap(WidgetTester tester, Finder f) async {
+  // Lists only build what is on screen (the emulator screen is small):
+  // scroll down, then back up, until the target exists.
+  for (final delta in [300.0, -300.0]) {
+    if (f.evaluate().isNotEmpty) break;
+    final scrollable = find.byType(Scrollable).hitTestable();
+    if (scrollable.evaluate().isEmpty) break;
+    try {
+      await tester.scrollUntilVisible(
+        f,
+        delta,
+        scrollable: scrollable.first,
+        maxScrolls: 20,
+      );
+    } catch (_) {}
+  }
   await tester.ensureVisible(f);
   await tester.pump();
+  // Still at or past the screen edge? Drag it to the middle, like a finger.
+  final view = tester.view;
+  final height = view.physicalSize.height / view.devicePixelRatio;
+  final y = tester.getCenter(f).dy;
+  if (y < 60 || y > height - 60) {
+    final scrollable = find.byType(Scrollable).hitTestable();
+    if (scrollable.evaluate().isNotEmpty) {
+      await tester.drag(scrollable.first, Offset(0, height / 2 - y));
+      await settle(tester, 200);
+    }
+  }
   await tester.tap(f);
   await tester.pump(const Duration(milliseconds: 250));
 }

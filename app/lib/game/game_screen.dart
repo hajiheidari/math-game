@@ -487,10 +487,14 @@ class _ResultDialog extends StatelessWidget {
                   color: Color(0xFFE8672A),
                 ),
                 const SizedBox(width: 4),
-                Text(
-                  t.streakDays(streak!, locale.n(streak!)),
-                  key: const ValueKey('result-streak'),
-                  style: Theme.of(context).textTheme.titleMedium,
+                // Flexible: wraps instead of overflowing on small phones.
+                Flexible(
+                  child: Text(
+                    t.streakDays(streak!, locale.n(streak!)),
+                    key: const ValueKey('result-streak'),
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.titleMedium,
+                  ),
                 ),
               ],
             ),

@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.8.3 — Small-phone layout fixes (found by the emulator journey test)
+- Age screen: the age picker sized itself to the widest number, so the "Select your age" hint
+  overflowed on 320 dp phones (en 26 px, fa 120 px, ur 88 px). Now fills the width.
+- Daily win dialog: the streak line ("1-day streak") overflowed by 30 px on 320 dp phones; it
+  now wraps.
+- New `test/small_screen_test.dart`: age gate, tutorial, menu, level select, game, calendar,
+  settings and the daily win dialog at 320 x 640 in en/fa/ar/ur, failing on any overflow.
+- Journey test scrolls to off-screen targets (small emulator screen).
+
 ## 0.8.2 — Fix: release build crashed at launch
 - Every release APK crashed before showing anything: R8 stripped WorkManager's Room database
   class (`WorkDatabase_Impl`, loaded by reflection; WorkManager comes with Google Mobile Ads).

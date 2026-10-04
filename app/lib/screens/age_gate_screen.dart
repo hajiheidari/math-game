@@ -46,7 +46,13 @@ class _AgeGateScreenState extends State<AgeGateScreen> {
                   DropdownButtonFormField<int>(
                     key: const ValueKey('age-picker'),
                     initialValue: _age,
-                    hint: Text(t.ageGatePickerHint),
+                    // Fill the width: otherwise the button is only as wide as
+                    // the widest age and the hint overflows on small phones.
+                    isExpanded: true,
+                    hint: Text(
+                      t.ageGatePickerHint,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                     menuMaxHeight: 360,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(),
