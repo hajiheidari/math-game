@@ -80,8 +80,8 @@ jobs:
           # Google Play upload file.
           tool/store_build.sh global appbundle
           cp $out/bundle/release/app-release.aab "adadi-$version-play.aab"
-          # Cafe Bazaar: one universal APK (Adivery + Poolakey, Persian first).
-          tool/store_build.sh bazaar apk
+          # Cafe Bazaar: one APK for phones (arm + arm64; no x86_64, ~34 MB).
+          tool/store_build.sh bazaar apk --target-platform android-arm,android-arm64
           cp $out/flutter-apk/app-release.apk "adadi-$version-bazaar.apk"
       - uses: actions/upload-artifact@v4
         with:
