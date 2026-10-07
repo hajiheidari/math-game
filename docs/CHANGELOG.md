@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.10.6 — Bazaar APK x86_64 libraries, fixed at packaging
+- 0.10.5's `ndk.abiFilters` was overridden by Flutter's Gradle plugin; the extra CPUs' libraries
+  are now excluded when the APK is packaged (`packaging.jniLibs.excludes`).
+
 ## 0.10.5 — Bazaar APK: phone CPUs only, for real
 - The Bazaar APK still carried two tiny plugin libraries for x86_64 (without Flutter's engine), so an
   x86_64 device would have crashed at launch. Gradle now keeps only arm/arm64 for that build

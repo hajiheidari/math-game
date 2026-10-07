@@ -27,12 +27,7 @@ android {
         // flag during build.
         versionCode = flutter.versionCode
         versionName = flutter.versionName
-        // `-P adadi.abis=armeabi-v7a,arm64-v8a` (the Cafe Bazaar build): keep only these
-        // CPUs. Without it, plugins still ship tiny x86_64 libraries without Flutter's
-        // engine, and an x86_64 device would pick that folder and crash at launch.
-        (project.findProperty("adadi.abis") as String?)?.let { abis ->
-            ndk { abiFilters += abis.split(",") }
-        }
+
     }
 
     // Release key (upload key for Google Play, signing key for Cafe Bazaar).
@@ -47,6 +42,17 @@ android {
                 keyAlias = System.getenv("ADADI_KEY_ALIAS")
                 keyPassword = System.getenv("ADADI_KEY_PASSWORD")
             }
+        }
+    }
+
+    // `-P adadi.abis=armeabi-v7a,arm64-v8a` (the Cafe Bazaar build): package only these
+    // CPUs' native libraries. Plugins otherwise still ship tiny x86_64 libraries without
+    // Flutter's engine, and an x86_64 device would pick that folder and crash at launch.
+    // (ndk.abiFilters is overridden by Flutter's Gradle plugin, so exclude at packaging.)
+    (project.findProperty("adadi.abis") as String?)?.split(",")?.let { keep ->
+        val all = listOf("armeabi-v7a", "arm64-v8a", "x86", "x86_64")
+        packaging {
+            jniLibs { excludes += (all - keep.toSet()).map { "lib/$it/**" } }
         }
     }
 
