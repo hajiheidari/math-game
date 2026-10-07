@@ -1,5 +1,4 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:numcross/monetization/ad_service.dart';
 import 'package:numcross/monetization/adivery_ad_service.dart';
 import 'package:numcross/monetization/bazaar_config.dart';
 import 'package:numcross/monetization/bazaar_purchase_service.dart';
@@ -13,24 +12,23 @@ void main() {
     expect(kStore, StoreTarget.global);
   });
 
-  test(
-    'without panel ids the Bazaar services stay off (safe to test early)',
-    () async {
-      if (BazaarConfig.adiveryAppId.isNotEmpty ||
-          BazaarConfig.rsaKey.isNotEmpty) {
-        return; // Real ids filled in: covered by the device tests instead.
-      }
-      final ads = AdiveryAdService();
-      await ads.start(AdAudience.adult);
-      expect(ads.rewardedReady, isFalse);
-      expect(await ads.showRewarded(), isFalse);
-      await ads.showInterstitial(); // returns at once
-      expect(await ads.privacyOptionsRequired(), isFalse);
+  test('Adivery ids are filled in (Amir\'s panel)', () {
+    expect(AdiveryAdService.configured, isTrue);
+  });
 
-      final store = BazaarPurchaseService();
-      await store.start();
-      expect(store.available, isFalse);
-      expect(await store.buyRemoveAds(), isFalse);
-    },
-  );
+  test('without the RSA key the Bazaar purchase stays off', () async {
+    if (BazaarConfig.rsaKey.isNotEmpty) return; // covered on devices then
+    final store = BazaarPurchaseService();
+    await store.start();
+    expect(store.available, isFalse);
+    expect(await store.buyRemoveAds(), isFalse);
+  });
+
+  test('ads that never loaded resolve at once, never block the game', () async {
+    final ads = AdiveryAdService(); // not started: nothing loaded
+    expect(ads.rewardedReady, isFalse);
+    expect(await ads.showRewarded(), isFalse);
+    await ads.showInterstitial();
+    expect(await ads.privacyOptionsRequired(), isFalse);
+  });
 }

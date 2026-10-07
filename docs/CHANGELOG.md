@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.10.1 — Adivery ads on in the Cafe Bazaar build
+- Adivery app id and the rewarded / interstitial placements from Amir's panel
+  (`bazaar_config.dart`). Bazaar billing still waits for the RSA key.
+
 ## 0.10.0 — Cafe Bazaar build, store files from CI
 - Cafe Bazaar build (`lib/main_bazaar.dart`, like Tiaro's): Adivery ads (AdMob does not serve
   Iran), Bazaar billing via Poolakey for `remove_ads`, Persian by default. Ids/RSA key go in

@@ -3,7 +3,7 @@ description: "Adadi — math crossword puzzles for ages 13+."
 publish_to: 'none'
 
 # Semantic version; bumped after every build-order step.
-version: 0.10.0+16
+version: 0.10.1+17
 
 environment:
   sdk: ^3.13.4
