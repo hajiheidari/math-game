@@ -58,7 +58,11 @@ class AdadiApp extends StatelessWidget {
     final fromUrl = kLanguages.any((l) => l.code == urlLang) ? urlLang : null;
     final locale = LocaleController(
       initial: languageForCode(
-        fromUrl ?? prefs.languageCode ?? kStore.defaultLanguage ?? device,
+        fromUrl ??
+            prefs.languageCode ??
+            kStore.defaultLanguage ??
+            (iranianSite(Uri.base) ? 'fa' : null) ??
+            device,
       ),
       digitMode: prefs.digitMode,
     );
@@ -118,6 +122,10 @@ class AdadiApp extends StatelessWidget {
     );
   }
 }
+
+/// The web game on the Iranian mirror (adadi.espadna.ir) starts in Persian
+/// when no language was chosen, whatever the browser's language.
+bool iranianSite(Uri page) => kIsWeb && page.host.endsWith('.ir');
 
 /// On wide screens (desktop browsers, tablets) the game stays a phone-width
 /// column in the middle instead of stretching edge to edge, which made the

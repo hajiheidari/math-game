@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.10.4 — Persian first on the Iranian site
+- Web game on any `.ir` address (adadi.espadna.ir) starts in Persian when no language was chosen
+  (`iranianSite()` in `app_root.dart`); espadna.com keeps following the browser.
+- espadna.ir landing pages: the mirror script now sends outside visitors to `fa/` (espadna-site).
+
 ## 0.10.3 — Wide screens, support email
 - Wide screens (desktop browsers, tablets): the game stays a centered phone-width column (560 px)
   instead of stretching across the monitor (`PhoneColumn` in `app_root.dart`).
