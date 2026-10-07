@@ -26,3 +26,7 @@ trap restore EXIT
 grep -vE "^  ($drop):" /tmp/adadi-pubspec.yaml.bak > pubspec.yaml
 flutter pub get
 flutter build "$kind" --release -t "$target" --dart-define=STORE="$store" "$@"
+# Free Gradle's memory before the next build (CI runs several in a row).
+if [ "$kind" != ios ] && [ "$kind" != ipa ]; then
+  (cd android && ./gradlew --stop >/dev/null 2>&1) || true
+fi
