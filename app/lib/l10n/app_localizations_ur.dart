@@ -141,6 +141,9 @@ class AppLocalizationsUr extends AppLocalizations {
   String get privacyPolicy => 'رازداری کی پالیسی';
 
   @override
+  String get contactSupport => 'سپورٹ سے رابطہ';
+
+  @override
   String get removeAds => 'اشتہارات ہٹائیں';
 
   @override

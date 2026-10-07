@@ -141,6 +141,9 @@ class AppLocalizationsFa extends AppLocalizations {
   String get privacyPolicy => 'حریم خصوصی';
 
   @override
+  String get contactSupport => 'پشتیبانی';
+
+  @override
   String get removeAds => 'حذف تبلیغات';
 
   @override

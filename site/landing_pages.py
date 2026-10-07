@@ -8,7 +8,7 @@ import pathlib
 OUT = pathlib.Path(__file__).resolve().parent / 'adadi-app'
 SITE = 'https://espadna.com/adadi-app'
 GAME = 'https://adadi.espadna.com'
-SUPPORT = 'a.a.hajiheidari@gmail.com'
+SUPPORT = 'espadna.support@gmail.com'
 L = {
  'fa': dict(path='fa/', dir='rtl', locale='fa_IR', label='فارسی', shots='fa', game_lang='fa',
    name='عددی', title='عددی | جدول ریاضی، رایگان',

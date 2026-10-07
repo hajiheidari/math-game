@@ -330,6 +330,12 @@ abstract class AppLocalizations {
   /// **'Privacy policy'**
   String get privacyPolicy;
 
+  /// No description provided for @contactSupport.
+  ///
+  /// In en, this message translates to:
+  /// **'Contact support'**
+  String get contactSupport;
+
   /// No description provided for @removeAds.
   ///
   /// In en, this message translates to:

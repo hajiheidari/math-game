@@ -145,6 +145,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get privacyPolicy => 'سياسة الخصوصية';
 
   @override
+  String get contactSupport => 'التواصل مع الدعم';
+
+  @override
   String get removeAds => 'إزالة الإعلانات';
 
   @override

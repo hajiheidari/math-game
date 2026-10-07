@@ -35,7 +35,7 @@
 
 **حریم خصوصی:** https://adadi.espadna.com/privacy/#fa
 
-**ایمیل پشتیبانی:** a.a.hajiheidari@gmail.com
+**ایمیل پشتیبانی:** espadna.support@gmail.com
 
 **محصول درون‌برنامه‌ای:**
 - شناسه: `remove_ads` (غیرمصرفی / یک‌بار خرید)

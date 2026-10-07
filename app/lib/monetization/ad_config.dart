@@ -35,6 +35,10 @@ const String kRemoveAdsProductId = 'remove_ads';
 
 /// Privacy policy shown from Settings: docs/privacy/index.html, published by
 /// site/build.sh (Iranian mirror: adadi.espadna.ir/privacy/).
+/// Support address shared by every Espadna app (Settings → Contact support,
+/// store listings, privacy policy).
+const String kSupportEmail = 'espadna.support@gmail.com';
+
 /// The Cafe Bazaar build opens the Persian section.
 const String kPrivacyPolicyUrl = kStore == StoreTarget.bazaar
     ? 'https://adadi.espadna.com/privacy/#fa'

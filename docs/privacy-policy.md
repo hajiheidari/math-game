@@ -82,4 +82,4 @@ If the app changes how it handles information, we will update this page and the 
 date above.
 
 ## Contact
-Questions about this policy: a.a.hajiheidari@gmail.com
+Questions about this policy: espadna.support@gmail.com

@@ -96,6 +96,7 @@ class AdadiApp extends StatelessWidget {
           builder: (context, _) => MaterialApp(
             onGenerateTitle: (context) => AppLocalizations.of(context).appTitle,
             debugShowCheckedModeBanner: false,
+            builder: (context, child) => PhoneColumn(child: child!),
             locale: locale.language.locale,
             supportedLocales: [for (final l in kLanguages) l.locale],
             localizationsDelegates: const [
@@ -111,6 +112,45 @@ class AdadiApp extends StatelessWidget {
               GateState.blocked => const BlockedScreen(),
               GateState.ready => const MenuScreen(),
             },
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// On wide screens (desktop browsers, tablets) the game stays a phone-width
+/// column in the middle instead of stretching edge to edge, which made the
+/// board huge and the controls far apart. Dialogs open inside the column.
+class PhoneColumn extends StatelessWidget {
+  final Widget child;
+  const PhoneColumn({super.key, required this.child});
+
+  static const maxWidth = 560.0;
+
+  @override
+  Widget build(BuildContext context) {
+    final media = MediaQuery.of(context);
+    if (media.size.width <= maxWidth) return child;
+    final scheme = Theme.of(context).colorScheme;
+    return ColoredBox(
+      color: scheme.surfaceContainerHighest,
+      child: Center(
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                color: scheme.shadow.withValues(alpha: 0.18),
+                blurRadius: 24,
+              ),
+            ],
+          ),
+          child: SizedBox(
+            width: maxWidth,
+            child: MediaQuery(
+              data: media.copyWith(size: Size(maxWidth, media.size.height)),
+              child: ClipRect(child: child),
+            ),
           ),
         ),
       ),

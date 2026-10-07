@@ -215,6 +215,22 @@ class _PurchaseAndPrivacySectionState
                 mode: LaunchMode.externalApplication,
               ),
             ),
+            ListTile(
+              key: const ValueKey('contact-support'),
+              leading: const Icon(Icons.mail_outline),
+              title: Text(t.contactSupport),
+              subtitle: const Text(
+                kSupportEmail,
+                textDirection: TextDirection.ltr,
+              ),
+              onTap: () => launchUrl(
+                Uri(
+                  scheme: 'mailto',
+                  path: kSupportEmail,
+                  queryParameters: {'subject': 'Adadi'},
+                ),
+              ),
+            ),
           ],
         );
       },

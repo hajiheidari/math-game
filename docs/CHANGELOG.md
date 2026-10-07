@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.10.3 — Wide screens, support email
+- Wide screens (desktop browsers, tablets): the game stays a centered phone-width column (560 px)
+  instead of stretching across the monitor (`PhoneColumn` in `app_root.dart`).
+- Support address for every Espadna app: espadna.support@gmail.com (`kSupportEmail`): new
+  Settings → Contact support row (opens the mail app), landing pages, privacy policy, store texts.
+- Tests: `wide_screen_test.dart` (1920×1080 in en/fa, phones unchanged).
+
 ## 0.10.2 — Bazaar billing on
 - Cafe Bazaar RSA key from Amir's panel (`bazaar_config.dart`): "Remove ads" can be bought through
   Bazaar (product `remove_ads`). Release builds are signed with the Espadna key from CI secrets.
