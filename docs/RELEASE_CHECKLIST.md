@@ -1,5 +1,7 @@
 # Release checklist
 
+Step-by-step version in Persian, in the order to do them: `docs/PUBLISH-FA.md`.
+
 Things that need your accounts or a Mac/Android SDK; the code is ready for them.
 
 ## Identity

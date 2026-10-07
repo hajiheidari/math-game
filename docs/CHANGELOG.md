@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.10.0 — Cafe Bazaar build, store files from CI
+- Cafe Bazaar build (`lib/main_bazaar.dart`, like Tiaro's): Adivery ads (AdMob does not serve
+  Iran), Bazaar billing via Poolakey for `remove_ads`, Persian by default. Ids/RSA key go in
+  `lib/monetization/bazaar_config.dart`; until then ads and the purchase button stay off.
+- `tool/store_build.sh global|bazaar`: each store build drops the other store's SDKs from the
+  dependencies (Play/Bazaar reject rival billing SDKs). `lib/main.dart` keeps AdMob + store billing;
+  the shared app moved to `lib/app_root.dart`.
+- CI builds every time: test APKs, the Google Play AAB and the Bazaar APK, signed with the release
+  key once the `ADADI_KEYSTORE_*` secrets exist (env-based signing in `build.gradle.kts`).
+  The emulator job also smoke-tests the Bazaar APK.
+- Privacy policy: Cafe Bazaar section (Adivery, Bazaar payments); the Bazaar build links to `#fa`.
+- `docs/PUBLISH-FA.md`: ordered steps for Amir (site, Iranian mirror, signing key, Bazaar, App Store);
+  Bazaar listing text and images in `docs/store/`.
+
 ## 0.9.0 — Website on espadna.com, Espadna bundle id
 - Bundle id / application id is now `com.espadna.adadi` (Espadna brand, like `com.espadna.tiaro`).
 - Website like Tiaro's (`site/README.md`): web game at adadi.espadna.com (`?lang=` picks the language),

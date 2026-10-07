@@ -49,6 +49,13 @@ Google uses information from apps that use its services:
 - You can also reset or delete your advertising ID, or opt out of personalized ads, in your
   device settings.
 
+## Cafe Bazaar version
+The version of the app from Cafe Bazaar (Iran) does not use Google AdMob. Its ads are shown by
+**Adivery**, which may collect device information such as the advertising ID and IP address to show
+and measure ads; see Adivery's privacy policy: <https://adivery.com>. No consent form is
+shown in that version. "Remove ads" is bought through **Cafe Bazaar**'s payment system; we do not
+receive your payment details.
+
 ## Purchases
 "Remove ads" is a one-time purchase made through the Apple App Store or Google Play. The store
 processes the payment; we do not receive or store your payment details. The app only remembers on

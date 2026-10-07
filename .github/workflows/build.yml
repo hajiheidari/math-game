@@ -1,6 +1,8 @@
 # Tests + test builds.
-# - Every push to master: run all tests, build an Android APK and publish it
-#   on the "test-build" pre-release (Releases page) to install on a phone.
+# - Every push to master: run all tests, build the Android files and publish
+#   them on the "test-build" pre-release (Releases page): test APKs, the Google
+#   Play AAB and the Cafe Bazaar APK (tool/store_build.sh). Signed with the
+#   release key when the ADADI_KEYSTORE_* secrets exist (docs/PUBLISH-FA.md).
 # - Run manually (Actions → Build → Run workflow) with "ios" ticked to also
 #   build an unsigned iOS .ipa (macOS runners use 10x minutes on private repos).
 name: Build
@@ -11,6 +13,102 @@ on:
   workflow_dispatch:
     inputs:
       ios:
+        description: Also build an unsigned iOS .ipa
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Engine tests
+        working-directory: packages/numcross_engine
+        run: dart pub get && dart test
+      - name: App analyze + tests
+        working-directory: app
+        run: flutter pub get && flutter analyze && flutter test
+
+  android:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Release key (if the secrets exist; otherwise debug-signed test builds)
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ADADI_KEYSTORE_BASE64 }}
+        run: |
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "$KEYSTORE_BASE64" | base64 -d > "$RUNNER_TEMP/adadi-release.jks"
+            echo "ADADI_KEYSTORE=$RUNNER_TEMP/adadi-release.jks" >> "$GITHUB_ENV"
+            echo "SIGNED=release" >> "$GITHUB_ENV"
+          else
+            echo "SIGNED=debug" >> "$GITHUB_ENV"
+          fi
+      - name: Build (Google Play APKs + AAB, Cafe Bazaar APK)
+        env:
+          ADADI_KEYSTORE_PASSWORD: ${{ secrets.ADADI_KEYSTORE_PASSWORD }}
+          ADADI_KEY_ALIAS: ${{ secrets.ADADI_KEY_ALIAS }}
+          ADADI_KEY_PASSWORD: ${{ secrets.ADADI_KEY_PASSWORD }}
+        run: |
+          version=$(grep '^version:' app/pubspec.yaml | cut -d' ' -f2 | cut -d+ -f1)
+          out=app/build/app/outputs
+          # Phones: one APK per CPU type keeps each ~20 MB (arm64 = almost
+          # every phone of the last ~8 years, armv7 = older/cheaper ones).
+          tool/store_build.sh global apk --split-per-abi
+          cp $out/flutter-apk/app-arm64-v8a-release.apk "adadi-$version-arm64.apk"
+          cp $out/flutter-apk/app-armeabi-v7a-release.apk "adadi-$version-armv7.apk"
+          # Google Play upload file.
+          tool/store_build.sh global appbundle
+          cp $out/bundle/release/app-release.aab "adadi-$version-play.aab"
+          # Cafe Bazaar: one universal APK (Adivery + Poolakey, Persian first).
+          tool/store_build.sh bazaar apk
+          cp $out/flutter-apk/app-release.apk "adadi-$version-bazaar.apk"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android
+          path: |
+            adadi-*.apk
+            adadi-*.aab
+      - name: Publish on the test-build pre-release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          notes="Build from ${GITHUB_SHA::7}, signed with the ${SIGNED} key.
+          - adadi-*-arm64.apk: install on a phone to test (the -armv7.apk only if arm64 will not install, on old phones).
+          - adadi-*-bazaar.apk: the Cafe Bazaar version (upload to Bazaar when signed with the release key).
+          - adadi-*-play.aab: the Google Play upload file (when signed with the release key)."
+          if ! gh release view test-build >/dev/null 2>&1; then
+            gh release create test-build --prerelease --title "Test build" --notes "$notes" --target "$GITHUB_SHA"
+          else
+            gh release edit test-build --notes "$notes"
+          fi
+          # Keep only the newest Android files on the release.
+          for a in $(gh release view test-build --json assets --jq '.assets[].name' | grep -E '\.(apk|aab)$' || true); do
+            gh release delete-asset test-build "$a" -y
+          done
+          gh release upload test-build adadi-*.apk adadi-*.aab --clobber
+
+  ios:
         description: Also build an unsigned iOS .ipa
         type: boolean
         default: false
@@ -94,8 +192,7 @@ jobs:
       - name: Build unsigned IPA
         working-directory: app
         run: |
-          flutter pub get
-          flutter build ios --release --no-codesign
+          ../tool/store_build.sh global ios --no-codesign
           mkdir -p Payload
           cp -R build/ios/iphoneos/Runner.app Payload/
           version=$(grep '^version:' pubspec.yaml | cut -d' ' -f2 | cut -d+ -f1)

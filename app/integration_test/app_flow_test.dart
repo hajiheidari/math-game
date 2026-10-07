@@ -9,7 +9,9 @@ import 'package:integration_test/integration_test.dart';
 import 'package:numcross/app/app_prefs.dart';
 import 'package:numcross/app/crash_guard.dart';
 import 'package:numcross/game/game_screen.dart';
-import 'package:numcross/main.dart';
+import 'package:numcross/monetization/admob_ad_service.dart';
+import 'package:numcross/monetization/store_purchase_service.dart';
+import 'package:numcross/app_root.dart';
 import 'package:numcross/screens/menu_screen.dart';
 import 'package:numcross_engine/numcross_engine.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -138,7 +140,13 @@ void main() {
     }
 
     await tester.pumpWidget(
-      CrashOverlay(child: AdadiApp.fromPrefs(await AppPrefs.load())),
+      CrashOverlay(
+        child: AdadiApp.fromPrefs(
+          await AppPrefs.load(),
+          ads: AdMobAdService.new,
+          purchases: StorePurchaseService.new,
+        ),
+      ),
     );
     await settle(tester);
 

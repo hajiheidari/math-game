@@ -4,7 +4,7 @@
 set -u
 APK="$1"
 PKG=com.espadna.adadi
-OUT=smoke
+OUT=${SMOKE_OUT:-smoke}
 mkdir -p "$OUT"
 
 adb wait-for-device

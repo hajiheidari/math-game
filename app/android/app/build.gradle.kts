@@ -29,11 +29,24 @@ android {
         versionName = flutter.versionName
     }
 
+    // Release key (upload key for Google Play, signing key for Cafe Bazaar).
+    // CI writes it from the repository secrets (see docs/PUBLISH-FA.md); without
+    // it, release builds are signed with the debug key and only good for testing.
+    val releaseKeystore = System.getenv("ADADI_KEYSTORE")?.let { file(it) }?.takeIf { it.exists() }
+    signingConfigs {
+        if (releaseKeystore != null) {
+            create("release") {
+                storeFile = releaseKeystore
+                storePassword = System.getenv("ADADI_KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("ADADI_KEY_ALIAS")
+                keyPassword = System.getenv("ADADI_KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.getByName(if (releaseKeystore != null) "release" else "debug")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro",

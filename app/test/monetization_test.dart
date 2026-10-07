@@ -4,7 +4,7 @@ import 'package:numcross/app/app_controller.dart';
 import 'package:numcross/app/app_prefs.dart';
 import 'package:numcross/i18n/languages.dart';
 import 'package:numcross/i18n/locale_controller.dart';
-import 'package:numcross/main.dart';
+import 'package:numcross/app_root.dart';
 import 'package:numcross/monetization/ad_config.dart';
 import 'package:numcross/monetization/ad_service.dart';
 import 'package:numcross/monetization/monetization.dart';

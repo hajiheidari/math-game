@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
 
+import '../store.dart';
+
 /// AdMob ids. These are Google's public TEST ids — replace them with the
 /// real app/unit ids from the AdMob console before release (see
 /// docs/RELEASE_CHECKLIST.md). The app ids also live in AndroidManifest.xml
@@ -33,7 +35,10 @@ const String kRemoveAdsProductId = 'remove_ads';
 
 /// Privacy policy shown from Settings: docs/privacy/index.html, published by
 /// site/build.sh (Iranian mirror: adadi.espadna.ir/privacy/).
-const String kPrivacyPolicyUrl = 'https://adadi.espadna.com/privacy/';
+/// The Cafe Bazaar build opens the Persian section.
+const String kPrivacyPolicyUrl = kStore == StoreTarget.bazaar
+    ? 'https://adadi.espadna.com/privacy/#fa'
+    : 'https://adadi.espadna.com/privacy/';
 
 /// Whether an interstitial is due after a level win (pure rule, tested).
 bool interstitialDue({
