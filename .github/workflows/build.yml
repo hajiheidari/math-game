@@ -81,7 +81,7 @@ jobs:
           tool/store_build.sh global appbundle
           cp $out/bundle/release/app-release.aab "adadi-$version-play.aab"
           # Cafe Bazaar: one APK for phones (arm + arm64; no x86_64, ~34 MB).
-          tool/store_build.sh bazaar apk --target-platform android-arm,android-arm64
+          tool/store_build.sh bazaar apk --target-platform android-arm,android-arm64 -P adadi.abis=armeabi-v7a,arm64-v8a
           cp $out/flutter-apk/app-release.apk "adadi-$version-bazaar.apk"
       - uses: actions/upload-artifact@v4
         with:

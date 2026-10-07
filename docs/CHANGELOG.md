@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.10.5 — Bazaar APK: phone CPUs only, for real
+- The Bazaar APK still carried two tiny plugin libraries for x86_64 (without Flutter's engine), so an
+  x86_64 device would have crashed at launch. Gradle now keeps only arm/arm64 for that build
+  (`-P adadi.abis=...`).
+
 ## 0.10.4 — Persian first on the Iranian site
 - Web game on any `.ir` address (adadi.espadna.ir) starts in Persian when no language was chosen
   (`iranianSite()` in `app_root.dart`); espadna.com keeps following the browser.
