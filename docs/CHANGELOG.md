@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.10.2 — Bazaar billing on
+- Cafe Bazaar RSA key from Amir's panel (`bazaar_config.dart`): "Remove ads" can be bought through
+  Bazaar (product `remove_ads`). Release builds are signed with the Espadna key from CI secrets.
+- Bazaar APK only for phone CPUs (arm, arm64).
+
 ## 0.10.1 — Adivery ads on in the Cafe Bazaar build
 - Adivery app id and the rewarded / interstitial placements from Amir's panel
   (`bazaar_config.dart`). Bazaar billing still waits for the RSA key.

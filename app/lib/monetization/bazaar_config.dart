@@ -12,6 +12,7 @@ class BazaarConfig {
   static const adiveryInterstitial = 'c9de05cc-8f9b-4b0c-9cf2-4216b10e27e9';
 
   /// Cafe Bazaar developer panel → the app → In-app payments → RSA key.
-  /// A public key: fine to keep in the source.
-  static const rsaKey = '';
+  /// A public key: fine to keep in the source. Amir's panel, 2026-10-07.
+  static const rsaKey =
+      'MIHNMA0GCSqGSIb3DQEBAQUAA4G7ADCBtwKBrwDG9Yprgp9dC26lSL39HF7prVRKRmSbP+mrWC+2sM5VFxL+mkIM+VhrH4ozhOZHWIwVFYBINGMuqeVy7ZpFhkI/Ot/STyY2Rg34YLHrAKaEoPQudu/xalUjeB/Za8KNxwFrJiIjDiXnXIzvvCwXno2O63PYqJYmf7NEmL9YA56NvndofAKRkARkKWbHN+GObJTKI1zmXxzwEaeo+zah4PT7wghN036b1dFHQPS9afMCAwEAAQ==';
 }
