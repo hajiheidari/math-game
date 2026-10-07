@@ -8,3 +8,7 @@
 -keep class androidx.work.impl.WorkDatabase_Impl { *; }
 -keep class androidx.work.** { *; }
 -dontwarn androidx.work.**
+
+# Adivery (Cafe Bazaar build) ships optional mediation adapters for networks
+# we do not include (MBridge); R8 stops on their missing classes otherwise.
+-dontwarn com.mbridge.**
