@@ -1,0 +1,44 @@
+# Publishes adadi.espadna.com (web game, /privacy/) and espadna.com/adadi-app (landing pages) on every
+# push to master, like Tiaro's Worker. Built by site/build.sh, deployed with site/wrangler.jsonc.
+# Needs the repository secrets CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID (the same values as in
+# espadna-site). Never run `wrangler deploy` by hand.
+# The Iranian mirror (espadna.ir) copies it from the files.json manifests (espadna-site/mirror-ir).
+name: Site
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+concurrency:
+  group: site
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Landing pages are up to date
+        run: |
+          python3 site/landing_pages.py
+          git diff --exit-code -- site || { echo "Run python3 site/landing_pages.py and commit the result."; exit 1; }
+      - name: Build
+        run: bash site/build.sh
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "::warning::Site built but not deployed: add the secrets CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID (same values as espadna-site)."
+            exit 0
+          fi
+          npx --yes wrangler@4 deploy --config site/wrangler.jsonc

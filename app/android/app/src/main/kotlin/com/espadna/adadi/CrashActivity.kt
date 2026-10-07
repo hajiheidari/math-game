@@ -1,4 +1,4 @@
-package com.adadi.game
+package com.espadna.adadi
 
 import android.app.Activity
 import android.content.ClipData

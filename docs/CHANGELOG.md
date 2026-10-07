@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.9.0 — Website on espadna.com, Espadna bundle id
+- Bundle id / application id is now `com.espadna.adadi` (Espadna brand, like `com.espadna.tiaro`).
+- Website like Tiaro's (`site/README.md`): web game at adadi.espadna.com (`?lang=` picks the language),
+  privacy policy at /privacy/, landing pages at espadna.com/adadi-app (en, fa, ar) with screenshots and
+  an og image; deployed by `.github/workflows/site.yml`. `files.json` manifests for the espadna.ir mirror.
+  CanvasKit bundled so the web game works without Google's CDN.
+- In-app privacy link points to https://adadi.espadna.com/privacy/.
+
 ## 0.8.4 — Battery: stop per-frame redraws after sounds
 - audioplayers' default position updater schedules a callback every frame while a player is
   "playing"; low-latency players (our sound effects) never report completion, so after the first

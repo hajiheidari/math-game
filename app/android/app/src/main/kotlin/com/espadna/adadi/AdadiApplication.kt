@@ -1,4 +1,4 @@
-package com.adadi.game
+package com.espadna.adadi
 
 import android.app.Application
 import android.content.Context

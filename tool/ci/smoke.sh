@@ -3,7 +3,7 @@
 # screenshots + logcat into ./smoke/. Used by .github/workflows/emulator.yml.
 set -u
 APK="$1"
-PKG=com.adadi.game
+PKG=com.espadna.adadi
 OUT=smoke
 mkdir -p "$OUT"
 
@@ -29,7 +29,7 @@ done
 
 adb logcat -d -v time > "$OUT/logcat.txt"
 echo "===== crashes / errors ====="
-grep -nE "FATAL EXCEPTION|AndroidRuntime|E/flutter|F/libc|DEBUG   :|Adadi|com.adadi.game" "$OUT/logcat.txt" | head -300
+grep -nE "FATAL EXCEPTION|AndroidRuntime|E/flutter|F/libc|DEBUG   :|Adadi|com.espadna.adadi" "$OUT/logcat.txt" | head -300
 
 # Fail the job unless the app is still up and not on the crash screen.
 if tail -2 "$OUT/status.txt" | grep -qE "NOT RUNNING|CrashActivity"; then

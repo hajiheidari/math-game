@@ -31,9 +31,9 @@ class AdConfig {
 /// non-consumable in App Store Connect and Google Play Console.
 const String kRemoveAdsProductId = 'remove_ads';
 
-/// Privacy policy shown from Settings. TODO(release): host docs/privacy-policy.md
-/// and put its real URL here.
-const String kPrivacyPolicyUrl = 'https://example.com/numcross/privacy';
+/// Privacy policy shown from Settings: docs/privacy/index.html, published by
+/// site/build.sh (Iranian mirror: adadi.espadna.ir/privacy/).
+const String kPrivacyPolicyUrl = 'https://adadi.espadna.com/privacy/';
 
 /// Whether an interstitial is due after a level win (pure rule, tested).
 bool interstitialDue({

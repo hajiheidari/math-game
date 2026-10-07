@@ -5,9 +5,8 @@ Things that need your accounts or a Mac/Android SDK; the code is ready for them.
 ## Identity
 - [x] App name: **Adadi** (عددی). Before publishing, search both stores once more and consider a
       trademark check. Suggested store title: "Adadi: Math Crossword" (fa: «عددی: جدول ریاضی»).
-- [x] Application id / bundle id: `com.adadi.game`. It cannot change after the first upload; if you own a
-      domain and prefer e.g. `com.yourdomain.adadi`, change it now in `app/android/app/build.gradle.kts`
-      (`namespace`, `applicationId`, MainActivity package) and the Xcode project.
+- [x] Application id / bundle id: `com.espadna.adadi` (Espadna brand, like `com.espadna.tiaro`). Permanent
+      after the first store upload.
 - [x] App icon (`app/branding/`, regenerate with `node tool/make_icons.js`).
 - [ ] Store art: screenshots and feature graphic.
 

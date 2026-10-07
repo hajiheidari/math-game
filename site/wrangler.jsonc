@@ -1,0 +1,12 @@
+// Cloudflare Worker (static assets) for adadi.espadna.com and the espadna.com/adadi-app* route,
+// like Tiaro's crowns-app Worker. Deployed by .github/workflows/site.yml after site/build.sh;
+// never deploy by hand. The game is a single page: unknown paths get its index.html.
+{
+  "name": "adadi",
+  "compatibility_date": "2025-09-01",
+  "assets": { "directory": "../dist-site", "not_found_handling": "single-page-application" },
+  "routes": [
+    { "pattern": "adadi.espadna.com", "custom_domain": true },
+    { "pattern": "espadna.com/adadi-app*", "zone_name": "espadna.com" }
+  ]
+}

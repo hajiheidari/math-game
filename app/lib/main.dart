@@ -36,8 +36,12 @@ class AdadiApp extends StatelessWidget {
   factory AdadiApp.fromPrefs(AppPrefs prefs) {
     final device =
         WidgetsBinding.instance.platformDispatcher.locale.languageCode;
+    // Web links choose the language: adadi.espadna.com/?lang=fa (the
+    // espadna.com cards link that way). Otherwise saved choice, then device.
+    final urlLang = kIsWeb ? Uri.base.queryParameters['lang'] : null;
+    final fromUrl = kLanguages.any((l) => l.code == urlLang) ? urlLang : null;
     final locale = LocaleController(
-      initial: languageForCode(prefs.languageCode ?? device),
+      initial: languageForCode(fromUrl ?? prefs.languageCode ?? device),
       digitMode: prefs.digitMode,
     );
     locale.addListener(
