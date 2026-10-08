@@ -73,6 +73,9 @@ void main() {
       await tester.pump(const Duration(milliseconds: 300));
       expect(find.byKey(const ValueKey('result-primary')), findsOneWidget);
       expect(find.byIcon(Icons.star_rounded), findsNWidgets(3));
+      // A win invites the player to share it.
+      expect(find.byKey(const ValueKey('result-cheer')), findsOneWidget);
+      expect(find.byKey(const ValueKey('share-result')), findsOneWidget);
       expect(tester.takeException(), isNull);
 
       await tester.pumpWidget(const SizedBox());

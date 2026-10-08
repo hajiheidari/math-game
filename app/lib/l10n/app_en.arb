@@ -143,5 +143,12 @@
   "tutorialDone": "You're ready!",
   "tutorialDoneBody": "Rows read left to right, columns top to bottom. Stuck? Use a hint.",
   "startPlaying": "Start playing",
-  "skip": "Skip"
+  "skip": "Skip",
+  "shareResult": "Show your friends",
+  "shareBeatMe": "Can you beat me?",
+  "shareNoMistakes": "No mistakes",
+  "shareCopied": "Copied! Paste it anywhere.",
+  "@shareResult": {
+    "description": "Button on the win dialog that opens the share sheet (result card + text)."
+  }
 }

@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.10.7 — Share your win
+- The win dialog shows a fun line for the player ("You're today's smartest player 😎") and a
+  "Show your friends" button: a picture card (1080×1350) plus text on phones, text on the web
+  (browser share sheet, or copied). Lines in `lib/share/brag_lines.dart` (en/fa/ar/ur).
+- Easy and medium are never named in what is shared; hard and expert are.
+- Shared link: Cafe Bazaar page in the Bazaar build, adadi.espadna.ir from the Iranian site,
+  else adadi.espadna.com. New dependency: `share_plus`.
+
 ## 0.10.6 — Bazaar APK x86_64 libraries, fixed at packaging
 - 0.10.5's `ndk.abiFilters` was overridden by Flutter's Gradle plugin; the extra CPUs' libraries
   are now excluded when the APK is packaged (`packaging.jniLibs.excludes`).

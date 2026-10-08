@@ -244,4 +244,16 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get skip => 'Skip';
+
+  @override
+  String get shareResult => 'Show your friends';
+
+  @override
+  String get shareBeatMe => 'Can you beat me?';
+
+  @override
+  String get shareNoMistakes => 'No mistakes';
+
+  @override
+  String get shareCopied => 'Copied! Paste it anywhere.';
 }

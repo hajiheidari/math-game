@@ -10,6 +10,7 @@ import '../i18n/locale_controller.dart';
 import '../l10n/app_localizations.dart';
 import '../monetization/ad_config.dart';
 import '../monetization/monetization.dart';
+import '../share/share_result.dart';
 import 'game_controller.dart';
 import 'game_widgets.dart';
 
@@ -234,6 +235,9 @@ class _GameScreenState extends State<GameScreen> with WidgetsBindingObserver {
         streak: widget.isDaily
             ? widget.progress?.currentStreak(widget.date!)
             : null,
+        difficulty: widget.difficulty,
+        level: widget.level,
+        date: widget.date,
       ),
     );
     if (!mounted) return;
@@ -429,13 +433,32 @@ class _ResultDialog extends StatelessWidget {
   /// Offer "watch an ad for one more mistake" (lost levels only).
   final bool canBuyExtraLife;
 
+  /// What a win shares (see [ResultShare]).
+  final Difficulty difficulty;
+  final int level;
+  final DateTime? date;
+
   const _ResultDialog({
     required this.game,
     this.isDaily = false,
     this.streak,
     this.coinsEarned = 0,
     this.canBuyExtraLife = false,
+    required this.difficulty,
+    required this.level,
+    this.date,
   });
+
+  ResultShare get _share => ResultShare(
+    isDaily: isDaily,
+    date: date,
+    level: level,
+    difficulty: difficulty,
+    stars: game.stars,
+    elapsed: game.elapsed,
+    mistakes: game.mistakes,
+    streak: streak,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -526,6 +549,21 @@ class _ResultDialog extends StatelessWidget {
           const SizedBox(height: 12),
           Text('${t.time}: ${locale.n(formatClock(game.elapsed))}'),
           Text('${t.mistakesLabel}: ${locale.n(game.mistakes)}'),
+          if (won) ...[
+            const SizedBox(height: 16),
+            // A fun line that invites the player to share the win.
+            Text(
+              _share.cheer(locale.language.code),
+              key: const ValueKey('result-cheer'),
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                color: scheme.primary,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            const SizedBox(height: 8),
+            _ShareButton(result: _share),
+          ],
         ],
       ),
       actionsAlignment: MainAxisAlignment.spaceBetween,
@@ -551,6 +589,49 @@ class _ResultDialog extends StatelessWidget {
           ),
         ],
       ],
+    );
+  }
+}
+
+/// "Show your friends": opens the share sheet; says "Copied" when the text
+/// went to the clipboard instead (web without a share sheet).
+class _ShareButton extends StatefulWidget {
+  final ResultShare result;
+  const _ShareButton({required this.result});
+
+  @override
+  State<_ShareButton> createState() => _ShareButtonState();
+}
+
+class _ShareButtonState extends State<_ShareButton> {
+  bool _busy = false;
+  bool _copied = false;
+
+  Future<void> _share() async {
+    final box = context.findRenderObject() as RenderBox?;
+    final origin = box == null
+        ? null
+        : box.localToGlobal(Offset.zero) & box.size;
+    setState(() => _busy = true);
+    final outcome = await shareResult(context, widget.result, origin: origin);
+    if (!mounted) return;
+    setState(() {
+      _busy = false;
+      _copied = outcome == ShareOutcome.copied;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context);
+    return FilledButton.tonalIcon(
+      key: const ValueKey('share-result'),
+      onPressed: _busy ? null : _share,
+      icon: Icon(_copied ? Icons.check : Icons.share),
+      label: Text(
+        _copied ? t.shareCopied : t.shareResult,
+        textAlign: TextAlign.center,
+      ),
     );
   }
 }

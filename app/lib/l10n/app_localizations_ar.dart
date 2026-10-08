@@ -247,4 +247,16 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get skip => 'تخطٍّ';
+
+  @override
+  String get shareResult => 'أرِها لأصدقائك';
+
+  @override
+  String get shareBeatMe => 'هل تستطيع التفوق علي؟';
+
+  @override
+  String get shareNoMistakes => 'بلا أخطاء';
+
+  @override
+  String get shareCopied => 'تم النسخ! الصقه أينما تريد.';
 }

@@ -243,4 +243,16 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get skip => 'رد کردن';
+
+  @override
+  String get shareResult => 'به دوستانت نشان بده';
+
+  @override
+  String get shareBeatMe => 'تو می‌تونی بهتر حلش کنی؟';
+
+  @override
+  String get shareNoMistakes => 'بدون اشتباه';
+
+  @override
+  String get shareCopied => 'کپی شد! هر جا خواستی بفرست.';
 }

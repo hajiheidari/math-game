@@ -515,6 +515,30 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Skip'**
   String get skip;
+
+  /// Button on the win dialog that opens the share sheet (result card + text).
+  ///
+  /// In en, this message translates to:
+  /// **'Show your friends'**
+  String get shareResult;
+
+  /// No description provided for @shareBeatMe.
+  ///
+  /// In en, this message translates to:
+  /// **'Can you beat me?'**
+  String get shareBeatMe;
+
+  /// No description provided for @shareNoMistakes.
+  ///
+  /// In en, this message translates to:
+  /// **'No mistakes'**
+  String get shareNoMistakes;
+
+  /// No description provided for @shareCopied.
+  ///
+  /// In en, this message translates to:
+  /// **'Copied! Paste it anywhere.'**
+  String get shareCopied;
 }
 
 class _AppLocalizationsDelegate

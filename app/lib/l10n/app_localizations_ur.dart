@@ -243,4 +243,16 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get skip => 'چھوڑیں';
+
+  @override
+  String get shareResult => 'دوستوں کو دکھائیں';
+
+  @override
+  String get shareBeatMe => 'کیا آپ مجھ سے بہتر حل کر سکتے ہیں؟';
+
+  @override
+  String get shareNoMistakes => 'کوئی غلطی نہیں';
+
+  @override
+  String get shareCopied => 'کاپی ہو گیا! جہاں چاہیں بھیجیں۔';
 }
