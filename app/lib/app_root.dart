@@ -79,14 +79,14 @@ class AdadiApp extends StatelessWidget {
       ads: mobile ? ads?.call() : null,
       purchases: mobile ? purchases?.call() : null,
     );
-    return AdadiApp(
-      locale: locale,
-      app: AppController(
-        prefs,
-        monetization: monetization,
-        feedback: GameFeedback(prefs.shared, sound: AssetSoundPlayer()),
-      ),
+    final app = AppController(
+      prefs,
+      monetization: monetization,
+      feedback: GameFeedback(prefs.shared, sound: AssetSoundPlayer()),
     );
+    // Opened from a friend's link (?r=code): the friend gets a hint.
+    if (kIsWeb) app.hints.reportVisit(Uri.base);
+    return AdadiApp(locale: locale, app: app);
   }
 
   @override

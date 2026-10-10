@@ -259,4 +259,33 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get shareCopied => 'تم النسخ! الصقه أينما تريد.';
+
+  @override
+  String get inviteFriends => 'ادعُ أصدقاءك';
+
+  @override
+  String inviteMessage(String link) {
+    return 'العب عددي معي: كلمات متقاطعة من معادلات رياضية 🧮 $link';
+  }
+
+  @override
+  String get friendHintsTitle => 'تلميحات مجانية من أصدقائك';
+
+  @override
+  String friendHintsBody(String max) {
+    return 'شارك رابطك أو نتيجتك. كل صديق يفتحه يمنحك تلميحًا (حتى $max في اليوم).';
+  }
+
+  @override
+  String friendHintsToday(String count, String max) {
+    return 'اليوم: $count من $max';
+  }
+
+  @override
+  String friendHintsReceived(String count) {
+    return 'أرسل لك أصدقاؤك تلميحات: +$count';
+  }
+
+  @override
+  String get shareForHints => 'كل صديق يفتحه يمنحك تلميحًا.';
 }

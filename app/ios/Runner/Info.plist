@@ -3,17 +3,8 @@
 <plist version="1.0">
 <dict>
 	<key>GADApplicationIdentifier</key>
-	<!-- Google TEST id: replace before release (docs/RELEASE_CHECKLIST.md). -->
+	<!-- Google TEST id. Only for debug runs with the full pubspec: the App Store build has no AdMob (tool/store_build.sh). -->
 	<string>ca-app-pub-3940256099942544~1458002511</string>
-	<key>NSUserTrackingUsageDescription</key>
-	<string>This lets ads be more relevant to you. The game works the same either way.</string>
-	<key>SKAdNetworkItems</key>
-	<array>
-		<dict>
-			<key>SKAdNetworkIdentifier</key>
-			<string>cstr6suwn9.skadnetwork</string>
-		</dict>
-	</array>
 	<key>CFBundleLocalizations</key>
 	<array>
 		<string>en</string>

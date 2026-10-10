@@ -150,5 +150,43 @@
   "shareCopied": "Copied! Paste it anywhere.",
   "@shareResult": {
     "description": "Button on the win dialog that opens the share sheet (result card + text)."
-  }
+  },
+  "inviteFriends": "Invite friends",
+  "inviteMessage": "Play Adadi with me: a crossword made of math equations 🧮 {link}",
+  "@inviteMessage": {
+    "placeholders": {
+      "link": {
+        "type": "String"
+      }
+    }
+  },
+  "friendHintsTitle": "Free hints from friends",
+  "friendHintsBody": "Share your link or your result. Every friend who opens it gives you a hint (up to {max} a day).",
+  "@friendHintsBody": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "friendHintsToday": "Today: {count}/{max}",
+  "@friendHintsToday": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      },
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "friendHintsReceived": "Your friends sent you hints: +{count}",
+  "@friendHintsReceived": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  },
+  "shareForHints": "Every friend who opens it gives you a hint."
 }

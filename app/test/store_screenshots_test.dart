@@ -127,7 +127,7 @@ void main() {
 
       // 2. A hard level, half solved.
       final puzzle = generateLevel(band18plus, Difficulty.hard, 3);
-      await tester.tap(find.byKey(const ValueKey('difficulty-hard')));
+      await tapVisible(tester, const ValueKey('difficulty-hard'));
       await _settle(tester);
       await tester.tap(find.byKey(const ValueKey('level-3')));
       await _settle(tester);
@@ -153,7 +153,7 @@ void main() {
 
       // 5. The same game in Persian (also Arabic and Urdu).
       await launch('fa');
-      await tester.tap(find.byKey(const ValueKey('difficulty-medium')));
+      await tapVisible(tester, const ValueKey('difficulty-medium'));
       await _settle(tester);
       await tester.tap(find.byKey(const ValueKey('level-6')));
       await _settle(tester);

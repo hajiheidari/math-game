@@ -119,7 +119,7 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(MenuScreen), findsOneWidget);
 
-    await tester.tap(find.byKey(const ValueKey('difficulty-easy')));
+    await tapVisible(tester, const ValueKey('difficulty-easy'));
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('continue')));
     await tester.pump();

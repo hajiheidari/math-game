@@ -256,4 +256,33 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shareCopied => 'Copied! Paste it anywhere.';
+
+  @override
+  String get inviteFriends => 'Invite friends';
+
+  @override
+  String inviteMessage(String link) {
+    return 'Play Adadi with me: a crossword made of math equations 🧮 $link';
+  }
+
+  @override
+  String get friendHintsTitle => 'Free hints from friends';
+
+  @override
+  String friendHintsBody(String max) {
+    return 'Share your link or your result. Every friend who opens it gives you a hint (up to $max a day).';
+  }
+
+  @override
+  String friendHintsToday(String count, String max) {
+    return 'Today: $count/$max';
+  }
+
+  @override
+  String friendHintsReceived(String count) {
+    return 'Your friends sent you hints: +$count';
+  }
+
+  @override
+  String get shareForHints => 'Every friend who opens it gives you a hint.';
 }

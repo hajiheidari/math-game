@@ -9,6 +9,7 @@ import '../i18n/dates.dart';
 import '../i18n/labels.dart';
 import '../i18n/locale_controller.dart';
 import '../l10n/app_localizations.dart';
+import '../rewards/friend_hints_ui.dart';
 import 'calendar_screen.dart';
 import 'level_select_screen.dart';
 import 'settings_screen.dart';
@@ -22,13 +23,35 @@ class MenuScreen extends StatefulWidget {
   State<MenuScreen> createState() => _MenuScreenState();
 }
 
-class _MenuScreenState extends State<MenuScreen> {
+class _MenuScreenState extends State<MenuScreen> with WidgetsBindingObserver {
   Timer? _startAds;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _onboard());
+    WidgetsBinding.instance.addObserver(this);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _onboard();
+      _collectHints();
+    });
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) _collectHints();
+  }
+
+  /// Hints friends earned for the player since last time (FriendHints).
+  Future<void> _collectHints() async {
+    if (!mounted) return;
+    final n = await AppScope.of(context).hints.claim();
+    if (n == 0 || !mounted) return;
+    final t = AppLocalizations.of(context);
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(t.friendHintsReceived(LocaleScope.of(context).n(n))),
+      ),
+    );
   }
 
   /// First visit: the short tutorial. Then consent, ATT prompt and ads —
@@ -49,6 +72,7 @@ class _MenuScreenState extends State<MenuScreen> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _startAds?.cancel();
     super.dispose();
   }
@@ -78,6 +102,8 @@ class _MenuScreenState extends State<MenuScreen> {
             padding: const EdgeInsets.all(16),
             children: [
               _DailyCard(band: band),
+              const SizedBox(height: 16),
+              const FriendHintsCard(),
               const SizedBox(height: 24),
               Text(
                 t.menuLevels,

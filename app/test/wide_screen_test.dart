@@ -51,7 +51,7 @@ void main() {
         tester.getRect(find.byType(MenuScreen)).width,
         PhoneColumn.widthFor(size),
       );
-      await tester.tap(find.byKey(const ValueKey('difficulty-expert')));
+      await tapVisible(tester, const ValueKey('difficulty-expert'));
       await tester.pumpAndSettle();
       await tester.tap(find.byKey(const ValueKey('level-1')));
       await tester.pump();

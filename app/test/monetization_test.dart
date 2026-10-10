@@ -152,15 +152,15 @@ void main() {
   });
 
   group('coins', () {
-    test('start with 3, spend and earn', () async {
+    test('start with none (friends give hints), spend and earn', () async {
       final m = await newMoney(FakeAds());
       expect(m.coins, AdConfig.startingCoins);
-      for (var i = 0; i < 3; i++) {
-        expect(await m.spendCoin(), isTrue);
-      }
+      expect(m.coins, 0);
       expect(await m.spendCoin(), isFalse);
       await m.addCoins(2);
       expect(m.coins, 2);
+      expect(await m.spendCoin(), isTrue);
+      expect(m.coins, 1);
     });
   });
 
@@ -196,14 +196,16 @@ void main() {
 
   Future<void> openLevel(WidgetTester tester) async {
     await tester.pump(const Duration(seconds: 2));
-    await tester.tap(find.byKey(const ValueKey('difficulty-easy')));
+    await tapVisible(tester, const ValueKey('difficulty-easy'));
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('continue')));
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 500));
   }
 
-  testWidgets('out of coins: hint via rewarded ad', (tester) async {
+  testWidgets('out of hints: no ad, the friends dialog with invite', (
+    tester,
+  ) async {
     usePhone(tester);
     final ads = FakeAds();
     await tester.pumpWidget(await appWith(ads, {'band': '13-15', 'coins': 0}));
@@ -211,30 +213,10 @@ void main() {
 
     await tester.tap(find.byKey(const ValueKey('hint')));
     await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const ValueKey('watch-ad')));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 300));
-    expect(ads.rewardedShown, 1);
-    final blank = generateLevel(band13to15, Difficulty.easy, 1).blanks.first;
-    final cell = tester.widget(
-      find.byKey(ValueKey('cell-${blank.row}-${blank.col}')),
-    );
-    expect(
-      cell.runtimeType.toString(),
-      'CellFace',
-      reason: 'cell was filled by the hint',
-    );
-    await tester.pumpWidget(const SizedBox());
-  });
-
-  testWidgets('out of coins and no ad ready: friendly message', (tester) async {
-    usePhone(tester);
-    final ads = FakeAds()..ready = false;
-    await tester.pumpWidget(await appWith(ads, {'band': '13-15', 'coins': 0}));
-    await openLevel(tester);
-    await tester.tap(find.byKey(const ValueKey('hint')));
-    await tester.pump();
-    expect(find.byType(SnackBar), findsOneWidget);
+    expect(find.text('Free hints from friends'), findsOneWidget);
+    expect(find.byKey(const ValueKey('invite')), findsOneWidget);
+    expect(find.text('Today: 0/3'), findsOneWidget);
+    expect(ads.rewardedShown, 0);
     await tester.pumpWidget(const SizedBox());
   });
 

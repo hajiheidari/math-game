@@ -25,13 +25,13 @@ Adadi is a crossword made of numbers. Every row and every column is an equation:
 • Every puzzle has exactly one answer: no guessing, just arithmetic and logic
 • A new daily puzzle every day, with a streak calendar
 • Four difficulties: Easy, Medium, Hard and Expert
-• Hints when you get stuck
+• Stuck? Free hints from friends: every friend who opens your invite or your result gives you one (up to 3 a day)
 • Share your wins with friends: a picture card and a challenge
 • English, Arabic, Persian and Urdu, with Western or local digits
 • Plays well on iPhone and iPad, offline
 • No sign-up: your progress stays on your device
 
-Adadi is free with ads between levels, never in the middle of a puzzle. A one-time purchase removes ads for good.
+Adadi is free, with no ads and no purchases.
 
 **Keywords** (100): `math,puzzle,crossword,numbers,brain,logic,equation,arithmetic,daily,sums,mental math,teens`
 
@@ -43,17 +43,18 @@ Adadi is free with ads between levels, never in the middle of a puzzle. A one-ti
 
 **App Review notes:**
 No account is needed. On first launch the app asks for an age group (13+); choose "18+".
-Ads are shown by Google AdMob. "Remove ads" is a non-consumable in-app purchase, restorable from Settings.
+No ads and no in-app purchases. Hints: a player starts with none and gets one each time a friend
+opens a link they shared (Menu → Invite friends, or "Show your friends" after a win), up to 3 a day.
+The friend opens it in the web game (adadi.espadna.com); only random codes are sent to our server.
+
+## App Privacy
+No ads, no analytics, no tracking. The only data that leaves the device is for "hints from friends"
+(random invite codes, and a salted hash of the IP address kept for 2 days; see the privacy policy):
+- **Data Used to Track You:** none. Answer "No" to tracking.
+- **Identifiers → User ID** (the random invite code): purpose **App Functionality**; **not linked**
+  to the user's identity; **not used for tracking**.
+- Nothing else is collected.
 
 ## In-app purchase
-- Type: **Non-Consumable**, Product ID: **`remove_ads`**, Reference name: Remove ads
-- Display name: `Remove ads`; description: `Removes all ads between levels, forever.`
-- Price: $3.99 (same as Tiaro); review screenshot: the Settings screen.
-
-## App Privacy (data collected by Google AdMob)
-Following Google's guide for AdMob on the App Store:
-- **Identifiers → Device ID**: Third-party advertising, Analytics. Not linked to the user. **Used for tracking.**
-- **Usage Data → Product interaction, Advertising data**: Third-party advertising, Analytics. Not linked. Advertising data: used for tracking.
-- **Location → Coarse location** (from the IP address): Third-party advertising, Analytics. Not linked.
-- **Diagnostics → Crash data, Performance data, Other diagnostic data**: Analytics. Not linked.
-- Nothing else: the app has no accounts, no analytics of its own, no contacts, photos or precise location.
+None for now. If a "remove_ads" product was already created in App Store Connect, leave it unsubmitted
+(do not attach it to this version).

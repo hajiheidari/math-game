@@ -7,13 +7,13 @@ import 'package:flutter/services.dart';
 import 'package:numcross_engine/numcross_engine.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../app_root.dart' show iranianSite;
+import '../app/app_scope.dart';
 import '../game/game_controller.dart' show formatClock;
 import '../i18n/dates.dart';
 import '../i18n/labels.dart';
 import '../i18n/locale_controller.dart';
 import '../l10n/app_localizations.dart';
-import '../store.dart';
+import '../rewards/friend_hints.dart';
 import 'brag_lines.dart';
 import 'web_share.dart';
 
@@ -92,25 +92,22 @@ class ResultShare {
       : null;
 
   /// The text that goes with the picture (or alone on the web).
-  String text(AppLocalizations t, LocaleController locale, {Uri? page}) {
+  /// [link]: the player's link with their invite code (FriendHints.link).
+  String text(
+    AppLocalizations t,
+    LocaleController locale, {
+    required String link,
+  }) {
     final streakLine = streakText(t, locale);
     return [
       brag(locale.language.code),
       '${t.appTitle} · ${title(t, locale)}',
       '${'⭐' * stars}  ${stats(t, locale)}',
       if (streakLine != null) '🔥 $streakLine',
-      '${t.shareBeatMe} ${shareLink(page ?? Uri.base)}',
+      '${t.shareBeatMe} $link',
     ].join('\n');
   }
 }
-
-/// Where a friend can play: the Cafe Bazaar page in the Bazaar build, the
-/// Iranian copy of the web game on espadna.ir, else the web game.
-String shareLink(Uri page) => kStore == StoreTarget.bazaar
-    ? 'https://cafebazaar.ir/app/com.espadna.adadi'
-    : iranianSite(page)
-    ? 'https://adadi.espadna.ir'
-    : 'https://adadi.espadna.com';
 
 /// Emoji in the fun lines: the phone's own emoji font draws them; naming
 /// Noto's here also lets the test renderer (store screenshots) draw them.
@@ -123,7 +120,8 @@ const kEmojiFallback = [
 enum ShareOutcome { shared, copied, failed }
 
 /// Opens the share sheet: picture + text on phones; text on the web (the
-/// browser's share sheet, or the clipboard when it has none).
+/// browser's share sheet, or the clipboard when it has none). The link in it
+/// carries the player's invite code: friends who open it earn them hints.
 Future<ShareOutcome> shareResult(
   BuildContext context,
   ResultShare result, {
@@ -131,14 +129,26 @@ Future<ShareOutcome> shareResult(
 }) async {
   final t = AppLocalizations.of(context);
   final locale = LocaleScope.of(context);
-  final text = result.text(t, locale);
+  final link = AppScope.of(context).hints.link(Uri.base);
+  final text = result.text(t, locale, link: link);
+  final png = kIsWeb ? null : await renderResultCard(result, t, locale);
+  return _share(text, png: png, origin: origin);
+}
+
+/// "Invite friends": a short message with the player's link.
+Future<ShareOutcome> shareInvite(BuildContext context, {Rect? origin}) {
+  final t = AppLocalizations.of(context);
+  final link = AppScope.of(context).hints.link(Uri.base);
+  return _share(t.inviteMessage(link), origin: origin);
+}
+
+Future<ShareOutcome> _share(String text, {Uint8List? png, Rect? origin}) async {
   try {
     if (kIsWeb) {
       if (await webShareText(text)) return ShareOutcome.shared;
       await Clipboard.setData(ClipboardData(text: text));
       return ShareOutcome.copied;
     }
-    final png = await renderResultCard(result, t, locale);
     await SharePlus.instance.share(
       ShareParams(
         text: text,
@@ -333,7 +343,7 @@ Future<Uint8List?> renderResultCard(
   scale = 1;
 
   // Footer: the challenge and where to play.
-  final link = shareLink(Uri.base).replaceFirst('https://', '');
+  final link = FriendHints.siteFor(Uri.base).replaceFirst('https://', '');
   final footer = Paint()..color = Colors.white.withValues(alpha: 0.1);
   canvas.drawRRect(
     RRect.fromRectAndRadius(

@@ -8,8 +8,8 @@ import '../app/feedback.dart';
 import '../app/progress_store.dart';
 import '../i18n/locale_controller.dart';
 import '../l10n/app_localizations.dart';
-import '../monetization/ad_config.dart';
 import '../monetization/monetization.dart';
+import '../rewards/friend_hints_ui.dart';
 import '../share/share_result.dart';
 import 'game_controller.dart';
 import 'game_widgets.dart';
@@ -57,7 +57,6 @@ class _GameScreenState extends State<GameScreen> with WidgetsBindingObserver {
   bool _resultShown = false;
   int _savedRevision = 0;
   bool _extraLifeUsed = false;
-  int _coinsEarned = 0;
 
   /// Null when the screen runs without the app shell (tests): hints are free.
   Monetization? get _money => AppScope.maybeOf(context)?.monetization;
@@ -155,16 +154,10 @@ class _GameScreenState extends State<GameScreen> with WidgetsBindingObserver {
   }
 
   void _recordResult() {
-    _coinsEarned = 0;
     final won = _game.status == GameStatus.won;
-    final money = _money;
-    if (won && money != null) {
-      _coinsEarned = widget.isDaily
-          ? AdConfig.coinsPerDaily
-          : AdConfig.coinsPerLevel;
-      money.addCoins(_coinsEarned);
-      if (!widget.isDaily) money.onLevelWon();
-    }
+    // Wins earn no hints (friends do, see FriendHints); this only paces
+    // interstitials in the Bazaar build.
+    if (won && !widget.isDaily) _money?.onLevelWon();
     final progress = widget.progress;
     if (progress == null) return;
     final band = widget.band.id, d = widget.difficulty;
@@ -177,48 +170,24 @@ class _GameScreenState extends State<GameScreen> with WidgetsBindingObserver {
     }
   }
 
-  /// Hint: free without the app shell; otherwise a coin, or a rewarded ad
-  /// when out of coins.
+  /// Hint: free without the app shell; otherwise one from the bank. Out of
+  /// hints: collect any friends have earned, else explain how to get some.
   Future<void> _onHint() async {
-    final money = _money;
-    if (money == null) {
+    final app = AppScope.maybeOf(context);
+    if (app == null) {
       _game.hint();
       return;
     }
+    final money = app.monetization;
+    if (money.coins <= 0) await app.hints.claim(force: true);
+    if (!mounted) return;
     if (money.coins > 0) {
       if (_game.hint()) await money.spendCoin();
       return;
     }
-    final t = AppLocalizations.of(context);
-    if (!money.ads.rewardedReady) {
-      ScaffoldMessenger.of(context)
-        ..hideCurrentSnackBar()
-        ..showSnackBar(SnackBar(content: Text(t.noHintsAvailable)));
-      return;
-    }
-    final ok = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(t.hint),
-        content: Text(t.watchAdForHint),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: Text(MaterialLocalizations.of(context).cancelButtonLabel),
-          ),
-          FilledButton(
-            key: const ValueKey('watch-ad'),
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(t.watchAd),
-          ),
-        ],
-      ),
-    );
-    if (ok != true || !mounted) return;
     _game.pause();
-    final earned = await money.ads.showRewarded();
-    _game.resume();
-    if (earned) _game.hint();
+    await showFriendHintsDialog(context);
+    if (mounted) _game.resume();
   }
 
   Future<void> _showResult() async {
@@ -229,7 +198,6 @@ class _GameScreenState extends State<GameScreen> with WidgetsBindingObserver {
       builder: (_) => _ResultDialog(
         game: _game,
         isDaily: widget.isDaily,
-        coinsEarned: _coinsEarned,
         canBuyExtraLife:
             !_extraLifeUsed && (_money?.ads.rewardedReady ?? false),
         streak: widget.isDaily
@@ -428,7 +396,6 @@ class _ResultDialog extends StatelessWidget {
 
   /// Daily streak after this result (daily wins only).
   final int? streak;
-  final int coinsEarned;
 
   /// Offer "watch an ad for one more mistake" (lost levels only).
   final bool canBuyExtraLife;
@@ -442,7 +409,6 @@ class _ResultDialog extends StatelessWidget {
     required this.game,
     this.isDaily = false,
     this.streak,
-    this.coinsEarned = 0,
     this.canBuyExtraLife = false,
     required this.difficulty,
     required this.level,
@@ -522,21 +488,6 @@ class _ResultDialog extends StatelessWidget {
               ],
             ),
           ],
-          if (won && coinsEarned > 0) ...[
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(Icons.lightbulb, color: Color(0xFFF2B01E), size: 20),
-                const SizedBox(width: 4),
-                Text(
-                  '+${locale.n(coinsEarned)}',
-                  key: const ValueKey('coins-earned'),
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-              ],
-            ),
-          ],
           if (!won && canBuyExtraLife) ...[
             const SizedBox(height: 12),
             OutlinedButton.icon(
@@ -564,6 +515,13 @@ class _ResultDialog extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             _ShareButton(result: _share),
+            const SizedBox(height: 4),
+            Text(
+              t.shareForHints,
+              key: const ValueKey('share-for-hints'),
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.bodySmall,
+            ),
           ],
         ],
       ),

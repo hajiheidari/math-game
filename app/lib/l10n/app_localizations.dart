@@ -539,6 +539,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Copied! Paste it anywhere.'**
   String get shareCopied;
+
+  /// No description provided for @inviteFriends.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite friends'**
+  String get inviteFriends;
+
+  /// No description provided for @inviteMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Play Adadi with me: a crossword made of math equations 🧮 {link}'**
+  String inviteMessage(String link);
+
+  /// No description provided for @friendHintsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Free hints from friends'**
+  String get friendHintsTitle;
+
+  /// No description provided for @friendHintsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'Share your link or your result. Every friend who opens it gives you a hint (up to {max} a day).'**
+  String friendHintsBody(String max);
+
+  /// No description provided for @friendHintsToday.
+  ///
+  /// In en, this message translates to:
+  /// **'Today: {count}/{max}'**
+  String friendHintsToday(String count, String max);
+
+  /// No description provided for @friendHintsReceived.
+  ///
+  /// In en, this message translates to:
+  /// **'Your friends sent you hints: +{count}'**
+  String friendHintsReceived(String count);
+
+  /// No description provided for @shareForHints.
+  ///
+  /// In en, this message translates to:
+  /// **'Every friend who opens it gives you a hint.'**
+  String get shareForHints;
 }
 
 class _AppLocalizationsDelegate

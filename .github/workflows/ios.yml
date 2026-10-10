@@ -62,11 +62,11 @@ jobs:
           mkdir -p "$RUNNER_TEMP/keys"
           printf '%s\n' "$ASC_KEY_P8" > "$RUNNER_TEMP/keys/AuthKey_$ASC_KEY_ID.p8"
           echo "KEY_PATH=$RUNNER_TEMP/keys/AuthKey_$ASC_KEY_ID.p8" >> "$GITHUB_ENV"
-      - name: Flutter config (App Store build, without Cafe Bazaar's packages)
+      - name: Flutter config (App Store build, without ad and billing packages)
         working-directory: app
         run: |
           # Same as tool/store_build.sh global, kept for the Xcode steps below.
-          grep -vE '^  (adivery|flutter_poolakey):' pubspec.yaml > pubspec.tmp
+          grep -vE '^  (adivery|flutter_poolakey|google_mobile_ads|in_app_purchase|app_tracking_transparency):' pubspec.yaml > pubspec.tmp
           mv pubspec.tmp pubspec.yaml
           flutter pub get
           # Build number: pubspec's, plus this run's number, so a re-upload of

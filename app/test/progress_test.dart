@@ -203,7 +203,7 @@ void main() {
     );
 
     // Level 1: finish with hints.
-    await tester.tap(find.byKey(const ValueKey('difficulty-easy')));
+    await tapVisible(tester, const ValueKey('difficulty-easy'));
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('continue')));
     await tester.pump();
@@ -240,7 +240,7 @@ void main() {
     await tester.pumpWidget(const SizedBox());
     await tester.pumpWidget(await launchApp());
     await tester.pumpAndSettle();
-    await tester.tap(find.byKey(const ValueKey('difficulty-easy')));
+    await tapVisible(tester, const ValueKey('difficulty-easy'));
     await tester.pumpAndSettle();
     await tester.tap(find.byKey(const ValueKey('continue')));
     await tester.pump();

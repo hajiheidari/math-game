@@ -37,3 +37,12 @@ Future<AdadiApp> launchApp({String? lang, DateTime Function()? now}) async {
     app: AppController(prefs, now: now ?? DateTime.now),
   );
 }
+
+/// Scrolls [key] into view (the menu is longer than a phone screen), then
+/// taps it.
+Future<void> tapVisible(WidgetTester tester, Key key) async {
+  final target = find.byKey(key);
+  await tester.ensureVisible(target);
+  await tester.pump();
+  await tester.tap(target);
+}

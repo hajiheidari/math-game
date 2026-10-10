@@ -23,10 +23,9 @@ class AdConfig {
   /// ...and at most one every 3 completed levels after that.
   static const int levelsBetweenInterstitials = 3;
 
-  /// Coins a new player starts with, and what wins earn.
-  static const int startingCoins = 3;
-  static const int coinsPerLevel = 1;
-  static const int coinsPerDaily = 2;
+  /// Hints a new player starts with. Wins earn none: hints come from
+  /// friends only (lib/rewards/friend_hints.dart, Amir 2026-10-10).
+  static const int startingCoins = 0;
 }
 
 /// Store product id of the one-time "Remove ads" purchase. Create it as a

@@ -10,6 +10,7 @@ import '../i18n/locale_controller.dart';
 import '../l10n/app_localizations.dart';
 import '../monetization/ad_config.dart';
 import '../preview_screen.dart';
+import '../store.dart';
 import 'tutorial_screen.dart';
 
 import 'package:url_launcher/url_launcher.dart';
@@ -170,7 +171,11 @@ class _PurchaseAndPrivacySectionState
         final purchases = money.purchases;
         return Column(
           children: [
-            if (money.adsRemoved)
+            // No ads in the App Store / Play / web build for now: nothing
+            // to remove or restore there.
+            if (!kStore.hasAds)
+              const SizedBox.shrink()
+            else if (money.adsRemoved)
               ListTile(
                 key: const ValueKey('ads-removed'),
                 leading: const Icon(Icons.check_circle_outline),
@@ -193,12 +198,13 @@ class _PurchaseAndPrivacySectionState
                   }
                 },
               ),
-            ListTile(
-              key: const ValueKey('restore'),
-              leading: const Icon(Icons.restore),
-              title: Text(t.restorePurchases),
-              onTap: purchases.restore,
-            ),
+            if (kStore.hasAds)
+              ListTile(
+                key: const ValueKey('restore'),
+                leading: const Icon(Icons.restore),
+                title: Text(t.restorePurchases),
+                onTap: purchases.restore,
+              ),
             if (_privacyOptions)
               ListTile(
                 key: const ValueKey('privacy-choices'),

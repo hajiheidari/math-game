@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:numcross_engine/numcross_engine.dart';
 
 import '../monetization/monetization.dart';
+import '../rewards/friend_hints.dart';
 import 'app_prefs.dart';
 import 'feedback.dart';
 import 'progress_store.dart';
@@ -32,16 +33,22 @@ class AppController extends ChangeNotifier {
   /// Sound and vibration.
   final GameFeedback feedback;
 
+  /// Hints earned by friends opening the player's links.
+  late final FriendHints hints;
+
   AppController(
     this.prefs, {
     this.now = DateTime.now,
     Monetization? monetization,
     GameFeedback? feedback,
+    FriendHints? hints,
   }) : monetization = monetization ?? Monetization(prefs.shared),
        feedback = feedback ?? GameFeedback(prefs.shared),
        _blocked = prefs.isBlocked,
        _band = _bandOrNull(prefs.bandId),
-       progress = ProgressStore(prefs.shared);
+       progress = ProgressStore(prefs.shared) {
+    this.hints = hints ?? FriendHints(prefs.shared, this.monetization);
+  }
 
   static BandConfig? _bandOrNull(String? id) {
     if (id == null) return null;

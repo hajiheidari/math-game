@@ -255,4 +255,33 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get shareCopied => 'کپی شد! هر جا خواستی بفرست.';
+
+  @override
+  String get inviteFriends => 'دعوت از دوستان';
+
+  @override
+  String inviteMessage(String link) {
+    return 'بیا با هم عددی بازی کنیم: جدول متقاطع با معادله‌های ریاضی 🧮 $link';
+  }
+
+  @override
+  String get friendHintsTitle => 'راهنمای رایگان از دوستان';
+
+  @override
+  String friendHintsBody(String max) {
+    return 'لینکت یا نتیجه‌ات را برای دوستانت بفرست. هر دوستی که بازش کند، یک راهنما برایت می‌آورد (تا $max تا در روز).';
+  }
+
+  @override
+  String friendHintsToday(String count, String max) {
+    return 'امروز: $count از $max';
+  }
+
+  @override
+  String friendHintsReceived(String count) {
+    return 'دوستانت برایت راهنما فرستادند: +$count';
+  }
+
+  @override
+  String get shareForHints => 'هر دوستی که بازش کند، یک راهنما برایت می‌آورد.';
 }

@@ -7,9 +7,12 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:numcross/i18n/languages.dart';
 import 'package:numcross/i18n/locale_controller.dart';
 import 'package:numcross/l10n/app_localizations.dart';
+import 'package:numcross/rewards/friend_hints.dart';
 import 'package:numcross/share/brag_lines.dart';
 import 'package:numcross/share/share_result.dart';
 import 'package:numcross_engine/numcross_engine.dart';
+
+const link = 'https://adadi.espadna.com/?r=abcdefghjk';
 
 ResultShare result({
   Difficulty difficulty = Difficulty.hard,
@@ -48,7 +51,7 @@ void main() {
     final t = await strings('en');
     final en = localeFor('en');
     for (final d in Difficulty.values) {
-      final text = result(difficulty: d).text(t, en);
+      final text = result(difficulty: d).text(t, en, link: link);
       final shown = d == Difficulty.hard || d == Difficulty.expert;
       for (final name in ['Easy', 'Medium', 'Hard', 'Expert']) {
         expect(
@@ -74,25 +77,25 @@ void main() {
     final text = result(
       daily: true,
       mistakes: 0,
-    ).text(t, localeFor('en'), page: Uri.parse('https://adadi.espadna.com/'));
+    ).text(t, localeFor('en'), link: link);
     final lines = text.split('\n');
     expect(bragLinesFor('en').meFlawless, contains(lines[0]));
     expect(lines[1], 'Adadi · Daily Puzzle · 8 October 2026 · Hard');
     expect(lines[2], '⭐⭐  Time 2:31 · No mistakes');
     expect(lines[3], '🔥 5-day streak');
-    expect(lines[4], 'Can you beat me? https://adadi.espadna.com');
+    expect(lines[4], 'Can you beat me? $link');
   });
 
   test('Persian: Jalali date and Persian digits', () async {
     final t = await strings('fa');
-    final text = result(daily: true).text(t, localeFor('fa'));
+    final text = result(daily: true).text(t, localeFor('fa'), link: link);
     expect(text, contains('۱۶ مهر ۱۴۰۵'));
     expect(text, contains('۲:۳۱'));
   });
 
   test('the link follows the site: espadna.ir stays in Iran', () {
     expect(
-      shareLink(Uri.parse('https://adadi.espadna.com/')),
+      FriendHints.siteFor(Uri.parse('https://adadi.espadna.com/')),
       'https://adadi.espadna.com',
     );
   });

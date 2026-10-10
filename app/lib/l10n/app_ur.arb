@@ -72,5 +72,12 @@
   "shareResult": "دوستوں کو دکھائیں",
   "shareBeatMe": "کیا آپ مجھ سے بہتر حل کر سکتے ہیں؟",
   "shareNoMistakes": "کوئی غلطی نہیں",
-  "shareCopied": "کاپی ہو گیا! جہاں چاہیں بھیجیں۔"
+  "shareCopied": "کاپی ہو گیا! جہاں چاہیں بھیجیں۔",
+  "inviteFriends": "دوستوں کو دعوت دیں",
+  "inviteMessage": "میرے ساتھ عددی کھیلیں: ریاضی کی مساواتوں سے بنی کراس ورڈ 🧮 {link}",
+  "friendHintsTitle": "دوستوں سے مفت اشارے",
+  "friendHintsBody": "اپنا لنک یا نتیجہ شیئر کریں۔ جو بھی دوست اسے کھولے، آپ کو ایک اشارہ ملے گا (دن میں {max} تک)۔",
+  "friendHintsToday": "آج: {max} میں سے {count}",
+  "friendHintsReceived": "آپ کے دوستوں نے اشارے بھیجے: +{count}",
+  "shareForHints": "جو دوست اسے کھولے گا، آپ کو ایک اشارہ ملے گا۔"
 }

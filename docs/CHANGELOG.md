@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.11.0 — No ads (App Store / Play / web); hints from friends
+- App Store, Google Play and web: no ads and no purchase for now (Amir, 2026-10-10).
+  `lib/main.dart` starts without ad/billing services; `tool/store_build.sh global` and the iOS
+  workflow leave out google_mobile_ads, in_app_purchase and app_tracking_transparency; the ATT
+  text and SKAdNetwork list are gone from Info.plist; Settings hides Remove ads / Restore
+  (`StoreTarget.hasAds`). Cafe Bazaar keeps Adivery and "Remove ads".
+- Hints start at 0 and wins no longer earn any. A hint arrives when a friend opens a link the
+  player shared (Menu → "Free hints from friends" → Invite, or "Show your friends" after a
+  win), at most 3 a day (`lib/rewards/friend_hints.dart`). Out of hints, the hint button
+  explains this instead of offering an ad (all builds).
+- Repeats are caught server-side (`site/worker.js`, Durable Object per player): one friend counts
+  once a day, by device code and by a salted IP hash (kept 2 days); the player's own IP is
+  excluded. Links carry a public code derived from a secret that only the app knows.
+- Privacy policy, App Store texts and answers, landing FAQ and screenshots updated.
+
 ## 0.10.8 — App Store (iPhone + iPad)
 - `.github/workflows/ios.yml`: builds the App Store version, signs it with Apple's cloud-managed
   certificate and uploads it to App Store Connect / TestFlight (secrets in docs/PUBLISH-FA.md, step 4).
