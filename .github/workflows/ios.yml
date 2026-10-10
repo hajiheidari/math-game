@@ -72,7 +72,7 @@ jobs:
           # Build number: pubspec's, plus this run's number, so a re-upload of
           # the same version is accepted (App Store Connect wants a new one).
           build=$(grep '^version:' pubspec.yaml | cut -d+ -f2)
-          flutter build ios --release --config-only -t lib/main.dart \
+          flutter build ios --release --config-only --no-codesign -t lib/main.dart \
             --dart-define=STORE=global --build-number="$build.$GITHUB_RUN_NUMBER"
           (cd ios && pod install)
       - name: Archive
