@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.10.8 — App Store (iPhone + iPad)
+- `.github/workflows/ios.yml`: builds the App Store version, signs it with Apple's cloud-managed
+  certificate and uploads it to App Store Connect / TestFlight (secrets in docs/PUBLISH-FA.md, step 4).
+- iPad and other big screens: the game column grows with the screen height (560–820 px; about 760
+  on an iPad in portrait) instead of a fixed 560.
+- `ITSAppUsesNonExemptEncryption = false` (no export-compliance question on every upload).
+- App Store texts and answers in `docs/store/appstore-listing.md`; iPhone 6.9" and iPad 13"
+  screenshots in `docs/store/appstore/`, rendered by `test/store_screenshots_test.dart`.
+- Emoji in the win line and on the share card also draw with Noto's font (`kEmojiFallback`).
+
 ## 0.10.7 — Share your win
 - The win dialog shows a fun line for the player ("You're today's smartest player 😎") and a
   "Show your friends" button: a picture card (1080×1350) plus text on phones, text on the web

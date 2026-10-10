@@ -134,12 +134,19 @@ class PhoneColumn extends StatelessWidget {
   final Widget child;
   const PhoneColumn({super.key, required this.child});
 
-  static const maxWidth = 560.0;
+  /// Column width: grows with the screen's height (so the board and the
+  /// tiles still fit) between [minWidth] and [maxWidth]: about 760 on an iPad
+  /// in portrait, 590 on a 1080p monitor.
+  static const minWidth = 560.0;
+  static const maxWidth = 820.0;
+  static double widthFor(Size screen) =>
+      (screen.height * 0.55).clamp(minWidth, maxWidth).roundToDouble();
 
   @override
   Widget build(BuildContext context) {
     final media = MediaQuery.of(context);
-    if (media.size.width <= maxWidth) return child;
+    final width = widthFor(media.size);
+    if (media.size.width <= width) return child;
     final scheme = Theme.of(context).colorScheme;
     return ColoredBox(
       color: scheme.surfaceContainerHighest,
@@ -154,9 +161,9 @@ class PhoneColumn extends StatelessWidget {
             ],
           ),
           child: SizedBox(
-            width: maxWidth,
+            width: width,
             child: MediaQuery(
-              data: media.copyWith(size: Size(maxWidth, media.size.height)),
+              data: media.copyWith(size: Size(width, media.size.height)),
               child: ClipRect(child: child),
             ),
           ),

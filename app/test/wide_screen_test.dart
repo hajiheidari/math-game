@@ -17,7 +17,7 @@ void main() {
       await tester.pumpWidget(await launchApp());
       await tester.pumpAndSettle();
       final menu = tester.getRect(find.byType(MenuScreen));
-      expect(menu.width, PhoneColumn.maxWidth);
+      expect(menu.width, PhoneColumn.widthFor(const Size(1920, 1080)));
       expect(menu.center.dx, 960); // centered
       expect(tester.takeException(), isNull);
 
@@ -30,6 +30,33 @@ void main() {
         scrollable: find.byType(Scrollable).first,
       );
       expect(find.text('espadna.support@gmail.com'), findsOneWidget);
+      expect(tester.takeException(), isNull);
+      await tester.pumpWidget(const SizedBox());
+    });
+  }
+
+  // iPad 13" in both orientations: a wider column, and the biggest board
+  // (expert) still fits without overflowing.
+  for (final size in [const Size(1032, 1376), const Size(1376, 1032)]) {
+    testWidgets('iPad ${size.width.toInt()}x${size.height.toInt()}', (
+      tester,
+    ) async {
+      tester.view.physicalSize = size * 2;
+      tester.view.devicePixelRatio = 2;
+      addTearDown(tester.view.reset);
+      mockStorage({'band': '18+', 'language': 'en'});
+      await tester.pumpWidget(await launchApp());
+      await tester.pumpAndSettle();
+      expect(
+        tester.getRect(find.byType(MenuScreen)).width,
+        PhoneColumn.widthFor(size),
+      );
+      await tester.tap(find.byKey(const ValueKey('difficulty-expert')));
+      await tester.pumpAndSettle();
+      await tester.tap(find.byKey(const ValueKey('level-1')));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 500));
+      expect(find.byKey(const ValueKey('tile-0')), findsOneWidget);
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());
     });

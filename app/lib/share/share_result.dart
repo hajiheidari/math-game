@@ -112,6 +112,14 @@ String shareLink(Uri page) => kStore == StoreTarget.bazaar
     ? 'https://adadi.espadna.ir'
     : 'https://adadi.espadna.com';
 
+/// Emoji in the fun lines: the phone's own emoji font draws them; naming
+/// Noto's here also lets the test renderer (store screenshots) draw them.
+const kEmojiFallback = [
+  'Apple Color Emoji',
+  'Noto Color Emoji',
+  'NotoColorEmoji',
+];
+
 enum ShareOutcome { shared, copied, failed }
 
 /// Opens the share sheet: picture + text on phones; text on the web (the
@@ -217,6 +225,7 @@ Future<Uint8List?> renderResultCard(
           fontWeight: weight,
           color: color,
           height: lang.lineHeight ?? 1.3,
+          fontFamilyFallback: kEmojiFallback,
         ),
       ),
       textAlign: TextAlign.center,

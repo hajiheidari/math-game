@@ -1,0 +1,128 @@
+# iOS release: builds the App Store version (iPhone + iPad), signs it with
+# Apple's cloud-managed certificate and uploads it to App Store Connect, where
+# it shows up under TestFlight and can be submitted for review. No Mac needed.
+#
+# Run: Actions → iOS (App Store) → Run workflow.
+#
+# Needs these repository secrets (docs/PUBLISH-FA.md, step 4):
+#   APPLE_TEAM_ID   Team ID (developer.apple.com → Account → Membership)
+#   ASC_KEY_ID      App Store Connect API key id (role: Admin)
+#   ASC_ISSUER_ID   the keys page's Issuer ID
+#   ASC_KEY_P8      the downloaded AuthKey_XXXX.p8, whole text
+# and the app record com.espadna.adadi in App Store Connect.
+name: iOS (App Store)
+
+on:
+  workflow_dispatch:
+    inputs:
+      upload:
+        description: Upload to App Store Connect (off = only build and sign)
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ios-release
+  cancel-in-progress: false
+
+jobs:
+  appstore:
+    runs-on: macos-latest
+    timeout-minutes: 60
+    env:
+      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+      ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+      ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+    steps:
+      - name: Secrets present
+        run: |
+          missing=""
+          for v in APPLE_TEAM_ID ASC_KEY_ID ASC_ISSUER_ID ASC_KEY_P8; do
+            [ -n "${!v}" ] || missing="$missing $v"
+          done
+          # Without them the build still runs up to the archive (a check
+          # that it compiles), then stops before signing.
+          if [ -n "$missing" ]; then
+            echo "::warning::Missing repository secrets:$missing (see docs/PUBLISH-FA.md)"
+            echo "HAVE_SECRETS=false" >> "$GITHUB_ENV"
+          else
+            echo "HAVE_SECRETS=true" >> "$GITHUB_ENV"
+          fi
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: API key file
+        if: env.HAVE_SECRETS == 'true'
+        run: |
+          mkdir -p "$RUNNER_TEMP/keys"
+          printf '%s\n' "$ASC_KEY_P8" > "$RUNNER_TEMP/keys/AuthKey_$ASC_KEY_ID.p8"
+          echo "KEY_PATH=$RUNNER_TEMP/keys/AuthKey_$ASC_KEY_ID.p8" >> "$GITHUB_ENV"
+      - name: Flutter config (App Store build, without Cafe Bazaar's packages)
+        working-directory: app
+        run: |
+          # Same as tool/store_build.sh global, kept for the Xcode steps below.
+          grep -vE '^  (adivery|flutter_poolakey):' pubspec.yaml > pubspec.tmp
+          mv pubspec.tmp pubspec.yaml
+          flutter pub get
+          # Build number: pubspec's, plus this run's number, so a re-upload of
+          # the same version is accepted (App Store Connect wants a new one).
+          build=$(grep '^version:' pubspec.yaml | cut -d+ -f2)
+          flutter build ios --release --config-only -t lib/main.dart \
+            --dart-define=STORE=global --build-number="$build.$GITHUB_RUN_NUMBER"
+          (cd ios && pod install)
+      - name: Archive
+        working-directory: app
+        run: |
+          # Unsigned archive; the export below signs it with Apple's
+          # cloud-managed distribution certificate (no certificate files here).
+          xcodebuild -workspace ios/Runner.xcworkspace -scheme Runner \
+            -configuration Release -destination 'generic/platform=iOS' \
+            -archivePath "$RUNNER_TEMP/Runner.xcarchive" \
+            CODE_SIGNING_ALLOWED=NO archive | tail -40
+          test -d "$RUNNER_TEMP/Runner.xcarchive"
+      - name: Sign (and upload)
+        working-directory: app
+        run: |
+          if [ "$HAVE_SECRETS" != true ]; then
+            echo "::error::Archive OK; signing needs the four secrets (docs/PUBLISH-FA.md, step 4)."
+            exit 1
+          fi
+          destination=export
+          [ "${{ inputs.upload }}" = true ] && destination=upload
+          cat > "$RUNNER_TEMP/ExportOptions.plist" <<EOF
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>destination</key><string>$destination</string>
+            <key>teamID</key><string>$APPLE_TEAM_ID</string>
+            <key>signingStyle</key><string>automatic</string>
+            <key>uploadSymbols</key><true/>
+            <key>manageAppVersionAndBuildNumber</key><false/>
+          </dict>
+          </plist>
+          EOF
+          xcodebuild -exportArchive \
+            -archivePath "$RUNNER_TEMP/Runner.xcarchive" \
+            -exportOptionsPlist "$RUNNER_TEMP/ExportOptions.plist" \
+            -exportPath "$RUNNER_TEMP/export" \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$KEY_PATH" \
+            -authenticationKeyID "$ASC_KEY_ID" \
+            -authenticationKeyIssuerID "$ASC_ISSUER_ID"
+          ls -la "$RUNNER_TEMP/export" || true
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ios-export
+          path: ${{ runner.temp }}/export
+          if-no-files-found: ignore
+      - name: Remove the key
+        if: always()
+        run: rm -rf "$RUNNER_TEMP/keys"

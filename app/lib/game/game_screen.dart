@@ -559,6 +559,7 @@ class _ResultDialog extends StatelessWidget {
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 color: scheme.primary,
                 fontWeight: FontWeight.w700,
+                fontFamilyFallback: kEmojiFallback,
               ),
             ),
             const SizedBox(height: 8),

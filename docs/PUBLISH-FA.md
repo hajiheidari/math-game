@@ -89,28 +89,36 @@
 
 ---
 
-## قدم ۴: اپ استور (آیفون)
+## قدم ۴: اپ استور (آیفون و آیپد)
 
-**پیش‌نیاز مهم:** ثبت‌نام در Apple Developer Program (سالی ۹۹ دلار) از ایران ممکن نیست؛ اپل حساب ساکنان
-کشورهای تحریم‌شده را نمی‌پذیرد. حساب باید به نام شخص یا شرکتی در کشوری باشد که اپل در آن فعال است (برای شرکت،
-شماره‌ی D-U-N-S هم لازم است). این همان تصمیمی است که برای تیارو هم هنوز باز است؛ هر راهی برای تیارو انتخاب شد،
-برای عددی هم همان کار می‌کند.
+برای iOS فایلی مثل APK نیست که دستی آپلود شود: نسخه باید با گواهی حساب اپل شما امضا شود. این کار را GitHub
+روی مک ابری خودش انجام می‌دهد و نسخه را **مستقیم به App Store Connect شما می‌فرستد** (بدون مک). فقط یک بار باید
+این کارها را بکنید:
 
-بعد از داشتن حساب:
-
-1. **Certificates, Identifiers & Profiles** ← Identifiers ← App ID تازه: `com.espadna.adadi`.
-2. **App Store Connect** ← My Apps ← «+» ← New App: نام «Adadi: Math Crossword»، زبان اصلی English،
-   Bundle ID همان بالا، SKU مثلاً `adadi`.
-3. **محصول درون‌برنامه‌ای:** In-App Purchases ← Non-Consumable، Product ID **`remove_ads`**، قیمت
-   (برای تیارو ۳٫۹۹ دلار بود).
-4. **AdMob:** در پنل AdMob یک اپ iOS برای Adadi بسازید با دو واحد تبلیغ (Rewarded و Interstitial) و
-   شناسه‌ها را برایم بفرستید (برای اندروید/گوگل‌پلی هم همین کار با یک اپ Android).
-5. **کلید API اپ استور** (برای اینکه GitHub خودش بسازد و بفرستد، بدون مک): App Store Connect ← Users and Access ←
-   Integrations ← App Store Connect API ← کلید تازه با نقش App Manager. سه چیز را به‌صورت secret در مخزن
-   math-game بگذارید و خبر بدهید: `ASC_KEY_ID`، `ASC_ISSUER_ID`، `ASC_KEY_P8` (متن فایل .p8).
-   من ساخت امضاشده و ارسال به **TestFlight** را روی GitHub راه می‌اندازم.
-6. در App Store Connect: پرسش‌نامه‌ی **App Privacy** (Identifiers و Usage Data برای تبلیغات)، رده‌ی سنی
-   **۱۲+/۱۳+**، لینک حریم خصوصی `https://adadi.espadna.com/privacy/`، اسکرین‌شات‌ها (آماده می‌کنم) و ارسال برای بررسی.
+1. **Identifier:** developer.apple.com ← Certificates, Identifiers & Profiles ← Identifiers ← «+» ← App IDs ← App ←
+   Description: `Adadi`، Bundle ID (Explicit): **`com.espadna.adadi`** ← Continue ← Register.
+2. **ساخت برنامه:** appstoreconnect.apple.com ← Apps ← «+» ← New App:
+   Platforms: **iOS**، Name: **Adadi: Math Crossword**، Primary Language: English (U.S.)،
+   Bundle ID: همان بالا، SKU: `adadi`، User Access: Full Access ← Create.
+3. **کلید API:** App Store Connect ← Users and Access ← Integrations ← App Store Connect API ← Team Keys ← «+»:
+   Name: `GitHub`، Access: **Admin** ← Generate. فایل `AuthKey_XXXX.p8` را دانلود کنید (فقط یک بار می‌شود)؛
+   **Key ID** کنار کلید و **Issuer ID** بالای همان صفحه است.
+4. **Team ID:** developer.apple.com ← Account ← Membership details ← Team ID (۱۰ حرف و عدد).
+5. **چهار secret در GitHub:** مخزن math-game ← Settings ← Secrets and variables ← Actions ← New repository secret:
+   - `APPLE_TEAM_ID`: همان Team ID
+   - `ASC_KEY_ID`: Key ID
+   - `ASC_ISSUER_ID`: Issuer ID
+   - `ASC_KEY_P8`: فایل .p8 را با Notepad/TextEdit باز کنید و **کل متن** (با خط‌های BEGIN و END) را بچسبانید.
+6. به من خبر بدهید. من نسخه را می‌سازم (Actions ← **iOS (App Store)**) و حدود ۱۵ تا ۳۰ دقیقه بعد در
+   App Store Connect ← برنامه ← **TestFlight** دیده می‌شود. با اپ TestFlight روی آیفون/آیپد خودتان نصبش کنید.
+7. **صفحه‌ی برنامه:** متن‌ها، کلمه‌های کلیدی، رده‌ی سنی، پاسخ‌های App Privacy و توضیح برای بازبین در
+   `docs/store/appstore-listing.md` آماده است؛ اسکرین‌شات‌های آیفون و آیپد در `docs/store/appstore/`.
+8. **خرید درون‌برنامه‌ای:** برنامه ← Monetization ← In-App Purchases ← «+» ← Non-Consumable،
+   Product ID: **`remove_ads`**، قیمت (پیشنهاد: ۳٫۹۹ دلار مثل تیارو).
+9. **پیش از ارسال برای بررسی:** در AdMob یک اپ iOS برای Adadi با دو واحد تبلیغ (Rewarded و Interstitial) بسازید و
+   شناسه‌ها را بفرستید؛ الان شناسه‌های آزمایشی گوگل داخل برنامه است (برای TestFlight اشکالی ندارد، ولی نسخه‌ی
+   فروشگاه باید شناسه‌ی واقعی داشته باشد).
+10. نسخه را در صفحه‌ی App Store انتخاب کنید (Build ← +) و **Add for Review** ← Submit.
 
 ---
 
