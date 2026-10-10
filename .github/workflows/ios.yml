@@ -74,7 +74,6 @@ jobs:
           build=$(grep '^version:' pubspec.yaml | cut -d+ -f2)
           flutter build ios --release --config-only --no-codesign -t lib/main.dart \
             --dart-define=STORE=global --build-number="$build.$GITHUB_RUN_NUMBER"
-          (cd ios && pod install)
       - name: Archive
         working-directory: app
         run: |
