@@ -99,10 +99,17 @@ Puzzle currentPuzzle(WidgetTester tester) {
 }
 
 /// Places the correct tile on [cells] (default: every blank).
-Future<void> solve(WidgetTester tester, {int leaveOpen = 0}) async {
+/// Fills the blanks in order: all but the last [leaveOpen], or with
+/// [lastOnly] just the last one (the others are already filled).
+Future<void> solve(
+  WidgetTester tester, {
+  int leaveOpen = 0,
+  bool lastOnly = false,
+}) async {
   final p = currentPuzzle(tester);
   final cells = p.blanks.toList();
-  for (final cell in cells.take(cells.length - leaveOpen)) {
+  final todo = lastOnly ? [cells.last] : cells.take(cells.length - leaveOpen);
+  for (final cell in todo) {
     final value = p.solution[cell];
     // Two tiles can share a value: use one that is still in the bank.
     final i = [
@@ -201,7 +208,12 @@ void main() {
     expect(key('result-primary'), findsOneWidget);
     await shot(tester, 'level-1-won');
 
-    // Level 2: solve all but one cell, then use a hint for the last.
+    // Win dialog: the share button and the hint note.
+    expect(key('share-result'), findsOneWidget);
+    expect(key('share-for-hints'), findsOneWidget);
+
+    // Level 2: solve all but one cell; no hints yet (they come from
+    // friends), so the hint button explains that; then the last cell.
     await tap(tester, key('result-primary'));
     await settle(tester);
     expect(find.byType(GameScreen), findsOneWidget);
@@ -209,7 +221,13 @@ void main() {
     await shot(tester, 'level-2-before-hint');
     await tap(tester, key('hint'));
     await settle(tester, 1500);
-    await shot(tester, 'level-2-after-hint');
+    await shot(tester, 'level-2-friend-hints');
+    expect(key('invite'), findsOneWidget);
+    expect(key('friend-hints-today'), findsOneWidget);
+    await tester.tap(find.byType(TextButton).last);
+    await settle(tester);
+    await solve(tester, lastOnly: true);
+    await settle(tester, 1500);
     expect(key('result-primary'), findsOneWidget);
     expectNoErrors(tester, 'levels');
 
