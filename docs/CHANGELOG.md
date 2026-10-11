@@ -14,6 +14,7 @@
   once a day, by device code and by a salted IP hash (kept 2 days); the player's own IP is
   excluded. Links carry a public code derived from a secret that only the app knows.
 - Privacy policy, App Store texts and answers, landing FAQ and screenshots updated.
+- Android: INTERNET permission declared in the manifest (it used to come only from the ad SDK).
 
 ## 0.10.8 — App Store (iPhone + iPad)
 - `.github/workflows/ios.yml`: builds the App Store version, signs it with Apple's cloud-managed
