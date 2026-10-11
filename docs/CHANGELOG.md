@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.13.0 — Turquoise theme
+- The whole app is built on the turquoise of the Easy box (Amir's choice): turquoise buttons and
+  title, turquoise-to-teal gradient on the daily card, the share button and the share card, a light
+  mint background; the puzzle uses a calm turquoise too. Difficulties keep their own colors.
+
 ## 0.12.1 — Calm game, clearer result
 - Inside a puzzle the colors are calm navy/blue again (`Palette.calm`); the menu stays warm.
 - Result dialog: bold title, stars, time and mistakes as two tiles, the fun line on a soft

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:numcross_engine/numcross_engine.dart';
 
-/// Adadi's warm colors (Amir, 2026-10-11: "warmer, more inviting, not busy").
-/// The Material color scheme is built from [tangerine]; the rest are accents.
+/// Adadi's colors: turquoise brand on a light mint background (Amir,
+/// 2026-10-11); the difficulties keep their own colors as accents.
 class Palette {
   /// The brand: turquoise (Amir, 2026-10-11: "the Easy box's teal, it
   /// looks more professional").
@@ -30,8 +30,8 @@ class Palette {
     Difficulty.expert => violet,
   };
 
-  /// Inside a puzzle: calm navy and blue (Amir, 2026-10-11: red/orange in
-  /// the game felt stressful). The menu keeps the warm colors.
+  /// Inside a puzzle: a calm, deeper turquoise (Amir, 2026-10-11: red/orange
+  /// in the game felt stressful).
   static const navy = Color(0xFF0F766E);
 
   static ThemeData calm(ThemeData base) {
