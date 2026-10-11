@@ -137,38 +137,53 @@ def app_info_localization():
 
 @step('category: Games > Puzzle, Educational')
 def categories():
-    call('PATCH', f'/v1/appInfos/{INFO}', {'data': {'type': 'appInfos', 'id': INFO, 'relationships': {
-        'primaryCategory': rel('appCategories', CFG['primaryCategory']),
-        'primarySubcategoryOne': rel('appCategories', CFG['primarySubcategoryOne']),
-        'primarySubcategoryTwo': rel('appCategories', CFG['primarySubcategoryTwo']),
-    }}})
+    # Subcategory ids differ from what one would guess: look them up.
+    subs = call('GET', f"/v1/appCategories/{CFG['primaryCategory']}/subcategories",
+                params={'limit': 200})['data']
+    ids = [c['id'] for c in subs]
+    want = [i for i in (CFG['primarySubcategoryOne'], CFG['primarySubcategoryTwo']) if i in ids]
+    if not want:
+        raise ApiError(f'subcategories available: {ids}')
+    rels = {'primaryCategory': rel('appCategories', CFG['primaryCategory']),
+            'primarySubcategoryOne': rel('appCategories', want[0])}
+    if len(want) > 1:
+        rels['primarySubcategoryTwo'] = rel('appCategories', want[1])
+    call('PATCH', f'/v1/appInfos/{INFO}', {'data': {'type': 'appInfos', 'id': INFO,
+                                                    'relationships': rels}})
+    return ', '.join(want)
 
 
 @step('age rating: nothing objectionable, shown as 13+')
 def age_rating():
     decl = call('GET', f'/v1/appInfos/{INFO}/ageRatingDeclaration')['data']
-    attrs = {}
-    # Every question in Apple's current questionnaire: NONE / false.
-    for k, v in decl['attributes'].items():
-        if k in ('ageRatingOverride', 'ageRatingOverrideV2', 'koreaAgeRatingOverride', 'kidsAgeBand',
-                 'koreaAgeRating', 'developerAgeRatingInfoUrl'):
-            continue
-        if isinstance(v, bool) or v is None and k.startswith(('is', 'has')) or k in (
-                'gambling', 'unrestrictedWebAccess', 'lootBox', 'advertising', 'messagingAndChat',
-                'parentalControls', 'ageAssurance', 'userGeneratedContent', 'healthOrWellnessTopics'):
-            attrs[k] = False
-        else:
-            attrs[k] = 'NONE'
-    try:
-        call('PATCH', f'/v1/ageRatingDeclarations/{decl["id"]}', {'data': {
-            'type': 'ageRatingDeclarations', 'id': decl['id'],
-            'attributes': {**attrs, 'ageRatingOverrideV2': CFG['ageRatingOverride']}}})
-        return 'override 13+'
-    except ApiError as e:
-        # Older field set: answer the questions, leave the override for Amir.
-        call('PATCH', f'/v1/ageRatingDeclarations/{decl["id"]}', {'data': {
-            'type': 'ageRatingDeclarations', 'id': decl['id'], 'attributes': attrs}})
-        return f'answers set; override not accepted ({e})'
+    skip = ('ageRatingOverride', 'ageRatingOverrideV2', 'koreaAgeRatingOverride',
+            'kidsAgeBand', 'koreaAgeRating', 'developerAgeRatingInfoUrl')
+    # Every question answered "no": False for yes/no questions, NONE for
+    # frequency questions. Unset fields have no type to go by, so Apple's
+    # "Expected a BOOLEAN" errors tell us which are yes/no.
+    attrs = {k: (False if isinstance(v, bool) else 'NONE')
+             for k, v in decl['attributes'].items() if k not in skip}
+    override = {'ageRatingOverrideV2': CFG['ageRatingOverride']}
+    for attempt in range(4):
+        try:
+            call('PATCH', f'/v1/ageRatingDeclarations/{decl["id"]}', {'data': {
+                'type': 'ageRatingDeclarations', 'id': decl['id'],
+                'attributes': {**attrs, **override}}})
+            return 'override 13+' if override else 'answers set (override left for Amir)'
+        except ApiError as e:
+            msg = str(e)
+            bools = re.findall(r"attribute '(\w+)'\. Expected a BOOLEAN", msg)
+            enums = re.findall(r"attribute '(\w+)'\. Expected a STRING", msg)
+            for k in bools:
+                attrs[k] = False
+            for k in enums:
+                attrs[k] = 'NONE'
+            if not bools and not enums:
+                if override and 'ageRatingOverride' in msg:
+                    override = {}
+                    continue
+                raise
+    raise ApiError('age rating: gave up after 4 tries')
 
 
 @step('version number and copyright')
