@@ -5,6 +5,7 @@ import 'package:numcross_engine/numcross_engine.dart';
 
 import '../app/app_scope.dart';
 import '../app/feedback.dart';
+import '../app/palette.dart';
 import '../app/progress_store.dart';
 import '../i18n/locale_controller.dart';
 import '../l10n/app_localizations.dart';
@@ -186,7 +187,10 @@ class _GameScreenState extends State<GameScreen> with WidgetsBindingObserver {
       return;
     }
     _game.pause();
-    await showFriendHintsDialog(context);
+    await showFriendHintsDialog(
+      context,
+      theme: Palette.calm(Theme.of(context)),
+    );
     if (mounted) _game.resume();
   }
 
@@ -195,17 +199,20 @@ class _GameScreenState extends State<GameScreen> with WidgetsBindingObserver {
     final action = await showDialog<_ResultAction>(
       context: context,
       barrierDismissible: false,
-      builder: (_) => _ResultDialog(
-        game: _game,
-        isDaily: widget.isDaily,
-        canBuyExtraLife:
-            !_extraLifeUsed && (_money?.ads.rewardedReady ?? false),
-        streak: widget.isDaily
-            ? widget.progress?.currentStreak(widget.date!)
-            : null,
-        difficulty: widget.difficulty,
-        level: widget.level,
-        date: widget.date,
+      builder: (dialogContext) => Theme(
+        data: Palette.calm(Theme.of(dialogContext)),
+        child: _ResultDialog(
+          game: _game,
+          isDaily: widget.isDaily,
+          canBuyExtraLife:
+              !_extraLifeUsed && (_money?.ads.rewardedReady ?? false),
+          streak: widget.isDaily
+              ? widget.progress?.currentStreak(widget.date!)
+              : null,
+          difficulty: widget.difficulty,
+          level: widget.level,
+          date: widget.date,
+        ),
       ),
     );
     if (!mounted) return;
@@ -246,59 +253,63 @@ class _GameScreenState extends State<GameScreen> with WidgetsBindingObserver {
     final t = AppLocalizations.of(context);
     final locale = LocaleScope.of(context);
     final money = _money;
-    return ListenableBuilder(
-      listenable: Listenable.merge([_game, ?money]),
-      builder: (context, _) {
-        final paused = _game.status == GameStatus.paused;
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(
-              widget.isDaily
-                  ? t.menuDaily
-                  : t.levelNumber(locale.n(widget.level)),
-            ),
-            actions: [
-              if (_game.config.showTimer)
-                Center(
-                  child: Text(
-                    locale.n(formatClock(_game.elapsed)),
-                    key: const ValueKey('clock'),
-                    style: const TextStyle(
-                      fontFeatures: [FontFeature.tabularFigures()],
-                    ),
-                  ),
-                ),
-              IconButton(
-                key: const ValueKey('pause'),
-                tooltip: paused ? t.resume : t.pause,
-                icon: Icon(paused ? Icons.play_arrow : Icons.pause),
-                onPressed: paused ? _game.resume : _game.pause,
+    // Calm navy/blue inside the puzzle (the menu is warm).
+    return Theme(
+      data: Palette.calm(Theme.of(context)),
+      child: ListenableBuilder(
+        listenable: Listenable.merge([_game, ?money]),
+        builder: (context, _) {
+          final paused = _game.status == GameStatus.paused;
+          return Scaffold(
+            appBar: AppBar(
+              title: Text(
+                widget.isDaily
+                    ? t.menuDaily
+                    : t.levelNumber(locale.n(widget.level)),
               ),
-            ],
-          ),
-          body: SafeArea(
-            child: Column(
-              children: [
-                _Toolbar(game: _game, onHint: _onHint, coins: _money?.coins),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 8,
-                    ),
-                    child: Center(
-                      child: paused
-                          ? _PausedPanel(onResume: _game.resume)
-                          : GameBoard(game: _game),
+              actions: [
+                if (_game.config.showTimer)
+                  Center(
+                    child: Text(
+                      locale.n(formatClock(_game.elapsed)),
+                      key: const ValueKey('clock'),
+                      style: const TextStyle(
+                        fontFeatures: [FontFeature.tabularFigures()],
+                      ),
                     ),
                   ),
+                IconButton(
+                  key: const ValueKey('pause'),
+                  tooltip: paused ? t.resume : t.pause,
+                  icon: Icon(paused ? Icons.play_arrow : Icons.pause),
+                  onPressed: paused ? _game.resume : _game.pause,
                 ),
-                if (!paused) TileBank(game: _game, onPick: _feedback?.tap),
               ],
             ),
-          ),
-        );
-      },
+            body: SafeArea(
+              child: Column(
+                children: [
+                  _Toolbar(game: _game, onHint: _onHint, coins: _money?.coins),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                        vertical: 8,
+                      ),
+                      child: Center(
+                        child: paused
+                            ? _PausedPanel(onResume: _game.resume)
+                            : GameBoard(game: _game),
+                      ),
+                    ),
+                  ),
+                  if (!paused) TileBank(game: _game, onPick: _feedback?.tap),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }
@@ -432,103 +443,171 @@ class _ResultDialog extends StatelessWidget {
     final locale = LocaleScope.of(context);
     final won = game.status == GameStatus.won;
     final scheme = Theme.of(context).colorScheme;
+    final text = Theme.of(context).textTheme;
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    Widget stat(IconData icon, String label, String value, String key) =>
+        Expanded(
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+            decoration: BoxDecoration(
+              color: scheme.surfaceContainerHighest.withValues(alpha: 0.6),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Column(
+              children: [
+                Icon(icon, size: 20, color: scheme.primary),
+                const SizedBox(height: 2),
+                Text(
+                  value,
+                  key: ValueKey(key),
+                  style: text.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    fontFeatures: const [FontFeature.tabularFigures()],
+                  ),
+                ),
+                Text(
+                  label,
+                  style: text.labelSmall?.copyWith(
+                    color: scheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
     return AlertDialog(
+      titlePadding: const EdgeInsets.fromLTRB(24, 24, 24, 0),
+      contentPadding: const EdgeInsets.fromLTRB(20, 12, 20, 4),
       title: Text(
         won ? (isDaily ? t.dailyComplete : t.levelComplete) : t.outOfMistakes,
         textAlign: TextAlign.center,
+        style: text.headlineSmall?.copyWith(fontWeight: FontWeight.w800),
       ),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (won)
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                for (var i = 0; i < 3; i++)
-                  // Stars pop in one after another.
-                  TweenAnimationBuilder<double>(
-                    tween: Tween(begin: 0, end: 1),
-                    duration: MediaQuery.of(context).disableAnimations
-                        ? Duration.zero
-                        : Duration(milliseconds: 350 + i * 180),
-                    curve: Interval(i * 0.25, 1, curve: Curves.easeOutBack),
-                    builder: (context, scale, child) =>
-                        Transform.scale(scale: scale, child: child),
-                    child: Icon(
-                      i < game.stars
-                          ? Icons.star_rounded
-                          : Icons.star_outline_rounded,
-                      size: 44,
-                      color: i < game.stars
-                          ? const Color(0xFFF2B01E)
-                          : scheme.outline,
+      content: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (won)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  for (var i = 0; i < 3; i++)
+                    // Stars pop in one after another.
+                    TweenAnimationBuilder<double>(
+                      tween: Tween(begin: 0, end: 1),
+                      duration: MediaQuery.of(context).disableAnimations
+                          ? Duration.zero
+                          : Duration(milliseconds: 350 + i * 180),
+                      curve: Interval(i * 0.25, 1, curve: Curves.easeOutBack),
+                      builder: (context, scale, child) =>
+                          Transform.scale(scale: scale, child: child),
+                      child: Icon(
+                        i < game.stars
+                            ? Icons.star_rounded
+                            : Icons.star_outline_rounded,
+                        size: 48,
+                        color: i < game.stars ? Palette.star : scheme.outline,
+                      ),
+                    ),
+                ],
+              ),
+            if (won && streak != null && streak! > 0) ...[
+              const SizedBox(height: 6),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.local_fire_department,
+                    color: Palette.flame,
+                    size: 20,
+                  ),
+                  const SizedBox(width: 4),
+                  // Flexible: wraps instead of overflowing on small phones.
+                  Flexible(
+                    child: Text(
+                      t.streakDays(streak!, locale.n(streak!)),
+                      key: const ValueKey('result-streak'),
+                      textAlign: TextAlign.center,
+                      style: text.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                   ),
+                ],
+              ),
+            ],
+            if (!won && canBuyExtraLife) ...[
+              const SizedBox(height: 12),
+              OutlinedButton.icon(
+                key: const ValueKey('extra-life'),
+                onPressed: () =>
+                    Navigator.pop(context, _ResultAction.extraLife),
+                icon: const Icon(Icons.play_circle_outline),
+                label: Text(t.extraLife, textAlign: TextAlign.center),
+              ),
+            ],
+            const SizedBox(height: 14),
+            Row(
+              children: [
+                stat(
+                  Icons.timer_outlined,
+                  t.time,
+                  locale.n(formatClock(game.elapsed)),
+                  'result-time',
+                ),
+                const SizedBox(width: 10),
+                stat(
+                  Icons.close_rounded,
+                  t.mistakesLabel,
+                  locale.n(game.mistakes),
+                  'result-mistakes',
+                ),
               ],
             ),
-          if (won && streak != null && streak! > 0) ...[
-            const SizedBox(height: 8),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.local_fire_department,
-                  color: Color(0xFFE8672A),
+            if (won) ...[
+              const SizedBox(height: 14),
+              // A fun line that invites the player to share the win: dark
+              // text on a soft sun banner, apart from the rest.
+              Container(
+                width: double.infinity,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 12,
                 ),
-                const SizedBox(width: 4),
-                // Flexible: wraps instead of overflowing on small phones.
-                Flexible(
-                  child: Text(
-                    t.streakDays(streak!, locale.n(streak!)),
-                    key: const ValueKey('result-streak'),
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.titleMedium,
+                decoration: BoxDecoration(
+                  color: Palette.sun.withValues(alpha: dark ? 0.22 : 0.18),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Text(
+                  _share.cheer(locale.language.code),
+                  key: const ValueKey('result-cheer'),
+                  textAlign: TextAlign.center,
+                  style: text.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                    fontFamilyFallback: emojiFallback,
                   ),
                 ),
-              ],
-            ),
-          ],
-          if (!won && canBuyExtraLife) ...[
-            const SizedBox(height: 12),
-            OutlinedButton.icon(
-              key: const ValueKey('extra-life'),
-              onPressed: () => Navigator.pop(context, _ResultAction.extraLife),
-              icon: const Icon(Icons.play_circle_outline),
-              label: Text(t.extraLife, textAlign: TextAlign.center),
-            ),
-          ],
-          const SizedBox(height: 12),
-          Text('${t.time}: ${locale.n(formatClock(game.elapsed))}'),
-          Text('${t.mistakesLabel}: ${locale.n(game.mistakes)}'),
-          if (won) ...[
-            const SizedBox(height: 16),
-            // A fun line that invites the player to share the win.
-            Text(
-              _share.cheer(locale.language.code),
-              key: const ValueKey('result-cheer'),
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                color: scheme.primary,
-                fontWeight: FontWeight.w700,
-                fontFamilyFallback: kEmojiFallback,
               ),
-            ),
-            const SizedBox(height: 8),
-            _ShareButton(result: _share),
-            const SizedBox(height: 4),
-            Text(
-              t.shareForHints,
-              key: const ValueKey('share-for-hints'),
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodySmall,
-            ),
+              const SizedBox(height: 12),
+              SizedBox(
+                width: double.infinity,
+                child: _ShareButton(result: _share),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                t.shareForHints,
+                key: const ValueKey('share-for-hints'),
+                textAlign: TextAlign.center,
+                style: text.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
+              ),
+            ],
           ],
-        ],
+        ),
       ),
       actionsAlignment: MainAxisAlignment.spaceBetween,
       actions: [
         if (won && isDaily)
-          FilledButton(
+          TextButton(
             key: const ValueKey('result-primary'),
             onPressed: () => Navigator.pop(context, _ResultAction.menu),
             child: Text(t.menu),
@@ -583,13 +662,27 @@ class _ShareButtonState extends State<_ShareButton> {
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context);
-    return FilledButton.tonalIcon(
-      key: const ValueKey('share-result'),
-      onPressed: _busy ? null : _share,
-      icon: Icon(_copied ? Icons.check : Icons.share),
-      label: Text(
-        _copied ? t.shareCopied : t.shareResult,
-        textAlign: TextAlign.center,
+    // The one warm spot in the puzzle: sharing is what we want players to do.
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        gradient: Palette.hero,
+        borderRadius: BorderRadius.circular(28),
+      ),
+      child: FilledButton.icon(
+        key: const ValueKey('share-result'),
+        style: FilledButton.styleFrom(
+          backgroundColor: Colors.transparent,
+          foregroundColor: Colors.white,
+          shadowColor: Colors.transparent,
+          minimumSize: const Size.fromHeight(50),
+        ),
+        onPressed: _busy ? null : _share,
+        icon: Icon(_copied ? Icons.check : Icons.ios_share_rounded),
+        label: Text(
+          _copied ? t.shareCopied : t.shareResult,
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontWeight: FontWeight.w700),
+        ),
       ),
     );
   }

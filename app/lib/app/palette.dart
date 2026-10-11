@@ -26,6 +26,31 @@ class Palette {
     Difficulty.expert => violet,
   };
 
+  /// Inside a puzzle: calm navy and blue (Amir, 2026-10-11: red/orange in
+  /// the game felt stressful). The menu keeps the warm colors.
+  static const navy = Color(0xFF2F5D8A);
+
+  static ThemeData calm(ThemeData base) {
+    final dark = base.brightness == Brightness.dark;
+    final scheme =
+        ColorScheme.fromSeed(
+          seedColor: navy,
+          brightness: base.brightness,
+        ).copyWith(
+          surface: dark ? const Color(0xFF131A24) : const Color(0xFFF4F7FB),
+          surfaceContainerLowest: dark ? const Color(0xFF0E141C) : Colors.white,
+          surfaceContainerLow: dark ? const Color(0xFF1B2430) : Colors.white,
+        );
+    return base.copyWith(
+      colorScheme: scheme,
+      scaffoldBackgroundColor: scheme.surface,
+      appBarTheme: base.appBarTheme.copyWith(backgroundColor: scheme.surface),
+      dialogTheme: base.dialogTheme.copyWith(
+        backgroundColor: scheme.surfaceContainerLow,
+      ),
+    );
+  }
+
   /// The daily card / hero gradient.
   static const hero = LinearGradient(
     begin: Alignment.topLeft,

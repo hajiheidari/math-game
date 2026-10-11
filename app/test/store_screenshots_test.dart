@@ -11,6 +11,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:numcross/app/progress_store.dart';
+import 'package:numcross/share/share_result.dart';
 import 'package:numcross_engine/numcross_engine.dart';
 
 import 'helpers.dart';
@@ -36,12 +37,15 @@ Future<void> _loadFonts() async {
 
   final sdk = File(Platform.resolvedExecutable).parent.parent.parent.parent;
   final material = '${sdk.path}/artifacts/material_fonts';
-  // Emoji: see kEmojiFallback.
+  // Emoji: see emojiFallback.
   const emoji = '/usr/share/fonts/truetype/noto/NotoColorEmoji.ttf';
   await load('Roboto', [
     for (final w in ['Regular', 'Medium', 'Bold']) '$material/Roboto-$w.ttf',
   ]);
-  if (File(emoji).existsSync()) await load('NotoColorEmoji', [emoji]);
+  if (File(emoji).existsSync()) {
+    await load('NotoColorEmoji', [emoji]);
+    emojiFallback = const ['NotoColorEmoji'];
+  }
   await load('MaterialIcons', ['$material/MaterialIcons-Regular.otf']);
   await load('Vazirmatn', ['assets/fonts/Vazirmatn.ttf']);
 }

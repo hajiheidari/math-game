@@ -8,35 +8,39 @@ import '../share/share_result.dart';
 import 'friend_hints.dart';
 
 /// Out of hints: how to get some (friends), with the invite button.
-Future<void> showFriendHintsDialog(BuildContext context) => showDialog<void>(
-  context: context,
-  builder: (context) {
-    final t = AppLocalizations.of(context);
-    return AlertDialog(
-      icon: const Icon(Icons.lightbulb, color: Palette.sun),
-      title: Text(t.friendHintsTitle, textAlign: TextAlign.center),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            t.friendHintsBody(LocaleScope.of(context).n(FriendHints.dailyMax)),
-            textAlign: TextAlign.center,
+Future<void> showFriendHintsDialog(BuildContext context, {ThemeData? theme}) =>
+    showDialog<void>(
+      context: context,
+      builder: (context) {
+        final t = AppLocalizations.of(context);
+        final dialog = AlertDialog(
+          icon: const Icon(Icons.lightbulb, color: Palette.sun),
+          title: Text(t.friendHintsTitle, textAlign: TextAlign.center),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                t.friendHintsBody(
+                  LocaleScope.of(context).n(FriendHints.dailyMax),
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 12),
+              const _TodayCount(),
+            ],
           ),
-          const SizedBox(height: 12),
-          const _TodayCount(),
-        ],
-      ),
-      actionsAlignment: MainAxisAlignment.spaceBetween,
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context),
-          child: Text(MaterialLocalizations.of(context).closeButtonLabel),
-        ),
-        const InviteButton(),
-      ],
+          actionsAlignment: MainAxisAlignment.spaceBetween,
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(MaterialLocalizations.of(context).closeButtonLabel),
+            ),
+            const InviteButton(),
+          ],
+        );
+        return theme == null ? dialog : Theme(data: theme, child: dialog);
+      },
     );
-  },
-);
 
 /// "Today: 1/3".
 class _TodayCount extends StatelessWidget {

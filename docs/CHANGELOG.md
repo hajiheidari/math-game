@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.12.1 — Calm game, clearer result
+- Inside a puzzle the colors are calm navy/blue again (`Palette.calm`); the menu stays warm.
+- Result dialog: bold title, stars, time and mistakes as two tiles, the fun line on a soft
+  banner, "Show your friends" as the one warm gradient button, then Menu / Next level.
+- iOS drew plain digits with the emoji font ("1 0 0 %"): no emoji fallback font in the app any
+  more (`emojiFallback` is only set by the screenshot test).
+
 ## 0.12.0 — Warm redesign
 - Warm palette (`lib/app/palette.dart`): tangerine primary, cream background (plum in dark mode),
   one color per difficulty (teal, sun, tangerine, violet), rounded borderless cards.

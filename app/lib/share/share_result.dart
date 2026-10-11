@@ -110,13 +110,11 @@ class ResultShare {
   }
 }
 
-/// Emoji in the fun lines: the phone's own emoji font draws them; naming
-/// Noto's here also lets the test renderer (store screenshots) draw them.
-const kEmojiFallback = [
-  'Apple Color Emoji',
-  'Noto Color Emoji',
-  'NotoColorEmoji',
-];
+/// Extra fonts for the emoji in the fun lines. Empty in the app: the
+/// phone's own emoji font draws them (naming an emoji font here made iOS draw
+/// plain digits with it: "1 0 0 %"). Tests set it to draw emoji in
+/// screenshots (test/store_screenshots_test.dart).
+List<String> emojiFallback = const [];
 
 enum ShareOutcome { shared, copied, failed }
 
@@ -241,7 +239,7 @@ Future<Uint8List?> renderResultCard(
           fontWeight: weight,
           color: color,
           height: lang.lineHeight ?? 1.3,
-          fontFamilyFallback: kEmojiFallback,
+          fontFamilyFallback: emojiFallback,
         ),
       ),
       textAlign: TextAlign.center,
