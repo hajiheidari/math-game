@@ -79,5 +79,6 @@
   "friendHintsBody": "شارك رابطك أو نتيجتك. كل صديق يفتحه يمنحك تلميحًا (حتى {max} في اليوم).",
   "friendHintsToday": "اليوم: {count} من {max}",
   "friendHintsReceived": "أرسل لك أصدقاؤك تلميحات: +{count}",
-  "shareForHints": "كل صديق يفتحه يمنحك تلميحًا."
+  "shareForHints": "كل صديق يفتحه يمنحك تلميحًا.",
+  "invite": "ادعُ"
 }

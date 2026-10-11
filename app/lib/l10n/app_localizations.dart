@@ -581,6 +581,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Every friend who opens it gives you a hint.'**
   String get shareForHints;
+
+  /// Short share button on the menu's hints card.
+  ///
+  /// In en, this message translates to:
+  /// **'Invite'**
+  String get invite;
 }
 
 class _AppLocalizationsDelegate

@@ -8,6 +8,7 @@ import 'app/feedback.dart';
 import 'app/app_prefs.dart';
 import 'app/app_scope.dart';
 import 'app/crash_guard.dart';
+import 'app/palette.dart';
 import 'i18n/languages.dart';
 import 'i18n/locale_controller.dart';
 import 'l10n/app_localizations.dart';
@@ -174,13 +175,49 @@ class PhoneColumn extends StatelessWidget {
 }
 
 ThemeData _theme(Brightness brightness, AppLanguage language) {
+  final dark = brightness == Brightness.dark;
+  final scheme =
+      ColorScheme.fromSeed(
+        seedColor: Palette.tangerine,
+        brightness: brightness,
+        dynamicSchemeVariant: DynamicSchemeVariant.vibrant,
+      ).copyWith(
+        // The seed itself, not the scheme's darker tone: bright, warm buttons.
+        primary: dark ? const Color(0xFFFF8A5C) : const Color(0xFFF2582A),
+        onPrimary: dark ? Palette.ink : Colors.white,
+        surface: dark ? Palette.plum : Palette.cream,
+        surfaceContainerLowest: dark ? const Color(0xFF15101E) : Colors.white,
+        surfaceContainerLow: dark ? const Color(0xFF241B31) : Colors.white,
+      );
   final base = ThemeData(
     fontFamily: language.fontFamily,
-    colorScheme: ColorScheme.fromSeed(
-      seedColor: const Color(0xFF2F5D8A),
-      brightness: brightness,
-    ),
+    colorScheme: scheme,
+    scaffoldBackgroundColor: scheme.surface,
     useMaterial3: true,
+    appBarTheme: AppBarTheme(
+      backgroundColor: scheme.surface,
+      surfaceTintColor: Colors.transparent,
+      centerTitle: false,
+    ),
+    cardTheme: CardThemeData(
+      color: scheme.surfaceContainerLow,
+      elevation: 0,
+      margin: EdgeInsets.zero,
+      shadowColor: Colors.transparent,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(22),
+        side: BorderSide(color: scheme.outlineVariant.withValues(alpha: 0.5)),
+      ),
+    ),
+    // No textStyle here: it would replace the theme's (and lose the
+    // Persian/Urdu font).
+    filledButtonTheme: FilledButtonThemeData(
+      style: FilledButton.styleFrom(shape: const StadiumBorder()),
+    ),
+    dialogTheme: DialogThemeData(
+      backgroundColor: scheme.surfaceContainerLow,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+    ),
   );
   final height = language.lineHeight;
   if (height == null) return base;

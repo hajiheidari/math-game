@@ -288,4 +288,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get shareForHints => 'كل صديق يفتحه يمنحك تلميحًا.';
+
+  @override
+  String get invite => 'ادعُ';
 }

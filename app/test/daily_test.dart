@@ -54,10 +54,13 @@ void main() {
     await tester.pumpAndSettle();
 
     // Back on the menu: easy is done for today, streak updated.
-    final easy = tester.widget<ButtonStyleButton>(
-      find.byKey(const ValueKey('daily-easy')),
+    final easy = tester.widget<InkWell>(
+      find.descendant(
+        of: find.byKey(const ValueKey('daily-easy')),
+        matching: find.byType(InkWell),
+      ),
     );
-    expect(easy.onPressed, isNull);
+    expect(easy.onTap, isNull);
     expect(
       tester.widget<Text>(find.byKey(const ValueKey('daily-streak'))).data,
       '2',

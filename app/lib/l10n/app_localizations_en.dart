@@ -285,4 +285,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get shareForHints => 'Every friend who opens it gives you a hint.';
+
+  @override
+  String get invite => 'Invite';
 }

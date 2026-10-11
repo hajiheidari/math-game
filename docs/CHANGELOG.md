@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.12.0 — Warm redesign
+- Warm palette (`lib/app/palette.dart`): tangerine primary, cream background (plum in dark mode),
+  one color per difficulty (teal, sun, tangerine, violet), rounded borderless cards.
+- Menu fits one screen without scrolling on phones (scrolls only on very small screens / large
+  text): gradient daily card with the 4 difficulties as 2 x 2 buttons, a compact hints card
+  with a share button, and the Levels difficulties as a 2 x 2 grid of colored tiles.
+- "Invite" opens the share sheet on iPhone (an empty file list made iOS refuse, so it copied).
+- Tile bank: white tiles with a soft shadow; the share card uses the warm gradient.
+
 ## 0.11.0 — No ads (App Store / Play / web); hints from friends
 - App Store, Google Play and web: no ads and no purchase for now (Amir, 2026-10-10).
   `lib/main.dart` starts without ad/billing services; `tool/store_build.sh global` and the iOS

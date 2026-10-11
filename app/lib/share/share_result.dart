@@ -8,6 +8,7 @@ import 'package:numcross_engine/numcross_engine.dart';
 import 'package:share_plus/share_plus.dart';
 
 import '../app/app_scope.dart';
+import '../app/palette.dart';
 import '../game/game_controller.dart' show formatClock;
 import '../i18n/dates.dart';
 import '../i18n/labels.dart';
@@ -152,10 +153,11 @@ Future<ShareOutcome> _share(String text, {Uint8List? png, Rect? origin}) async {
     await SharePlus.instance.share(
       ShareParams(
         text: text,
-        files: [
-          if (png != null)
-            XFile.fromData(png, mimeType: 'image/png', name: 'adadi.png'),
-        ],
+        // null, not []: iOS rejects an empty file list ("Non-empty paths
+        // expected"), which made the invite fall back to copying.
+        files: png == null
+            ? null
+            : [XFile.fromData(png, mimeType: 'image/png', name: 'adadi.png')],
         fileNameOverrides: png != null ? ['adadi.png'] : null,
         sharePositionOrigin: origin,
       ),
@@ -175,9 +177,8 @@ Future<ShareOutcome> _share(String text, {Uint8List? png, Rect? origin}) async {
 // --- The picture card -------------------------------------------------------
 
 const _cardSize = Size(1080, 1350); // 4:5, fits feeds, stories and chats.
-const _ink = Color(0xFF14283D);
-const _blue = Color(0xFF2F5D8A);
-const _gold = Color(0xFFF2B01E);
+const _ink = Palette.ink;
+const _gold = Palette.sun;
 
 /// Draws the result card as a PNG (null if the engine cannot render it).
 Future<Uint8List?> renderResultCard(
@@ -194,7 +195,12 @@ Future<Uint8List?> renderResultCard(
   canvas.drawRect(
     Offset.zero & _cardSize,
     Paint()
-      ..shader = ui.Gradient.linear(Offset.zero, Offset(w, h), [_blue, _ink]),
+      ..shader = ui.Gradient.linear(
+        Offset.zero,
+        Offset(w, h),
+        [const Color(0xFFFF8A3D), Palette.coral, const Color(0xFF8A3FD1)],
+        [0, 0.55, 1],
+      ),
   );
 
   // Faint number grid in the background: the game's look.

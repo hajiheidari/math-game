@@ -284,4 +284,7 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get shareForHints => 'هر دوستی که بازش کند، یک راهنما برایت می‌آورد.';
+
+  @override
+  String get invite => 'دعوت';
 }

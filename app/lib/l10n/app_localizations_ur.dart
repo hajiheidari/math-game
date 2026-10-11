@@ -284,4 +284,7 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get shareForHints => 'جو دوست اسے کھولے گا، آپ کو ایک اشارہ ملے گا۔';
+
+  @override
+  String get invite => 'دعوت دیں';
 }

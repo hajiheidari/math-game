@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../app/app_scope.dart';
+import '../app/palette.dart';
 import '../i18n/locale_controller.dart';
 import '../l10n/app_localizations.dart';
 import '../share/share_result.dart';
@@ -12,7 +13,7 @@ Future<void> showFriendHintsDialog(BuildContext context) => showDialog<void>(
   builder: (context) {
     final t = AppLocalizations.of(context);
     return AlertDialog(
-      icon: const Icon(Icons.lightbulb, color: Color(0xFFF2B01E)),
+      icon: const Icon(Icons.lightbulb, color: Palette.sun),
       title: Text(t.friendHintsTitle, textAlign: TextAlign.center),
       content: Column(
         mainAxisSize: MainAxisSize.min,
@@ -60,9 +61,12 @@ class _TodayCount extends StatelessWidget {
   }
 }
 
-/// Shares the invite message; says "Copied" when it went to the clipboard.
+/// Opens the share sheet with the invite message (says "Copied" only when
+/// there is no share sheet, e.g. a desktop browser).
 class InviteButton extends StatefulWidget {
-  const InviteButton({super.key});
+  /// "Invite" instead of "Invite friends" (the menu card).
+  final bool short;
+  const InviteButton({super.key, this.short = false});
 
   @override
   State<InviteButton> createState() => _InviteButtonState();
@@ -86,13 +90,20 @@ class _InviteButtonState extends State<InviteButton> {
     return FilledButton.icon(
       key: const ValueKey('invite'),
       onPressed: _invite,
-      icon: Icon(_copied ? Icons.check : Icons.person_add_alt_1),
-      label: Text(_copied ? t.shareCopied : t.inviteFriends),
+      icon: Icon(_copied ? Icons.check : Icons.ios_share_rounded, size: 20),
+      label: Text(
+        _copied
+            ? t.shareCopied
+            : widget.short
+            ? t.invite
+            : t.inviteFriends,
+      ),
     );
   }
 }
 
-/// Menu: hints in the bank, today's count and the invite button.
+/// Menu: hints in the bank, today's count and the invite (share) button,
+/// in one compact row.
 class FriendHintsCard extends StatelessWidget {
   const FriendHintsCard({super.key});
 
@@ -101,50 +112,74 @@ class FriendHintsCard extends StatelessWidget {
     final t = AppLocalizations.of(context);
     final locale = LocaleScope.of(context);
     final app = AppScope.of(context);
-    final scheme = Theme.of(context).colorScheme;
-    return Card(
+    final textTheme = Theme.of(context).textTheme;
+    final dark = Theme.of(context).brightness == Brightness.dark;
+    return Material(
       key: const ValueKey('friend-hints-card'),
-      margin: const EdgeInsets.symmetric(horizontal: 4),
+      color: Palette.sun.withValues(alpha: dark ? 0.2 : 0.16),
+      borderRadius: BorderRadius.circular(22),
       child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        padding: const EdgeInsets.fromLTRB(12, 10, 12, 10),
+        child: Row(
           children: [
-            Row(
-              children: [
-                const Icon(Icons.lightbulb, color: Color(0xFFF2B01E)),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    t.friendHintsTitle,
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
+            // The hint bank: a bulb with the count on it.
+            ListenableBuilder(
+              listenable: app.monetization,
+              builder: (context, _) => Container(
+                key: const ValueKey('hint-bank'),
+                width: 48,
+                height: 48,
+                decoration: const BoxDecoration(
+                  color: Palette.sun,
+                  shape: BoxShape.circle,
                 ),
-                ListenableBuilder(
-                  listenable: app.monetization,
-                  builder: (context, _) => Chip(
-                    key: const ValueKey('hint-bank'),
-                    avatar: Icon(
-                      Icons.lightbulb_outline,
-                      color: scheme.primary,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    const Icon(Icons.lightbulb, color: Colors.white, size: 26),
+                    PositionedDirectional(
+                      end: 0,
+                      bottom: 0,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                        constraints: const BoxConstraints(minWidth: 20),
+                        decoration: BoxDecoration(
+                          color: Palette.ink,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        child: Text(
+                          locale.n(app.monetization.coins),
+                          textAlign: TextAlign.center,
+                          style: textTheme.labelMedium?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ),
                     ),
-                    label: Text(locale.n(app.monetization.coins)),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
-            const SizedBox(height: 8),
-            Text(
-              t.friendHintsBody(locale.n(FriendHints.dailyMax)),
-              style: Theme.of(context).textTheme.bodyMedium,
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    t.friendHintsTitle,
+                    maxLines: 2,
+                    style: textTheme.titleSmall?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  const _TodayCount(),
+                ],
+              ),
             ),
-            const SizedBox(height: 12),
-            Wrap(
-              spacing: 12,
-              runSpacing: 8,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: const [InviteButton(), _TodayCount()],
-            ),
+            const SizedBox(width: 8),
+            const InviteButton(short: true),
           ],
         ),
       ),

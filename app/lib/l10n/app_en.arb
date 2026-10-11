@@ -188,5 +188,9 @@
       }
     }
   },
-  "shareForHints": "Every friend who opens it gives you a hint."
+  "shareForHints": "Every friend who opens it gives you a hint.",
+  "invite": "Invite",
+  "@invite": {
+    "description": "Short share button on the menu's hints card."
+  }
 }

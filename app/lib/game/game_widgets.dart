@@ -171,12 +171,20 @@ class TileFace extends StatelessWidget {
       width: TileBank.tileWidth,
       height: TileBank.tileHeight,
       decoration: BoxDecoration(
-        color: selected ? s.primary : s.surface,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: selected ? s.primary : s.outline),
-        boxShadow: lifted
-            ? const [BoxShadow(blurRadius: 12, color: Color(0x33000000))]
-            : null,
+        color: selected ? s.primary : s.surfaceContainerLowest,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: selected ? s.primary : s.outlineVariant,
+          width: 1.5,
+        ),
+        // A soft shadow: tiles look like pieces to pick up.
+        boxShadow: [
+          BoxShadow(
+            blurRadius: lifted ? 12 : 4,
+            offset: Offset(0, lifted ? 4 : 2),
+            color: Color(lifted ? 0x33000000 : 0x14000000),
+          ),
+        ],
       ),
       alignment: Alignment.center,
       child: FittedBox(
