@@ -179,7 +179,7 @@ class _DailyCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(26),
         boxShadow: [
           BoxShadow(
-            color: Palette.coral.withValues(alpha: 0.18),
+            color: Palette.brandDark.withValues(alpha: 0.22),
             blurRadius: 16,
             offset: const Offset(0, 6),
           ),

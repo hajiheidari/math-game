@@ -4,16 +4,20 @@ import 'package:numcross_engine/numcross_engine.dart';
 /// Adadi's warm colors (Amir, 2026-10-11: "warmer, more inviting, not busy").
 /// The Material color scheme is built from [tangerine]; the rest are accents.
 class Palette {
-  static const tangerine = Color(0xFFFF6B3D);
+  /// The brand: turquoise (Amir, 2026-10-11: "the Easy box's teal, it
+  /// looks more professional").
+  static const brand = Color(0xFF0D9488);
+  static const brandDark = Color(0xFF0E7490);
+  static const tangerine = Color(0xFFF2784B);
   static const coral = Color(0xFFFF4F6D);
   static const sun = Color(0xFFFFB627);
   static const teal = Color(0xFF14B8A6);
   static const violet = Color(0xFF7C5CFF);
   static const ink = Color(0xFF2A1E3B);
 
-  /// Light background: warm cream; dark: deep plum.
-  static const cream = Color(0xFFFFF7EF);
-  static const plum = Color(0xFF1B1426);
+  /// Light background: a hint of mint; dark: deep teal-black.
+  static const cream = Color(0xFFF3F9F8);
+  static const plum = Color(0xFF0F1A1C);
 
   static const star = Color(0xFFFFB627);
   static const flame = Color(0xFFFF6B3D);
@@ -28,7 +32,7 @@ class Palette {
 
   /// Inside a puzzle: calm navy and blue (Amir, 2026-10-11: red/orange in
   /// the game felt stressful). The menu keeps the warm colors.
-  static const navy = Color(0xFF2F5D8A);
+  static const navy = Color(0xFF0F766E);
 
   static ThemeData calm(ThemeData base) {
     final dark = base.brightness == Brightness.dark;
@@ -37,9 +41,11 @@ class Palette {
           seedColor: navy,
           brightness: base.brightness,
         ).copyWith(
-          surface: dark ? const Color(0xFF131A24) : const Color(0xFFF4F7FB),
-          surfaceContainerLowest: dark ? const Color(0xFF0E141C) : Colors.white,
-          surfaceContainerLow: dark ? const Color(0xFF1B2430) : Colors.white,
+          primary: dark ? const Color(0xFF2DD4BF) : const Color(0xFF0F8F86),
+          onPrimary: dark ? const Color(0xFF042F2E) : Colors.white,
+          surface: dark ? plum : cream,
+          surfaceContainerLowest: dark ? const Color(0xFF0B1415) : Colors.white,
+          surfaceContainerLow: dark ? const Color(0xFF16252A) : Colors.white,
         );
     return base.copyWith(
       colorScheme: scheme,
@@ -55,6 +61,6 @@ class Palette {
   static const hero = LinearGradient(
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
-    colors: [Color(0xFFFF8A3D), Color(0xFFFF4F6D)],
+    colors: [Color(0xFF14B8A6), Color(0xFF0E7490)],
   );
 }

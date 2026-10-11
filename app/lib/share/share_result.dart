@@ -196,7 +196,7 @@ Future<Uint8List?> renderResultCard(
       ..shader = ui.Gradient.linear(
         Offset.zero,
         Offset(w, h),
-        [const Color(0xFFFF8A3D), Palette.coral, const Color(0xFF8A3FD1)],
+        [const Color(0xFF14B8A6), Palette.brandDark, const Color(0xFF134E5E)],
         [0, 0.55, 1],
       ),
   );

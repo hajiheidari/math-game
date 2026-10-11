@@ -178,13 +178,13 @@ ThemeData _theme(Brightness brightness, AppLanguage language) {
   final dark = brightness == Brightness.dark;
   final scheme =
       ColorScheme.fromSeed(
-        seedColor: Palette.tangerine,
+        seedColor: Palette.brand,
         brightness: brightness,
         dynamicSchemeVariant: DynamicSchemeVariant.vibrant,
       ).copyWith(
         // The seed itself, not the scheme's darker tone: bright, warm buttons.
-        primary: dark ? const Color(0xFFFF8A5C) : const Color(0xFFF2582A),
-        onPrimary: dark ? Palette.ink : Colors.white,
+        primary: dark ? const Color(0xFF2DD4BF) : Palette.brand,
+        onPrimary: dark ? const Color(0xFF042F2E) : Colors.white,
         surface: dark ? Palette.plum : Palette.cream,
         surfaceContainerLowest: dark ? const Color(0xFF15101E) : Colors.white,
         surfaceContainerLow: dark ? const Color(0xFF241B31) : Colors.white,
