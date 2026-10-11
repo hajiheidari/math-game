@@ -1,0 +1,28 @@
+{
+  "_comment": "App Store page for Adadi, filled by tool/asc/fill_listing.py (workflow 'App Store page'). Human-readable copy: docs/store/appstore-listing.md. Keep both in sync.",
+  "bundleId": "com.espadna.adadi",
+  "locale": "en-US",
+  "name": "Adadi: Math Crossword",
+  "subtitle": "Daily number puzzles",
+  "privacyPolicyUrl": "https://adadi.espadna.com/privacy/",
+  "supportUrl": "https://espadna.com/adadi-app/",
+  "marketingUrl": "https://espadna.com/adadi-app/",
+  "copyright": "2026 Amir HajiHeidari",
+  "promotionalText": "A crossword where every row and column is an equation. Fill in the numbers, make every sum true, and keep your daily streak going.",
+  "description": "Adadi is a crossword made of numbers. Every row and every column is an equation: pick tiles from the bank and place them so that all the equations are true at once.\n\n• Addition, subtraction, multiplication and division in one grid\n• Every puzzle has exactly one answer: no guessing, just arithmetic and logic\n• A new daily puzzle every day, with a streak calendar\n• Four difficulties: Easy, Medium, Hard and Expert\n• Stuck? Free hints from friends: every friend who opens your invite or your result gives you one (up to 3 a day)\n• Share your wins with friends: a picture card and a challenge\n• English, Arabic, Persian and Urdu, with Western or local digits\n• Plays well on iPhone and iPad, offline\n• No sign-up: your progress stays on your device\n\nAdadi is free, with no ads and no purchases.",
+  "keywords": "math,puzzle,crossword,numbers,brain,logic,equation,arithmetic,daily,sums,mental math,teens",
+  "primaryCategory": "GAMES",
+  "primarySubcategoryOne": "GAMES_PUZZLE",
+  "primarySubcategoryTwo": "GAMES_EDUCATIONAL",
+  "ageRatingOverride": "THIRTEEN_PLUS",
+  "review": {
+    "contactFirstName": "Amir",
+    "contactLastName": "HajiHeidari",
+    "contactEmail": "espadna.support@gmail.com",
+    "notes": "No account is needed. On first launch the app asks for an age group (13+); choose \"18+\".\nNo ads and no in-app purchases. Hints: a player starts with none and gets one each time a friend opens a link they shared (Menu > Invite, or \"Show your friends\" after a win), up to 3 a day. The friend opens it in the web game (adadi.espadna.com); only random codes are sent to our server."
+  },
+  "screenshots": {
+    "APP_IPHONE_67": ["iphone-1.png", "iphone-2.png", "iphone-3.png", "iphone-4.png", "iphone-5.png"],
+    "APP_IPAD_PRO_3GEN_129": ["ipad-1.png", "ipad-2.png", "ipad-3.png", "ipad-4.png", "ipad-5.png"]
+  }
+}

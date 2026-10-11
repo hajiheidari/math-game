@@ -1,0 +1,35 @@
+# Fills Adadi's App Store page (texts, category, age rating, screenshots, review notes, price,
+# availability, build) through the App Store Connect API: tool/asc/fill_listing.py with
+# tool/asc/listing.json and docs/store/appstore/*.png. Safe to run again (it replaces).
+# App Privacy cannot be set through the API: Amir answers it in App Store Connect.
+# Optional secret ASC_CONTACT_PHONE: the review contact's phone (+971...).
+name: App Store page
+
+on:
+  workflow_dispatch:
+    inputs:
+      submit:
+        description: Also submit the version for App Review
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  page:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install --quiet pyjwt cryptography requests
+      - name: Fill the page
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+          ASC_CONTACT_PHONE: ${{ secrets.ASC_CONTACT_PHONE }}
+        run: python3 tool/asc/fill_listing.py ${{ inputs.submit && '--submit' || '' }}
