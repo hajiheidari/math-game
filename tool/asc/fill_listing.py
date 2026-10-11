@@ -162,7 +162,8 @@ def age_rating():
     # frequency questions. Unset fields have no type to go by, so Apple's
     # "Expected a BOOLEAN" errors tell us which are yes/no.
     attrs = {k: (False if isinstance(v, bool) else 'NONE')
-             for k, v in decl['attributes'].items() if k not in skip}
+             for k, v in decl['attributes'].items()
+             if k not in skip and 'grac' not in k.lower() and 'korea' not in k.lower()}
     override = {'ageRatingOverrideV2': CFG['ageRatingOverride']}
     for attempt in range(4):
         try:
@@ -341,6 +342,12 @@ def availability():
     included = [{'type': 'territoryAvailabilities', 'id': f'${{{t}}}',
                  'attributes': {'available': True},
                  'relationships': {'territory': rel('territories', t)}} for t in territories]
+    try:
+        existing = call('GET', f'/v1/apps/{APP}/appAvailabilityV2')['data']
+    except ApiError:
+        existing = None
+    if existing:
+        return 'already set'
     call('POST', '/v2/appAvailabilities', {
         'data': {'type': 'appAvailabilities', 'attributes': {'availableInNewTerritories': True},
                  'relationships': {'app': rel('apps', APP), 'territoryAvailabilities': {
