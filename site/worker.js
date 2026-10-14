@@ -2,7 +2,9 @@
 // the small friend-hints API (app/lib/rewards/friend_hints.dart).
 //
 //   POST /api/visit  {"r": code, "d": visitor's code}  a friend opened r's link
-//   POST /api/claim  {"s": secret, "max": n}            the player collects hints
+//   POST /api/claim  {"s": secret, "max": n}            the player collects coins
+//   POST /api/backup/save {"k": code, "d": save}         progress backup (recovery code)
+//   POST /api/backup/load {"k": code}                    -> {"d": save, "at": ms} or 404
 //
 // One Durable Object per player (named by the public code). A friend counts
 // once a day per player: by their device code and by their IP address (kept
@@ -12,6 +14,8 @@
 import { DurableObject } from 'cloudflare:workers';
 
 const BANK_MAX = 9;
+const BACKUP_KEY = /^[a-z2-9]{12}$/;
+const BACKUP_MAX = 200_000; // characters; a save is a few KB
 const CODE = /^[a-z2-9]{10}$/;
 const ALPHABET = 'abcdefghijkmnpqrstuvwxyz23456789';
 
@@ -74,6 +78,23 @@ export class Referrals extends DurableObject {
   }
 }
 
+/** One progress backup (app/lib/backup/backup.dart), named by its recovery code. */
+export class Backups extends DurableObject {
+  async save(d) {
+    await this.ctx.storage.put('save', { d, at: Date.now() });
+    // Forgotten after 400 days without a save.
+    await this.ctx.storage.setAlarm(Date.now() + 400 * 86400000);
+  }
+
+  async load() {
+    return (await this.ctx.storage.get('save')) ?? null;
+  }
+
+  async alarm() {
+    await this.ctx.storage.deleteAll();
+  }
+}
+
 const CORS = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
@@ -111,6 +132,23 @@ async function api(request, env, path) {
     const code = await codeFor(s);
     const granted = n === 0 ? 0 : await player(code).claim(n, today(), await ipHash(request, code));
     return json({ granted });
+  }
+
+  const backup = (k) => env.BACKUPS.get(env.BACKUPS.idFromName(k));
+
+  if (path === '/api/backup/save') {
+    const { k, d } = body;
+    if (!BACKUP_KEY.test(k ?? '')) return json({ error: 'key' }, 400);
+    if (typeof d !== 'string' || d.length > BACKUP_MAX) return json({ error: 'data' }, 400);
+    await backup(k).save(d);
+    return json({ ok: true });
+  }
+
+  if (path === '/api/backup/load') {
+    const { k } = body;
+    if (!BACKUP_KEY.test(k ?? '')) return json({ error: 'key' }, 400);
+    const saved = await backup(k).load();
+    return saved ? json(saved) : json({ error: 'no backup' }, 404);
   }
 
   return json({ error: 'not found' }, 404);

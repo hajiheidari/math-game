@@ -101,9 +101,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tryAgain => 'Try again';
 
   @override
-  String get watchAdForHint => 'Watch an ad for a hint';
-
-  @override
   String streakDays(int count, String countText) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -124,9 +121,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get digits => 'Digits';
 
   @override
-  String get digitsAuto => 'Automatic';
-
-  @override
   String get digitsWestern => 'Western';
 
   @override
@@ -143,9 +137,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get contactSupport => 'Contact support';
-
-  @override
-  String get removeAds => 'Remove ads';
 
   @override
   String get previewTitle => 'Design preview';
@@ -196,26 +187,7 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get noHintsAvailable =>
-      'No hints available right now. Try again in a moment.';
-
-  @override
-  String get watchAd => 'Watch ad';
-
-  @override
-  String get extraLife => 'Watch an ad for one more mistake';
-
-  @override
-  String get restorePurchases => 'Restore purchases';
-
-  @override
-  String get adsRemoved => 'Ads removed. Thank you!';
-
-  @override
   String get privacyChoices => 'Privacy choices';
-
-  @override
-  String get purchaseUnavailable => 'Purchases aren\'t available right now.';
 
   @override
   String get tutorialTitle => 'How to play';
@@ -246,10 +218,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get skip => 'Skip';
 
   @override
-  String get shareResult => 'Show your friends';
+  String get shareResult => 'Challenge your friends';
 
   @override
-  String get shareBeatMe => 'Can you beat me?';
+  String get shareBeatMe => 'Can you beat my time?';
 
   @override
   String get shareNoMistakes => 'No mistakes';
@@ -266,26 +238,200 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
-  String get friendHintsTitle => 'Free hints from friends';
-
-  @override
-  String friendHintsBody(String max) {
-    return 'Share your link or your result. Every friend who opens it gives you a hint (up to $max a day).';
-  }
-
-  @override
   String friendHintsToday(String count, String max) {
-    return 'Today: $count/$max';
+    return 'From friends today: $count/$max';
   }
 
   @override
-  String friendHintsReceived(String count) {
-    return 'Your friends sent you hints: +$count';
-  }
-
-  @override
-  String get shareForHints => 'Every friend who opens it gives you a hint.';
+  String get shareForHints => 'Every friend who opens it gives you a coin.';
 
   @override
   String get invite => 'Invite';
+
+  @override
+  String get zoomIn => 'Zoom in';
+
+  @override
+  String get zoomOut => 'Zoom out';
+
+  @override
+  String get coinsTitle => 'Coins for hints';
+
+  @override
+  String coinsBody(String max) {
+    return 'Each hint costs one coin. Every friend who opens your challenge or invite link gives you a coin (up to $max a day).';
+  }
+
+  @override
+  String get watchAdForCoin => 'Watch an ad: +1 coin';
+
+  @override
+  String friendCoinsReceived(String count) {
+    return 'Your friends sent you coins: +$count';
+  }
+
+  @override
+  String get challengeTitle => 'Challenge';
+
+  @override
+  String challengeToBeat(String time) {
+    return 'Time to beat: $time';
+  }
+
+  @override
+  String get challengeWon => 'You beat your friend! 🎉';
+
+  @override
+  String get challengeLost => 'Your friend was faster this time. Rematch?';
+
+  @override
+  String get challengeTie => 'It\'s a tie!';
+
+  @override
+  String get challengeYou => 'You';
+
+  @override
+  String get challengeFriend => 'Friend';
+
+  @override
+  String get challengeReceived => 'You got a challenge!';
+
+  @override
+  String challengeBody(String time) {
+    return 'A friend solved this puzzle in $time. Can you beat it?';
+  }
+
+  @override
+  String get challengeStart => 'Start';
+
+  @override
+  String get later => 'Later';
+
+  @override
+  String get leaderboards => 'Leaderboards';
+
+  @override
+  String get certificates => 'Certificates';
+
+  @override
+  String get certNameLabel => 'Your name on certificates';
+
+  @override
+  String get certNameHelp =>
+      'Optional. Stays on your phone, only in what you share.';
+
+  @override
+  String get certHowTo =>
+      'Keep solving to earn the next ones, then share them as a story.';
+
+  @override
+  String get certShare => 'Share as a story';
+
+  @override
+  String get certShareLine => 'Can you get one too? Play Adadi free:';
+
+  @override
+  String get certEarned => 'You earned a certificate! 🎉';
+
+  @override
+  String get certOpen => 'Open it';
+
+  @override
+  String get certCertificate => 'CERTIFICATE';
+
+  @override
+  String get certOfAchievement => 'OF ACHIEVEMENT';
+
+  @override
+  String get certPresentedTo => 'PROUDLY PRESENTED TO';
+
+  @override
+  String get certNoName => 'An Adadi player';
+
+  @override
+  String get certTagline => 'Adadi · Math crossword';
+
+  @override
+  String certStreakTitle(String n) {
+    return '$n-Day Streak';
+  }
+
+  @override
+  String certStreakBody(String n) {
+    return 'for solving the Daily Puzzle $n days in a row.';
+  }
+
+  @override
+  String certLevelsTitle(String n) {
+    return '$n Levels';
+  }
+
+  @override
+  String certLevelsBody(String n) {
+    return 'for completing $n levels of Adadi.';
+  }
+
+  @override
+  String get certExpertTitle => 'Expert Mind';
+
+  @override
+  String certExpertBody(String n) {
+    return 'for completing $n Expert levels.';
+  }
+
+  @override
+  String get certAllDailyTitle => 'Daily Champion';
+
+  @override
+  String get certAllDailyBody =>
+      'for solving all four Daily Puzzles in one day.';
+
+  @override
+  String get backupTitle => 'Backup';
+
+  @override
+  String get backupAuto =>
+      'Your progress is also kept in your iCloud (iPhone, iPad) or Google backup (Android).';
+
+  @override
+  String get backupCodeLabel => 'Your recovery code';
+
+  @override
+  String get backupHelp =>
+      'Keep this code. On a new phone or the web, enter it below to get your levels, stars, streak and coins back.';
+
+  @override
+  String get backupCopy => 'Copy code';
+
+  @override
+  String get backupCopied => 'Code copied.';
+
+  @override
+  String get backupGetting => 'Getting your code…';
+
+  @override
+  String get backupOffline => 'No connection. Try again when you are online.';
+
+  @override
+  String get backupRestoreTitle => 'Restore from a code';
+
+  @override
+  String get backupRestore => 'Restore';
+
+  @override
+  String get backupBadCode =>
+      'That code is not complete. It has 12 letters and digits.';
+
+  @override
+  String get backupConfirm =>
+      'The backup is added to the progress on this device (nothing here is lost). Continue?';
+
+  @override
+  String get backupYesRestore => 'Yes, restore';
+
+  @override
+  String get backupDone => 'Done! Your progress is back.';
+
+  @override
+  String get backupNotFound => 'No backup was found for this code.';
 }

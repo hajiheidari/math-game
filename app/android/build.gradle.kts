@@ -2,12 +2,6 @@ allprojects {
     repositories {
         google()
         mavenCentral()
-        // Cafe Bazaar's billing library (Poolakey) is only published on JitPack;
-        // limited to it so nothing else resolves from there.
-        maven {
-            url = uri("https://jitpack.io")
-            content { includeGroup("com.github.cafebazaar.Poolakey") }
-        }
     }
 }
 

@@ -94,6 +94,9 @@ class FriendHints extends ChangeNotifier {
 
   int get leftToday => max(0, dailyMax - earnedToday);
 
+  /// After a backup was merged into storage (the invite code may change).
+  void reload() => notifyListeners();
+
   // --- Server ------------------------------------------------------------------
 
   DateTime? _lastClaim;

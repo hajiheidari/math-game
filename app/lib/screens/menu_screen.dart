@@ -5,13 +5,16 @@ import 'package:numcross_engine/numcross_engine.dart';
 
 import '../app/app_scope.dart';
 import '../app/palette.dart';
+import '../challenge/challenge.dart';
+import '../challenge/challenge_dialog.dart';
 import '../game/game_screen.dart';
 import '../i18n/dates.dart';
 import '../i18n/labels.dart';
 import '../i18n/locale_controller.dart';
 import '../l10n/app_localizations.dart';
-import '../rewards/friend_hints_ui.dart';
+import '../rewards/coins_ui.dart';
 import 'calendar_screen.dart';
+import 'certificates_screen.dart';
 import 'level_select_screen.dart';
 import 'settings_screen.dart';
 import 'tutorial_screen.dart';
@@ -42,7 +45,7 @@ class _MenuScreenState extends State<MenuScreen> with WidgetsBindingObserver {
     if (state == AppLifecycleState.resumed) _collectHints();
   }
 
-  /// Hints friends earned for the player since last time (FriendHints).
+  /// Coins friends earned for the player since last time (FriendHints).
   Future<void> _collectHints() async {
     if (!mounted) return;
     final n = await AppScope.of(context).hints.claim();
@@ -50,7 +53,7 @@ class _MenuScreenState extends State<MenuScreen> with WidgetsBindingObserver {
     final t = AppLocalizations.of(context);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(t.friendHintsReceived(LocaleScope.of(context).n(n))),
+        content: Text(t.friendCoinsReceived(LocaleScope.of(context).n(n))),
       ),
     );
   }
@@ -69,6 +72,27 @@ class _MenuScreenState extends State<MenuScreen> with WidgetsBindingObserver {
     _startAds = Timer(const Duration(seconds: 1), () {
       if (mounted) app.monetization.start(app.band);
     });
+    final challenge = app.pendingChallenge;
+    app.pendingChallenge = null;
+    if (challenge != null) {
+      await _openChallenge(challenge);
+      if (!mounted) return;
+    }
+    final certs = await app.onMenu();
+    if (certs.isNotEmpty && mounted) await showNewCertificates(context, certs);
+  }
+
+  /// A friend's link: "Can you beat 2:31?", then their puzzle.
+  Future<void> _openChallenge(Challenge challenge) async {
+    final app = AppScope.of(context);
+    final start = await showChallengeDialog(context, challenge);
+    if (start != true || !mounted) return;
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (_) =>
+            GameScreen.challenge(challenge: challenge, progress: app.progress),
+      ),
+    );
   }
 
   @override
@@ -92,6 +116,33 @@ class _MenuScreenState extends State<MenuScreen> with WidgetsBindingObserver {
           ),
         ),
         actions: [
+          if (AppScope.of(context).gameCenter.available)
+            IconButton(
+              key: const ValueKey('game-center'),
+              tooltip: t.leaderboards,
+              icon: const Icon(Icons.leaderboard_outlined),
+              onPressed: AppScope.of(context).gameCenter.show,
+            ),
+          ListenableBuilder(
+            listenable: AppScope.of(context).certificates,
+            builder: (context, _) {
+              final unseen = AppScope.of(context).certificates.unseen;
+              return IconButton(
+                key: const ValueKey('certificates'),
+                tooltip: t.certificates,
+                icon: Badge(
+                  isLabelVisible: unseen > 0,
+                  label: Text(LocaleScope.of(context).n(unseen)),
+                  child: const Icon(Icons.workspace_premium_outlined),
+                ),
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute<void>(
+                    builder: (_) => const CertificatesScreen(),
+                  ),
+                ),
+              );
+            },
+          ),
           IconButton(
             key: const ValueKey('settings'),
             tooltip: t.settings,
@@ -118,7 +169,7 @@ class _MenuScreenState extends State<MenuScreen> with WidgetsBindingObserver {
                     children: [
                       _DailyCard(band: band),
                       const SizedBox(height: 12),
-                      const FriendHintsCard(),
+                      const CoinsCard(),
                       const SizedBox(height: 16),
                       Text(
                         t.menuLevels,

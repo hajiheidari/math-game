@@ -101,9 +101,6 @@ class AppLocalizationsUr extends AppLocalizations {
   String get tryAgain => 'دوبارہ کوشش کریں';
 
   @override
-  String get watchAdForHint => 'اشارے کے لیے اشتہار دیکھیں';
-
-  @override
   String streakDays(int count, String countText) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -123,9 +120,6 @@ class AppLocalizationsUr extends AppLocalizations {
   String get digits => 'ہندسے';
 
   @override
-  String get digitsAuto => 'خودکار';
-
-  @override
   String get digitsWestern => 'انگریزی';
 
   @override
@@ -142,9 +136,6 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get contactSupport => 'سپورٹ سے رابطہ';
-
-  @override
-  String get removeAds => 'اشتہارات ہٹائیں';
 
   @override
   String get previewTitle => 'ڈیزائن کا پیش منظر';
@@ -195,26 +186,7 @@ class AppLocalizationsUr extends AppLocalizations {
   }
 
   @override
-  String get noHintsAvailable =>
-      'ابھی کوئی اشارہ دستیاب نہیں۔ تھوڑی دیر بعد دوبارہ کوشش کریں۔';
-
-  @override
-  String get watchAd => 'اشتہار دیکھیں';
-
-  @override
-  String get extraLife => 'ایک اور موقع کے لیے اشتہار دیکھیں';
-
-  @override
-  String get restorePurchases => 'خریداری بحال کریں';
-
-  @override
-  String get adsRemoved => 'اشتہارات ہٹا دیے گئے۔ شکریہ!';
-
-  @override
   String get privacyChoices => 'رازداری کے انتخاب';
-
-  @override
-  String get purchaseUnavailable => 'خریداری ابھی دستیاب نہیں۔';
 
   @override
   String get tutorialTitle => 'کھیلنے کا طریقہ';
@@ -245,10 +217,10 @@ class AppLocalizationsUr extends AppLocalizations {
   String get skip => 'چھوڑیں';
 
   @override
-  String get shareResult => 'دوستوں کو دکھائیں';
+  String get shareResult => 'دوستوں کو چیلنج کریں';
 
   @override
-  String get shareBeatMe => 'کیا آپ مجھ سے بہتر حل کر سکتے ہیں؟';
+  String get shareBeatMe => 'کیا آپ میرا وقت ہرا سکتے ہیں؟';
 
   @override
   String get shareNoMistakes => 'کوئی غلطی نہیں';
@@ -265,26 +237,198 @@ class AppLocalizationsUr extends AppLocalizations {
   }
 
   @override
-  String get friendHintsTitle => 'دوستوں سے مفت اشارے';
-
-  @override
-  String friendHintsBody(String max) {
-    return 'اپنا لنک یا نتیجہ شیئر کریں۔ جو بھی دوست اسے کھولے، آپ کو ایک اشارہ ملے گا (دن میں $max تک)۔';
-  }
-
-  @override
   String friendHintsToday(String count, String max) {
-    return 'آج: $max میں سے $count';
+    return 'آج دوستوں سے: $count/$max';
   }
 
   @override
-  String friendHintsReceived(String count) {
-    return 'آپ کے دوستوں نے اشارے بھیجے: +$count';
-  }
-
-  @override
-  String get shareForHints => 'جو دوست اسے کھولے گا، آپ کو ایک اشارہ ملے گا۔';
+  String get shareForHints => 'جو دوست اسے کھولے گا، آپ کو ایک سکہ ملے گا۔';
 
   @override
   String get invite => 'دعوت دیں';
+
+  @override
+  String get zoomIn => 'بڑا کریں';
+
+  @override
+  String get zoomOut => 'عام سائز';
+
+  @override
+  String get coinsTitle => 'اشاروں کے لیے سکے';
+
+  @override
+  String coinsBody(String max) {
+    return 'ہر اشارہ ایک سکے کا ہے۔ جو دوست آپ کا چیلنج یا دعوت کا لنک کھولے، آپ کو ایک سکہ ملے گا (دن میں $max تک)۔';
+  }
+
+  @override
+  String get watchAdForCoin => 'اشتہار دیکھیں: +1 سکہ';
+
+  @override
+  String friendCoinsReceived(String count) {
+    return 'آپ کے دوستوں نے سکے بھیجے: +$count';
+  }
+
+  @override
+  String get challengeTitle => 'چیلنج';
+
+  @override
+  String challengeToBeat(String time) {
+    return 'ہرانے کا وقت: $time';
+  }
+
+  @override
+  String get challengeWon => 'آپ دوست سے آگے نکل گئے! 🎉';
+
+  @override
+  String get challengeLost => 'اس بار دوست تیز تھا۔ دوبارہ؟';
+
+  @override
+  String get challengeTie => 'برابر!';
+
+  @override
+  String get challengeYou => 'آپ';
+
+  @override
+  String get challengeFriend => 'دوست';
+
+  @override
+  String get challengeReceived => 'آپ کو چیلنج ملا ہے!';
+
+  @override
+  String challengeBody(String time) {
+    return 'دوست نے یہ پہیلی $time میں حل کی۔ کیا آپ اس سے تیز حل کر سکتے ہیں؟';
+  }
+
+  @override
+  String get challengeStart => 'شروع';
+
+  @override
+  String get later => 'بعد میں';
+
+  @override
+  String get leaderboards => 'لیڈر بورڈ';
+
+  @override
+  String get certificates => 'سرٹیفکیٹ';
+
+  @override
+  String get certNameLabel => 'سرٹیفکیٹ پر آپ کا نام';
+
+  @override
+  String get certNameHelp =>
+      'اختیاری۔ صرف آپ کے فون پر اور آپ کی شیئر کی ہوئی چیزوں میں۔';
+
+  @override
+  String get certHowTo =>
+      'حل کرتے رہیں، اگلے سرٹیفکیٹ حاصل کریں اور اسٹوری میں شیئر کریں۔';
+
+  @override
+  String get certShare => 'اسٹوری میں شیئر کریں';
+
+  @override
+  String get certShareLine => 'کیا آپ بھی حاصل کر سکتے ہیں؟ عددی مفت کھیلیں:';
+
+  @override
+  String get certEarned => 'آپ نے سرٹیفکیٹ حاصل کیا! 🎉';
+
+  @override
+  String get certOpen => 'کھولیں';
+
+  @override
+  String get certCertificate => 'اعزازی سند';
+
+  @override
+  String get certOfAchievement => 'کامیابی کا اعتراف';
+
+  @override
+  String get certPresentedTo => 'فخر کے ساتھ پیش ہے';
+
+  @override
+  String get certNoName => 'عددی کا ایک کھلاڑی';
+
+  @override
+  String get certTagline => 'عددی · ریاضی کراس ورڈ';
+
+  @override
+  String certStreakTitle(String n) {
+    return '$n دن مسلسل';
+  }
+
+  @override
+  String certStreakBody(String n) {
+    return 'روزانہ پہیلی $n دن مسلسل حل کرنے پر۔';
+  }
+
+  @override
+  String certLevelsTitle(String n) {
+    return '$n لیول';
+  }
+
+  @override
+  String certLevelsBody(String n) {
+    return 'عددی کے $n لیول مکمل کرنے پر۔';
+  }
+
+  @override
+  String get certExpertTitle => 'ماہر ذہن';
+
+  @override
+  String certExpertBody(String n) {
+    return '$n ماہر لیول مکمل کرنے پر۔';
+  }
+
+  @override
+  String get certAllDailyTitle => 'آج کا چیمپئن';
+
+  @override
+  String get certAllDailyBody => 'ایک دن میں چاروں روزانہ پہیلیاں حل کرنے پر۔';
+
+  @override
+  String get backupTitle => 'بیک اپ';
+
+  @override
+  String get backupAuto =>
+      'آپ کی پیش رفت iCloud (آئی فون، آئی پیڈ) یا گوگل بیک اپ (اینڈرائیڈ) میں بھی محفوظ رہتی ہے۔';
+
+  @override
+  String get backupCodeLabel => 'آپ کا ریکوری کوڈ';
+
+  @override
+  String get backupHelp =>
+      'یہ کوڈ سنبھال کر رکھیں۔ نئے فون یا ویب پر اسے نیچے درج کریں تاکہ آپ کے لیول، ستارے، سلسلہ اور سکے واپس آ جائیں۔';
+
+  @override
+  String get backupCopy => 'کوڈ کاپی کریں';
+
+  @override
+  String get backupCopied => 'کوڈ کاپی ہو گیا۔';
+
+  @override
+  String get backupGetting => 'کوڈ حاصل کیا جا رہا ہے…';
+
+  @override
+  String get backupOffline => 'کنکشن نہیں ہے۔ آن لائن ہو کر دوبارہ کوشش کریں۔';
+
+  @override
+  String get backupRestoreTitle => 'کوڈ سے بحال کریں';
+
+  @override
+  String get backupRestore => 'بحال کریں';
+
+  @override
+  String get backupBadCode => 'یہ کوڈ مکمل نہیں۔ اس میں 12 حروف اور ہندسے ہیں۔';
+
+  @override
+  String get backupConfirm =>
+      'بیک اپ اس فون کی پیش رفت میں شامل ہو جائے گا (یہاں سے کچھ نہیں مٹے گا)۔ جاری رکھیں؟';
+
+  @override
+  String get backupYesRestore => 'ہاں، بحال کریں';
+
+  @override
+  String get backupDone => 'ہو گیا! آپ کی پیش رفت واپس آ گئی۔';
+
+  @override
+  String get backupNotFound => 'اس کوڈ کا کوئی بیک اپ نہیں ملا۔';
 }

@@ -68,7 +68,6 @@
   "outOfMistakes": "Out of mistakes",
   "nextLevel": "Next level",
   "tryAgain": "Try again",
-  "watchAdForHint": "Watch an ad for a hint",
   "streakDays": "{count, plural, =1{{countText}-day streak} other{{countText}-day streak}}",
   "@streakDays": {
     "placeholders": {
@@ -83,14 +82,12 @@
   "settings": "Settings",
   "language": "Language",
   "digits": "Digits",
-  "digitsAuto": "Automatic",
   "digitsWestern": "Western",
   "digitsNative": "Local",
   "sound": "Sound",
   "haptics": "Vibration",
   "privacyPolicy": "Privacy policy",
   "contactSupport": "Contact support",
-  "removeAds": "Remove ads",
   "previewTitle": "Design preview",
   "showSolution": "Show solution",
   "time": "Time",
@@ -129,13 +126,7 @@
       }
     }
   },
-  "noHintsAvailable": "No hints available right now. Try again in a moment.",
-  "watchAd": "Watch ad",
-  "extraLife": "Watch an ad for one more mistake",
-  "restorePurchases": "Restore purchases",
-  "adsRemoved": "Ads removed. Thank you!",
   "privacyChoices": "Privacy choices",
-  "purchaseUnavailable": "Purchases aren't available right now.",
   "tutorialTitle": "How to play",
   "tutorialStep1": "Drag a number from the tiles into the empty box, or tap the number and then the box. The equation must be true.",
   "tutorialStep2": "Some boxes belong to two equations: across and down. The number has to make both true.",
@@ -144,8 +135,8 @@
   "tutorialDoneBody": "Rows read left to right, columns top to bottom. Stuck? Use a hint.",
   "startPlaying": "Start playing",
   "skip": "Skip",
-  "shareResult": "Show your friends",
-  "shareBeatMe": "Can you beat me?",
+  "shareResult": "Challenge your friends",
+  "shareBeatMe": "Can you beat my time?",
   "shareNoMistakes": "No mistakes",
   "shareCopied": "Copied! Paste it anywhere.",
   "@shareResult": {
@@ -160,16 +151,7 @@
       }
     }
   },
-  "friendHintsTitle": "Free hints from friends",
-  "friendHintsBody": "Share your link or your result. Every friend who opens it gives you a hint (up to {max} a day).",
-  "@friendHintsBody": {
-    "placeholders": {
-      "max": {
-        "type": "String"
-      }
-    }
-  },
-  "friendHintsToday": "Today: {count}/{max}",
+  "friendHintsToday": "From friends today: {count}/{max}",
   "@friendHintsToday": {
     "placeholders": {
       "count": {
@@ -180,17 +162,126 @@
       }
     }
   },
-  "friendHintsReceived": "Your friends sent you hints: +{count}",
-  "@friendHintsReceived": {
+  "shareForHints": "Every friend who opens it gives you a coin.",
+  "invite": "Invite",
+  "@invite": {
+    "description": "Short share button on the menu's hints card."
+  },
+  "zoomIn": "Zoom in",
+  "zoomOut": "Zoom out",
+  "coinsTitle": "Coins for hints",
+  "coinsBody": "Each hint costs one coin. Every friend who opens your challenge or invite link gives you a coin (up to {max} a day).",
+  "@coinsBody": {
+    "placeholders": {
+      "max": {
+        "type": "String"
+      }
+    }
+  },
+  "watchAdForCoin": "Watch an ad: +1 coin",
+  "friendCoinsReceived": "Your friends sent you coins: +{count}",
+  "@friendCoinsReceived": {
     "placeholders": {
       "count": {
         "type": "String"
       }
     }
   },
-  "shareForHints": "Every friend who opens it gives you a hint.",
-  "invite": "Invite",
-  "@invite": {
-    "description": "Short share button on the menu's hints card."
-  }
+  "challengeTitle": "Challenge",
+  "challengeToBeat": "Time to beat: {time}",
+  "@challengeToBeat": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "challengeWon": "You beat your friend! 🎉",
+  "challengeLost": "Your friend was faster this time. Rematch?",
+  "challengeTie": "It's a tie!",
+  "challengeYou": "You",
+  "challengeFriend": "Friend",
+  "challengeReceived": "You got a challenge!",
+  "challengeBody": "A friend solved this puzzle in {time}. Can you beat it?",
+  "@challengeBody": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "challengeStart": "Start",
+  "later": "Later",
+  "leaderboards": "Leaderboards",
+  "certificates": "Certificates",
+  "certNameLabel": "Your name on certificates",
+  "certNameHelp": "Optional. Stays on your phone, only in what you share.",
+  "certHowTo": "Keep solving to earn the next ones, then share them as a story.",
+  "certShare": "Share as a story",
+  "certShareLine": "Can you get one too? Play Adadi free:",
+  "certEarned": "You earned a certificate! 🎉",
+  "certOpen": "Open it",
+  "certCertificate": "CERTIFICATE",
+  "certOfAchievement": "OF ACHIEVEMENT",
+  "certPresentedTo": "PROUDLY PRESENTED TO",
+  "certNoName": "An Adadi player",
+  "certTagline": "Adadi · Math crossword",
+  "certStreakTitle": "{n}-Day Streak",
+  "@certStreakTitle": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "certStreakBody": "for solving the Daily Puzzle {n} days in a row.",
+  "@certStreakBody": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "certLevelsTitle": "{n} Levels",
+  "@certLevelsTitle": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "certLevelsBody": "for completing {n} levels of Adadi.",
+  "@certLevelsBody": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "certExpertTitle": "Expert Mind",
+  "certExpertBody": "for completing {n} Expert levels.",
+  "@certExpertBody": {
+    "placeholders": {
+      "n": {
+        "type": "String"
+      }
+    }
+  },
+  "certAllDailyTitle": "Daily Champion",
+  "certAllDailyBody": "for solving all four Daily Puzzles in one day.",
+  "backupTitle": "Backup",
+  "backupAuto": "Your progress is also kept in your iCloud (iPhone, iPad) or Google backup (Android).",
+  "backupCodeLabel": "Your recovery code",
+  "backupHelp": "Keep this code. On a new phone or the web, enter it below to get your levels, stars, streak and coins back.",
+  "backupCopy": "Copy code",
+  "backupCopied": "Code copied.",
+  "backupGetting": "Getting your code…",
+  "backupOffline": "No connection. Try again when you are online.",
+  "backupRestoreTitle": "Restore from a code",
+  "backupRestore": "Restore",
+  "backupBadCode": "That code is not complete. It has 12 letters and digits.",
+  "backupConfirm": "The backup is added to the progress on this device (nothing here is lost). Continue?",
+  "backupYesRestore": "Yes, restore",
+  "backupDone": "Done! Your progress is back.",
+  "backupNotFound": "No backup was found for this code."
 }

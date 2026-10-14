@@ -12,25 +12,14 @@ class AdConfig {
       ? 'ca-app-pub-3940256099942544/1712485313'
       : 'ca-app-pub-3940256099942544/5224354917';
 
-  static String get interstitialUnitId =>
-      defaultTargetPlatform == TargetPlatform.iOS
-      ? 'ca-app-pub-3940256099942544/4411468910'
-      : 'ca-app-pub-3940256099942544/1033173712';
-
-  /// Brief: never an interstitial during the first 3 completed levels...
-  static const int freeLevels = 3;
-
-  /// ...and at most one every 3 completed levels after that.
-  static const int levelsBetweenInterstitials = 3;
-
-  /// Hints a new player starts with. Wins earn none: hints come from
-  /// friends only (lib/rewards/friend_hints.dart, Amir 2026-10-10).
+  /// Hints a new player starts with. Wins earn none: coins come from
+  /// friends and rewarded ads (Amir, 2026-10-14).
   static const int startingCoins = 0;
-}
 
-/// Store product id of the one-time "Remove ads" purchase. Create it as a
-/// non-consumable in App Store Connect and Google Play Console.
-const String kRemoveAdsProductId = 'remove_ads';
+  /// Coins for one rewarded ad, and how many ads pay in a day.
+  static const int coinsPerAd = 1;
+  static const int rewardedAdsPerDay = 5;
+}
 
 /// Privacy policy shown from Settings: docs/privacy/index.html, published by
 /// site/build.sh (Iranian mirror: adadi.espadna.ir/privacy/).
@@ -42,13 +31,3 @@ const String kSupportEmail = 'espadna.support@gmail.com';
 const String kPrivacyPolicyUrl = kStore == StoreTarget.bazaar
     ? 'https://adadi.espadna.com/privacy/#fa'
     : 'https://adadi.espadna.com/privacy/';
-
-/// Whether an interstitial is due after a level win (pure rule, tested).
-bool interstitialDue({
-  required int levelsWon,
-  required int levelsSinceLast,
-  required bool adsRemoved,
-}) =>
-    !adsRemoved &&
-    levelsWon > AdConfig.freeLevels &&
-    levelsSinceLast >= AdConfig.levelsBetweenInterstitials;

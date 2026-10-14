@@ -4,23 +4,22 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'ad_config.dart';
 import 'ad_service.dart';
-import 'purchase_service.dart';
 
-/// Coins, ad pacing and the "Remove ads" unlock. Local only.
+/// Coins (Amir, 2026-10-14): one coin buys one hint. Coins come from
+/// friends opening the player's links (lib/rewards/friend_hints.dart) and,
+/// where the build has an ad network, from rewarded ads the player chooses
+/// to watch. The app is free: no other ads, nothing to buy.
 ///
-/// Stored keys: `coins`, `adsRemoved`, `stats/levelsWon`,
-/// `stats/sinceInterstitial`. No analytics, nothing about age.
+/// Stored keys: `coins`, `coins/ads` ("yyyy-mm-dd:n", rewarded ads today).
+/// No analytics, nothing about age.
 class Monetization extends ChangeNotifier {
   final SharedPreferences _p;
   final AdService ads;
-  final PurchaseService purchases;
+  final DateTime Function() now;
   bool _started = false;
 
-  Monetization(this._p, {AdService? ads, PurchaseService? purchases})
-    : ads = ads ?? NoAdService(),
-      purchases = purchases ?? NoPurchaseService() {
-    this.purchases.onRemoveAdsOwned = _markAdsRemoved;
-  }
+  Monetization(this._p, {AdService? ads, this.now = DateTime.now})
+    : ads = ads ?? NoAdService();
 
   static AdAudience audienceFor(BandConfig band) {
     final maxAge = band.maxAge;
@@ -30,11 +29,10 @@ class Monetization extends ChangeNotifier {
     );
   }
 
-  /// Starts consent + ads + store. Idempotent. Call after onboarding.
+  /// Starts consent + ads. Idempotent. Call after onboarding.
   Future<void> start(BandConfig band) async {
     if (_started) return;
     _started = true;
-    await purchases.start();
     await ads.start(audienceFor(band));
     notifyListeners();
   }
@@ -59,37 +57,36 @@ class Monetization extends ChangeNotifier {
     return true;
   }
 
-  // --- Remove ads ------------------------------------------------------------
+  /// After a backup was merged into storage.
+  void reload() => notifyListeners();
 
-  bool get adsRemoved => _p.getBool('adsRemoved') ?? false;
+  // --- Rewarded ads ----------------------------------------------------------
 
-  void _markAdsRemoved() {
-    if (adsRemoved) return;
-    _p.setBool('adsRemoved', true);
-    notifyListeners();
+  String get _today {
+    final n = now();
+    return '${n.year}-${n.month.toString().padLeft(2, '0')}-'
+        '${n.day.toString().padLeft(2, '0')}';
   }
 
-  // --- Interstitial pacing ---------------------------------------------------
-
-  int get levelsWon => _p.getInt('stats/levelsWon') ?? 0;
-  int get _sinceInterstitial => _p.getInt('stats/sinceInterstitial') ?? 0;
-
-  /// Call after every won level (Levels mode).
-  Future<void> onLevelWon() async {
-    await _p.setInt('stats/levelsWon', levelsWon + 1);
-    await _p.setInt('stats/sinceInterstitial', _sinceInterstitial + 1);
+  /// Rewarded ads watched today.
+  int get adsToday {
+    final parts = (_p.getString('coins/ads') ?? '').split(':');
+    return parts.length == 2 && parts[0] == _today
+        ? int.tryParse(parts[1]) ?? 0
+        : 0;
   }
 
-  bool get interstitialIsDue => interstitialDue(
-    levelsWon: levelsWon,
-    levelsSinceLast: _sinceInterstitial,
-    adsRemoved: adsRemoved,
-  );
+  /// "Watch an ad for a coin" can be offered now.
+  bool get canWatchAd =>
+      ads.rewardedReady && adsToday < AdConfig.rewardedAdsPerDay;
 
-  /// Shows an interstitial between levels if the pacing rule allows it.
-  Future<void> maybeShowInterstitial() async {
-    if (!interstitialIsDue) return;
-    await _p.setInt('stats/sinceInterstitial', 0);
-    await ads.showInterstitial();
+  /// Shows a rewarded ad; adds [AdConfig.coinsPerAd] when it was watched.
+  Future<bool> watchAdForCoin() async {
+    if (!canWatchAd) return false;
+    final earned = await ads.showRewarded();
+    if (!earned) return false;
+    await _p.setString('coins/ads', '$_today:${adsToday + 1}');
+    await addCoins(AdConfig.coinsPerAd);
+    return true;
   }
 }

@@ -2,17 +2,16 @@
 # Builds the app for one store, without the other store's SDKs:
 #   tool/store_build.sh global apk|appbundle|ipa [flutter build args...]
 #   tool/store_build.sh bazaar apk [flutter build args...]
-# global: App Store / Google Play (no ads or billing for now, lib/main.dart).
-# bazaar: Cafe Bazaar (Adivery + Poolakey, Persian first, lib/main_bazaar.dart).
-# Google Play and Bazaar both reject apps that ship a rival store's billing
-# SDK, so each build drops the other one's packages from pubspec.yaml for the
+# global: App Store / Google Play (no ad network yet, lib/main.dart). No build has billing.
+# bazaar: Cafe Bazaar (Adivery rewarded ads, Persian first, lib/main_bazaar.dart).
+# Each build drops the ad SDKs it does not use from pubspec.yaml for the
 # duration of the build (restored afterwards).
 set -euo pipefail
 store="$1"; kind="$2"; shift 2
 cd "$(dirname "$0")/../app"
 case "$store" in
-  global) drop='adivery|flutter_poolakey|google_mobile_ads|in_app_purchase|app_tracking_transparency'; target=lib/main.dart ;;
-  bazaar) drop='google_mobile_ads|in_app_purchase|app_tracking_transparency'; target=lib/main_bazaar.dart ;;
+  global) drop='adivery|google_mobile_ads|app_tracking_transparency'; target=lib/main.dart ;;
+  bazaar) drop='google_mobile_ads|app_tracking_transparency'; target=lib/main_bazaar.dart ;;
   *) echo "store must be global or bazaar" >&2; exit 2 ;;
 esac
 cp pubspec.yaml /tmp/adadi-pubspec.yaml.bak

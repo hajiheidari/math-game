@@ -81,7 +81,7 @@ jobs:
         working-directory: app
         run: |
           # Same as tool/store_build.sh global, kept for the Xcode steps below.
-          grep -vE '^  (adivery|flutter_poolakey|google_mobile_ads|in_app_purchase|app_tracking_transparency):' pubspec.yaml > pubspec.tmp
+          grep -vE '^  (adivery|google_mobile_ads|app_tracking_transparency):' pubspec.yaml > pubspec.tmp
           mv pubspec.tmp pubspec.yaml
           flutter pub get
           # Build number: pubspec's, plus this run's number, so a re-upload of
@@ -99,6 +99,18 @@ jobs:
             -archivePath "$RUNNER_TEMP/Runner.xcarchive" \
             CODE_SIGNING_ALLOWED=NO archive | tail -40
           test -d "$RUNNER_TEMP/Runner.xcarchive"
+          # An unsigned archive carries no entitlements, and the export keeps
+          # only what the app was signed with: sign it ad hoc with
+          # Runner.entitlements (Game Center, iCloud key-value storage), the
+          # Xcode variables filled in, so the export signs them in for real.
+          if [ -n "${APPLE_TEAM_ID:-}" ]; then
+            sed -e "s/\$(TeamIdentifierPrefix)/$APPLE_TEAM_ID./" \
+                -e "s/\$(CFBundleIdentifier)/com.espadna.adadi/" \
+                ios/Runner/Runner.entitlements > "$RUNNER_TEMP/Runner.entitlements"
+            codesign --force --sign - --entitlements "$RUNNER_TEMP/Runner.entitlements" \
+              "$RUNNER_TEMP/Runner.xcarchive/Products/Applications/Runner.app"
+            codesign -d --entitlements - "$RUNNER_TEMP/Runner.xcarchive/Products/Applications/Runner.app"
+          fi
       - name: Sign (and upload)
         working-directory: app
         run: |

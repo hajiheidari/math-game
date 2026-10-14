@@ -19,6 +19,7 @@ ResultShare result({
   int mistakes = 1,
   bool daily = false,
 }) => ResultShare(
+  band: band13to15,
   isDaily: daily,
   date: daily ? DateTime(2026, 10, 8) : null,
   level: 12,
@@ -83,7 +84,7 @@ void main() {
     expect(lines[1], 'Adadi · Daily Puzzle · 8 October 2026 · Hard');
     expect(lines[2], '⭐⭐  Time 2:31 · No mistakes');
     expect(lines[3], '🔥 5-day streak');
-    expect(lines[4], 'Can you beat me? $link');
+    expect(lines[4], 'Can you beat my time? $link');
   });
 
   test('Persian: Jalali date and Persian digits', () async {

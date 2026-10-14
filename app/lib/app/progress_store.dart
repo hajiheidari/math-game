@@ -4,6 +4,8 @@ import 'package:flutter/foundation.dart';
 import 'package:numcross_engine/numcross_engine.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../challenge/challenge.dart';
+
 /// Levels-mode progress for one band x difficulty.
 class LevelProgress {
   /// Best stars per completed level; index 0 = level 1. Levels are unlocked
@@ -72,6 +74,10 @@ class ProgressStore extends ChangeNotifier {
   /// Save slot for the Daily Puzzle (one unfinished daily per band x difficulty).
   static String dailySlot(String band, Difficulty d) => 'daily/$band/${d.name}';
 
+  /// Save slot for a friend's challenge (one per puzzle).
+  static String challengeSlot(Challenge c) =>
+      'challenge/${c.code.split('-').first}';
+
   /// The unfinished game in [slot], if it is puzzle [id] (level or date).
   Map<String, Object?>? savedGame(String slot, int id) {
     final json = _readGame(slot);
@@ -134,6 +140,22 @@ class ProgressStore extends ChangeNotifier {
     await _p.setString('daily', jsonEncode(all));
     notifyListeners();
   }
+
+  /// Most daily puzzles (difficulties) solved on one calendar day.
+  int mostDailiesInADay() {
+    var best = 0;
+    for (final mask in _daily().values) {
+      var n = 0;
+      for (var m = mask; m != 0; m >>= 1) {
+        n += m & 1;
+      }
+      if (n > best) best = n;
+    }
+    return best;
+  }
+
+  /// After a backup was merged into storage.
+  void reload() => notifyListeners();
 
   /// Consecutive days with a solved daily, ending today — or yesterday, so
   /// the streak stays alive until today is over.

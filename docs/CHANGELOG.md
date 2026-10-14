@@ -1,5 +1,35 @@
 # Changelog
 
+## 0.14.0 — Challenges, coins, backup, certificates
+- **Challenge a friend** (like Tiaro): every shared win is a challenge link
+  (`?c=<band><difficulty><l|d><level|date>-<seconds>&r=<invite code>`, `lib/challenge/`). The
+  friend gets "You got a challenge!", plays the very same puzzle against the sender's time (shown
+  under the toolbar), and the result shows "You vs Friend" and who won; "Challenge your friends"
+  sends it back with their own time. A friend's puzzle never counts as the player's level or daily.
+- **Coins:** a hint costs one coin. Coins come from friends opening the player's challenge or
+  invite link (server-checked, up to 3 a day) and, in the Cafe Bazaar build, from a rewarded
+  Adivery video the player chooses to watch (1 coin, up to 5 a day). The App Store / Play build has
+  no ad network yet. Menu card and "Get coins" dialog with a coin icon.
+- **The app is free:** no interstitials, no "watch an ad for one more mistake", no Remove ads, no
+  purchases in any build (Poolakey and in_app_purchase removed).
+- **Bigger cells on hard / expert boards:** operator-only rows and columns are drawn narrower
+  (`BoardGrid.opTrack`), boards of 9+ cells can be pinch-zoomed (zoom button too), and long tile
+  banks use smaller tiles.
+- **Digits setting** fixed: only shown for languages with their own digits (in English there was
+  nothing to switch), as two clear choices (local / Western).
+- **Backup** (`lib/backup/`): a recovery code (Settings → Backup, `XXXX-XXXX-XXXX`) keeps the save on
+  our server (`/api/backup/*`, Durable Object per code, deleted after 400 days unused); entering it
+  on another phone or the web merges it in (best of each: levels, stars, dailies, coins,
+  certificates). iPhone / iPad: a copy in iCloud key-value storage, restored after a reinstall and on
+  the player's other devices. Android: Auto Backup rules for the app data.
+- **Certificates** for 7/30/100-day streaks, 25/100/250 levels, 10 expert levels and all four
+  dailies in one day: a 9:16 turquoise-and-gold picture with a medal and the player's (optional)
+  name, to share as a story (`lib/certificates/`, Menu → certificate icon).
+- **Game Center** (iPhone / iPad): quiet sign-in, best streak, levels and stars go to three
+  leaderboards; leaderboard button on the menu (native code in `AppDelegate.swift`; entitlements in
+  `Runner.entitlements`). The leaderboards still need creating in App Store Connect.
+- Privacy policy, store texts and landing FAQ updated.
+
 ## 0.13.0 — Turquoise theme
 - The whole app is built on the turquoise of the Easy box (Amir's choice): turquoise buttons and
   title, turquoise-to-teal gradient on the daily card, the share button and the share card, a light

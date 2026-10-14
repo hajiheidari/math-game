@@ -1,7 +1,8 @@
 // Cloudflare Worker for adadi.espadna.com and the espadna.com/adadi-app* route, like Tiaro's
 // crowns-app Worker. Deployed by .github/workflows/site.yml after site/build.sh; never deploy by
 // hand. Static assets (the game is a single page: unknown paths get its index.html) plus the
-// friend-hints API in worker.js (/api/*, one Durable Object with SQLite per player).
+// friend-coins and backup API in worker.js (/api/*, Durable Objects with SQLite: one per
+// player for friends' coins, one per recovery code for backups).
 {
   "name": "adadi",
   "main": "worker.js",
@@ -13,9 +14,15 @@
     "run_worker_first": ["/api/*"]
   },
   "durable_objects": {
-    "bindings": [{ "name": "REFERRALS", "class_name": "Referrals" }]
+    "bindings": [
+      { "name": "REFERRALS", "class_name": "Referrals" },
+      { "name": "BACKUPS", "class_name": "Backups" }
+    ]
   },
-  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["Referrals"] }],
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["Referrals"] },
+    { "tag": "v2", "new_sqlite_classes": ["Backups"] }
+  ],
   "routes": [
     { "pattern": "adadi.espadna.com", "custom_domain": true },
     { "pattern": "espadna.com/adadi-app*", "zone_name": "espadna.com" }

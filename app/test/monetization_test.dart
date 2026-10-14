@@ -8,7 +8,6 @@ import 'package:numcross/app_root.dart';
 import 'package:numcross/monetization/ad_config.dart';
 import 'package:numcross/monetization/ad_service.dart';
 import 'package:numcross/monetization/monetization.dart';
-import 'package:numcross/monetization/purchase_service.dart';
 import 'package:numcross_engine/numcross_engine.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -16,7 +15,7 @@ import 'helpers.dart';
 
 class FakeAds implements AdService {
   AdAudience? audience;
-  int starts = 0, interstitials = 0, rewardedShown = 0;
+  int starts = 0, rewardedShown = 0;
   bool ready = true;
   bool grantReward = true;
 
@@ -39,36 +38,10 @@ class FakeAds implements AdService {
   }
 
   @override
-  Future<void> showInterstitial() async => interstitials++;
-
-  @override
   Future<bool> privacyOptionsRequired() async => true;
 
   @override
   Future<void> showPrivacyOptions() async {}
-}
-
-class FakeStore implements PurchaseService {
-  @override
-  void Function()? onRemoveAdsOwned;
-
-  @override
-  Future<void> start() async {}
-
-  @override
-  bool get available => true;
-
-  @override
-  String? get removeAdsPrice => r'$2.99';
-
-  @override
-  Future<bool> buyRemoveAds() async {
-    onRemoveAdsOwned?.call();
-    return true;
-  }
-
-  @override
-  Future<void> restore() async => onRemoveAdsOwned?.call();
 }
 
 Future<Monetization> newMoney(
@@ -79,7 +52,7 @@ Future<Monetization> newMoney(
   return Monetization(
     await SharedPreferences.getInstance(),
     ads: ads,
-    purchases: FakeStore(),
+    now: () => DateTime(2026, 10, 14, 9),
   );
 }
 
@@ -90,67 +63,12 @@ Future<AdadiApp> appWith(FakeAds ads, Map<String, Object> storage) async {
     locale: LocaleController(initial: languageForCode('en')),
     app: AppController(
       prefs,
-      monetization: Monetization(
-        prefs.shared,
-        ads: ads,
-        purchases: FakeStore(),
-      ),
+      monetization: Monetization(prefs.shared, ads: ads),
     ),
   );
 }
 
 void main() {
-  group('interstitial pacing', () {
-    test('never in the first 3 levels, then at most every 3 levels', () async {
-      final ads = FakeAds();
-      final m = await newMoney(ads);
-      final shownAfter = <int>[];
-      for (var level = 1; level <= 12; level++) {
-        await m.onLevelWon();
-        final before = ads.interstitials;
-        await m.maybeShowInterstitial();
-        if (ads.interstitials > before) shownAfter.add(level);
-      }
-      expect(shownAfter, [4, 7, 10]);
-    });
-
-    test('pure rule', () {
-      expect(
-        interstitialDue(levelsWon: 3, levelsSinceLast: 3, adsRemoved: false),
-        isFalse,
-      );
-      expect(
-        interstitialDue(levelsWon: 4, levelsSinceLast: 2, adsRemoved: false),
-        isFalse,
-      );
-      expect(
-        interstitialDue(levelsWon: 4, levelsSinceLast: 4, adsRemoved: false),
-        isTrue,
-      );
-      expect(
-        interstitialDue(levelsWon: 9, levelsSinceLast: 9, adsRemoved: true),
-        isFalse,
-      );
-    });
-
-    test('remove ads stops interstitials and survives restarts', () async {
-      final ads = FakeAds();
-      final m = await newMoney(ads, {
-        'stats/levelsWon': 10,
-        'stats/sinceInterstitial': 5,
-      });
-      await m.purchases.buyRemoveAds();
-      expect(m.adsRemoved, isTrue);
-      await m.maybeShowInterstitial();
-      expect(ads.interstitials, 0);
-      final again = Monetization(
-        await SharedPreferences.getInstance(),
-        ads: ads,
-      );
-      expect(again.adsRemoved, isTrue);
-    });
-  });
-
   group('coins', () {
     test('start with none (friends give hints), spend and earn', () async {
       final m = await newMoney(FakeAds());
@@ -161,6 +79,26 @@ void main() {
       expect(m.coins, 2);
       expect(await m.spendCoin(), isTrue);
       expect(m.coins, 1);
+    });
+
+    test('a watched rewarded ad gives a coin, at most 5 a day', () async {
+      final ads = FakeAds();
+      final m = await newMoney(ads);
+      for (var i = 0; i < 7; i++) {
+        await m.watchAdForCoin();
+      }
+      expect(ads.rewardedShown, AdConfig.rewardedAdsPerDay);
+      expect(m.coins, AdConfig.rewardedAdsPerDay * AdConfig.coinsPerAd);
+      expect(m.canWatchAd, isFalse);
+    });
+
+    test('a skipped ad gives nothing; no network, no button', () async {
+      final ads = FakeAds()..grantReward = false;
+      final m = await newMoney(ads);
+      expect(await m.watchAdForCoin(), isFalse);
+      expect(m.coins, 0);
+      ads.ready = false;
+      expect(m.canWatchAd, isFalse);
     });
   });
 
@@ -203,7 +141,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 500));
   }
 
-  testWidgets('out of hints: no ad, the friends dialog with invite', (
+  testWidgets('out of coins: the coins dialog with an ad and the invite', (
     tester,
   ) async {
     usePhone(tester);
@@ -213,14 +151,38 @@ void main() {
 
     await tester.tap(find.byKey(const ValueKey('hint')));
     await tester.pumpAndSettle();
-    expect(find.text('Free hints from friends'), findsOneWidget);
+    expect(find.text('Coins for hints'), findsOneWidget);
     expect(find.byKey(const ValueKey('invite')), findsOneWidget);
-    expect(find.text('Today: 0/3'), findsOneWidget);
-    expect(ads.rewardedShown, 0);
+    expect(find.text('From friends today: 0/3'), findsOneWidget);
+    await tester.tap(find.byKey(const ValueKey('watch-ad')));
+    await tester.pumpAndSettle();
+    expect(ads.rewardedShown, 1);
+    expect(find.text('Coins for hints'), findsNothing);
+
+    // The coin buys the hint.
+    await tester.tap(find.byKey(const ValueKey('hint')));
+    await tester.pumpAndSettle();
+    expect(find.text('Coins for hints'), findsNothing);
+    final prefs = await SharedPreferences.getInstance();
+    expect(prefs.getInt('coins'), 0);
     await tester.pumpWidget(const SizedBox());
   });
 
-  testWidgets('lost level: extra life via rewarded ad, once', (tester) async {
+  testWidgets('no ad network: no "watch an ad" button', (tester) async {
+    usePhone(tester);
+    final ads = FakeAds()..ready = false;
+    await tester.pumpWidget(await appWith(ads, {'band': '13-15', 'coins': 0}));
+    await openLevel(tester);
+    await tester.tap(find.byKey(const ValueKey('hint')));
+    await tester.pumpAndSettle();
+    expect(find.byKey(const ValueKey('watch-ad')), findsNothing);
+    expect(find.byKey(const ValueKey('invite')), findsOneWidget);
+    await tester.pumpWidget(const SizedBox());
+  });
+
+  testWidgets('a lost level offers no ad (rewarded ads are for coins only)', (
+    tester,
+  ) async {
     usePhone(tester);
     final ads = FakeAds();
     await tester.pumpWidget(await appWith(ads, {'band': '18+'}));
@@ -232,35 +194,15 @@ void main() {
       for (var i = 0; i < p.bank.length; i++)
         if (p.bank[i] != p.solution[cell]) i,
     ].first;
-    Future<void> mistake() async {
+    for (var i = 0; i < band18plus[Difficulty.easy].mistakesAllowed!; i++) {
       await tester.tap(find.byKey(ValueKey('tile-$wrong')));
       await tester.pump();
       await tester.tap(find.byKey(ValueKey('cell-${cell.row}-${cell.col}')));
       await tester.pump();
     }
-
-    for (var i = 0; i < band18plus[Difficulty.easy].mistakesAllowed!; i++) {
-      await mistake();
-    }
-    await tester.pump(const Duration(milliseconds: 300));
-    await tester.tap(find.byKey(const ValueKey('extra-life')));
-    await tester.pump();
-    await tester.pump(const Duration(milliseconds: 300));
-    expect(ads.rewardedShown, 1);
-    expect(
-      find.byKey(const ValueKey('result-primary')),
-      findsNothing,
-      reason: 'playing again',
-    );
-
-    await mistake();
     await tester.pump(const Duration(milliseconds: 300));
     expect(find.byKey(const ValueKey('result-primary')), findsOneWidget);
-    expect(
-      find.byKey(const ValueKey('extra-life')),
-      findsNothing,
-      reason: 'only once',
-    );
+    expect(ads.rewardedShown, 0);
     await tester.pumpWidget(const SizedBox());
   });
 }

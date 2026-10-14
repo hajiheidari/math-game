@@ -9,6 +9,7 @@ import 'package:share_plus/share_plus.dart';
 
 import '../app/app_scope.dart';
 import '../app/palette.dart';
+import '../challenge/challenge.dart';
 import '../game/game_controller.dart' show formatClock;
 import '../i18n/dates.dart';
 import '../i18n/labels.dart';
@@ -20,6 +21,8 @@ import 'web_share.dart';
 
 /// A won puzzle, as the player shares it (picture card + text).
 class ResultShare {
+  /// The puzzle's age band (part of the challenge link).
+  final BandConfig band;
   final bool isDaily;
 
   /// The daily puzzle's date (daily only).
@@ -34,6 +37,7 @@ class ResultShare {
   final int? streak;
 
   const ResultShare({
+    required this.band,
     required this.isDaily,
     this.date,
     required this.level,
@@ -50,6 +54,15 @@ class ResultShare {
       difficulty == Difficulty.hard || difficulty == Difficulty.expert;
 
   bool get flawless => mistakes == 0;
+
+  /// The same puzzle against this time, for friends.
+  Challenge get challenge => Challenge(
+    band: band,
+    difficulty: difficulty,
+    level: isDaily ? 0 : level,
+    date: isDaily ? date : null,
+    time: elapsed,
+  );
 
   /// Same pick for the same result, so the dialog and the post match.
   int get _seed => elapsed.inSeconds + level * 7 + (date?.day ?? 0);
@@ -93,7 +106,7 @@ class ResultShare {
       : null;
 
   /// The text that goes with the picture (or alone on the web).
-  /// [link]: the player's link with their invite code (FriendHints.link).
+  /// [link]: the challenge link with the player's invite code.
   String text(
     AppLocalizations t,
     LocaleController locale, {
@@ -119,8 +132,9 @@ List<String> emojiFallback = const [];
 enum ShareOutcome { shared, copied, failed }
 
 /// Opens the share sheet: picture + text on phones; text on the web (the
-/// browser's share sheet, or the clipboard when it has none). The link in it
-/// carries the player's invite code: friends who open it earn them hints.
+/// browser's share sheet, or the clipboard when it has none). The link is a
+/// challenge (same puzzle, this time to beat) with the player's invite code:
+/// friends who open it earn them coins.
 Future<ShareOutcome> shareResult(
   BuildContext context,
   ResultShare result, {
@@ -128,20 +142,27 @@ Future<ShareOutcome> shareResult(
 }) async {
   final t = AppLocalizations.of(context);
   final locale = LocaleScope.of(context);
-  final link = AppScope.of(context).hints.link(Uri.base);
+  final hints = AppScope.of(context).hints;
+  final link = result.challenge.link(FriendHints.siteFor(Uri.base), hints.code);
   final text = result.text(t, locale, link: link);
   final png = kIsWeb ? null : await renderResultCard(result, t, locale);
-  return _share(text, png: png, origin: origin);
+  return shareText(text, png: png, origin: origin);
 }
 
 /// "Invite friends": a short message with the player's link.
 Future<ShareOutcome> shareInvite(BuildContext context, {Rect? origin}) {
   final t = AppLocalizations.of(context);
   final link = AppScope.of(context).hints.link(Uri.base);
-  return _share(t.inviteMessage(link), origin: origin);
+  return shareText(t.inviteMessage(link), origin: origin);
 }
 
-Future<ShareOutcome> _share(String text, {Uint8List? png, Rect? origin}) async {
+/// Shares [text] (and the picture [png], on phones) through the share sheet;
+/// the clipboard when there is none.
+Future<ShareOutcome> shareText(
+  String text, {
+  Uint8List? png,
+  Rect? origin,
+}) async {
   try {
     if (kIsWeb) {
       if (await webShareText(text)) return ShareOutcome.shared;

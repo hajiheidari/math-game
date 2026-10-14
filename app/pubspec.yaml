@@ -3,7 +3,7 @@ description: "Adadi — math crossword puzzles for ages 13+."
 publish_to: 'none'
 
 # Semantic version; bumped after every build-order step.
-version: 0.13.0+28
+version: 0.14.0+29
 
 environment:
   sdk: ^3.13.4
@@ -17,10 +17,8 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  flutter_poolakey: {path: third_party/flutter_poolakey}
   google_mobile_ads: ^9.1.0
   http: ^1.6.0
-  in_app_purchase: ^3.3.1
   intl: any
   numcross_engine:
     path: ../packages/numcross_engine

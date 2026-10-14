@@ -157,7 +157,6 @@ class _PreviewScreenState extends State<PreviewScreen> {
               runSpacing: 8,
               children: [
                 for (final (mode, label) in [
-                  (DigitMode.auto, t.digitsAuto),
                   (DigitMode.western, t.digitsWestern),
                   (DigitMode.native, t.digitsNative),
                 ])

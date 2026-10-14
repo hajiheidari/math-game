@@ -12,7 +12,8 @@ class AdAudience {
   static const adult = AdAudience(teen: false, underAgeOfConsent: false);
 }
 
-/// Everything the app needs from an ad network.
+/// Everything the app needs from an ad network. Rewarded ads only: the
+/// player chooses to watch one for a coin (Amir, 2026-10-14: no other ads).
 abstract class AdService {
   /// Consent (UMP), then ATT on iOS, then the SDK. Call once, after
   /// onboarding (not on the first frame).
@@ -26,16 +27,14 @@ abstract class AdService {
   /// Shows a rewarded ad; true if the reward was earned.
   Future<bool> showRewarded();
 
-  /// Shows an interstitial if one is loaded; completes when it is closed.
-  Future<void> showInterstitial();
-
   /// Whether the "Privacy choices" entry must be offered (UMP).
   Future<bool> privacyOptionsRequired();
 
   Future<void> showPrivacyOptions();
 }
 
-/// Used on web/desktop and in tests: no ads at all.
+/// Used on web/desktop, in tests, and in the App Store / Play build until an
+/// ad network is chosen: no ads at all ("Watch an ad" is hidden).
 class NoAdService implements AdService {
   @override
   Future<void> start(AdAudience audience) async {}
@@ -48,9 +47,6 @@ class NoAdService implements AdService {
 
   @override
   Future<bool> showRewarded() async => false;
-
-  @override
-  Future<void> showInterstitial() async {}
 
   @override
   Future<bool> privacyOptionsRequired() async => false;

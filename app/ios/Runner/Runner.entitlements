@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Game Center (leaderboards, lib/services/game_center.dart). -->
+	<key>com.apple.developer.game-center</key>
+	<true/>
+	<!-- iCloud key-value storage: the progress backup survives deleting the app
+	     and reaches the player's other iPhone / iPad (lib/backup/cloud_save.dart). -->
+	<key>com.apple.developer.ubiquity-kvstore-identifier</key>
+	<string>$(TeamIdentifierPrefix)$(CFBundleIdentifier)</string>
+</dict>
+</plist>

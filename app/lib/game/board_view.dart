@@ -27,10 +27,17 @@ typedef NumberCellBuilder = Widget Function(
 /// app runs in an RTL language: equations are read "7 + 5 = 12" in Persian,
 /// Arabic and Urdu school math too, and mirroring would turn "12 − 5 = 7"
 /// into "7 = 5 − 12". Only the digits change with the language.
+///
+/// Rows and columns that hold only operators and "=" are drawn narrower
+/// ([opTrack] of a number cell), so number cells get bigger on large boards.
 class BoardGrid extends StatelessWidget {
   final Puzzle puzzle;
   final NumberCellBuilder numberCell;
   final double maxCellSize;
+
+  /// Width of an operator-only column (height of an operator-only row),
+  /// as a share of a number cell.
+  static const double opTrack = 0.55;
 
   const BoardGrid({
     super.key,
@@ -39,21 +46,42 @@ class BoardGrid extends StatelessWidget {
     this.maxCellSize = 64,
   });
 
+  /// Size of each track in number-cell units: 1 or [opTrack].
+  static List<double> tracks(Puzzle puzzle, {required bool rows}) => [
+    for (var i = 0; i < (rows ? puzzle.rows : puzzle.cols); i++)
+      [
+            for (var j = 0; j < (rows ? puzzle.cols : puzzle.rows); j++)
+              puzzle.cellAt(rows ? Pos(i, j) : Pos(j, i)).kind,
+          ].contains(CellKind.number)
+          ? 1.0
+          : opTrack,
+  ];
+
   @override
   Widget build(BuildContext context) {
     final scheme = Theme.of(context).colorScheme;
+    final colUnits = tracks(puzzle, rows: false);
+    final rowUnits = tracks(puzzle, rows: true);
+    double sum(List<double> l) => l.fold(0.0, (a, b) => a + b);
     return Directionality(
       textDirection: TextDirection.ltr,
       child: LayoutBuilder(
         builder: (context, constraints) {
-          final byWidth = constraints.maxWidth / puzzle.cols;
+          final byWidth = constraints.maxWidth / sum(colUnits);
           final byHeight = constraints.hasBoundedHeight
-              ? constraints.maxHeight / puzzle.rows
+              ? constraints.maxHeight / sum(rowUnits)
               : double.infinity;
           final size = math.min(byWidth, byHeight).clamp(16.0, maxCellSize);
+          final left = [0.0], top = [0.0];
+          for (final u in colUnits) {
+            left.add(left.last + u * size);
+          }
+          for (final u in rowUnits) {
+            top.add(top.last + u * size);
+          }
           return SizedBox(
-            width: size * puzzle.cols,
-            height: size * puzzle.rows,
+            width: left.last,
+            height: top.last,
             child: Stack(
               children: [
                 for (var r = 0; r < puzzle.rows; r++)
@@ -61,20 +89,24 @@ class BoardGrid extends StatelessWidget {
                     if (puzzle.cellAt(Pos(r, c)) case final info
                         when info.kind != CellKind.empty)
                       Positioned(
-                        left: c * size,
-                        top: r * size,
-                        width: size,
-                        height: size,
+                        left: left[c],
+                        top: top[r],
+                        width: colUnits[c] * size,
+                        height: rowUnits[r] * size,
                         child: info.kind == CellKind.number
                             ? numberCell(context, Pos(r, c), size)
                             : Center(
-                                child: Text(
-                                  info.kind == CellKind.equals
-                                      ? '='
-                                      : info.op!.symbol,
-                                  style: numeralStyle(context).copyWith(
-                                    fontSize: size * 0.5,
-                                    color: scheme.onSurfaceVariant,
+                                child: FittedBox(
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(
+                                    info.kind == CellKind.equals
+                                        ? '='
+                                        : info.op!.symbol,
+                                    style: numeralStyle(context).copyWith(
+                                      fontSize: size * 0.5,
+                                      height: 1,
+                                      color: scheme.onSurfaceVariant,
+                                    ),
                                   ),
                                 ),
                               ),

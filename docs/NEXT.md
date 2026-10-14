@@ -1,37 +1,27 @@
-# Next update: open questions
+# Next update: open points
 
-Things Amir asked to look at for the version after 0.13.0 (the first App Store release).
+0.14.0 (2026-10-14) did what Amir asked for after 0.13.0: challenges, coins, rewarded ads only,
+free app, bigger cells, digits fix, backup (recovery code, iCloud, Google), certificates and Game
+Center (see CHANGELOG). What is left:
 
-## Must: never lose a player's progress (Amir, 2026-10-12)
+## Apple (only after the 0.13.0 review result, Amir 2026-10-13)
+1. Create the three Game Center leaderboards in App Store Connect ("Best score", integer, high to
+   low): `adadi.best_streak`, `adadi.levels`, `adadi.stars` (docs/store/appstore-listing.md), and
+   add them to the 0.14.0 version.
+2. Build 0.14.0 with `ios.yml`. New this time: the app is signed with `Runner.entitlements` (Game
+   Center + iCloud key-value storage). The workflow signs the archive ad hoc with those
+   entitlements so the export keeps them; check in its log that `codesign -d --entitlements` lists
+   both, and that the export did not fail on the iCloud capability (if it did: developer.apple.com
+   → Identifiers → com.espadna.adadi → enable iCloud, then run again).
+3. App Privacy answers change (backup data): docs/store/appstore-listing.md → "App Privacy".
 
-Adadi 0.13.0 keeps everything only in the app's local storage (shared_preferences): deleting the
-app or changing phones loses levels, stars, streak and hints. The next update adds, without any
-sign-up:
-1. **iPhone / iPad: iCloud.** Mirror the save into iCloud key-value storage
-   (`NSUbiquitousKeyValueStore`, up to 1 MB; ours is a few KB): restored automatically after a
-   reinstall and synced to the player's other Apple devices. Needs the iCloud (key-value)
-   capability on the App ID and the entitlement in `ios/Runner/Runner.entitlements`.
-2. **Android: Google backup.** Android Auto Backup restores app data on reinstall / a new phone
-   when the player's Google backup is on. Make it explicit (`allowBackup`, `dataExtractionRules`
-   for Android 12+ device-to-device transfer) and check the shared_preferences file is included.
-   Not reliable for Cafe Bazaar players in Iran (Google services), hence 3.
-3. **Every platform: recovery code**, as in Tiaro (Settings → Backup; Tiaro:
-   `src/services/invites.ts`, `keychain.native.ts`, `app/settings.tsx`): the progress snapshot is
-   saved on our server (site/worker.js, the Durable Object already used for friend hints) under a
-   secret code shown as XXXX-XXXX-XXXX; entering it on another phone or the web brings everything
-   back. On iPhone the key also goes into the keychain, which survives a reinstall.
-Merging rule when two saves meet: keep the best of each (more levels, more stars, longer streak,
-every solved daily), never overwrite with less.
+## Rewarded ads in the App Store / Google Play build
+Coins from ads exist only in the Cafe Bazaar build (Adivery). For Apple / Google, Amir picks the
+network (AdMob code is ready in `lib/monetization/admob_ad_service.dart`; Tiaro dropped AdMob).
+Then: `lib/main.dart` passes it to `runAdadi(ads: ...)`, `tool/store_build.sh` / `ios.yml` keep its
+package, the ATT text and SKAdNetwork ids go back into Info.plist, the privacy texts change.
 
-## Compete with friends, or play alone? (Amir, 2026-10-11)
-
-Tiaro has a "challenge a friend" mode: the shared link opens the same puzzle for the friend, who
-plays it against the sender's time (both times on the win card; Tiaro: `src/app/c/[code].tsx`,
-`encodeChallenge` / `decodeChallenge`, `?vs=<seconds>`). Adadi today is solo: the share card only
-says "Can you beat me?" and links to the game, and friends who open it earn the sender a hint.
-
-Before the next update, compare the two and decide whether Adadi should get a challenge mode:
-- what the friend sees: the exact same puzzle (seeded: `numcross/v1` + band/difficulty/level or the
-  daily date are enough to rebuild it) and the sender's time to beat;
-- whether it fits with "hints from friends" (a challenge link would still carry the invite code);
-- data from both apps once they are live (shares, link opens, installs) if available.
+## Challenge links that open the app
+Challenge links open the web game (works on every phone, nothing to install). To open the app
+instead when it is installed: universal links (Associated Domains entitlement + AASA file with the
+Team ID) and Android App Links (assetlinks.json with the Play / Bazaar signing SHA-256).

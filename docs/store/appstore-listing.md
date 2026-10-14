@@ -25,11 +25,15 @@ Adadi is a crossword made of numbers. Every row and every column is an equation:
 • Every puzzle has exactly one answer: no guessing, just arithmetic and logic
 • A new daily puzzle every day, with a streak calendar
 • Four difficulties: Easy, Medium, Hard and Expert
-• Stuck? Free hints from friends: every friend who opens your invite or your result gives you one (up to 3 a day)
-• Share your wins with friends: a picture card and a challenge
+• Challenge your friends: they play the very same puzzle against your time
+• Coins for hints: every friend who opens your challenge or invite gives you one (up to 3 a day)
+• Certificates for your streaks and milestones, made to share as a story
+• Game Center leaderboards: best streak, levels and stars
+• Your progress is safe: iCloud backup and a recovery code for a new phone
+• Big boards zoom in, so every cell is easy to tap
 • English, Arabic, Persian and Urdu, with Western or local digits
 • Plays well on iPhone and iPad, offline
-• No sign-up: your progress stays on your device
+• No sign-up
 
 Adadi is free, with no ads and no purchases.
 
@@ -43,18 +47,30 @@ Adadi is free, with no ads and no purchases.
 
 **App Review notes:**
 No account is needed. On first launch the app asks for an age group (13+); choose "18+".
-No ads and no in-app purchases. Hints: a player starts with none and gets one each time a friend
-opens a link they shared (Menu → Invite friends, or "Show your friends" after a win), up to 3 a day.
-The friend opens it in the web game (adadi.espadna.com); only random codes are sent to our server.
+No ads and no in-app purchases. Hints cost coins: a player starts with none and gets one each time a
+friend opens a link they shared (Menu → Invite, or "Challenge your friends" after a win), up to 3 a
+day. The friend opens it in the web game (adadi.espadna.com) and plays the same puzzle against the
+sender's time; only random codes are sent to our server. Settings → Backup shows a recovery code
+(the progress is saved on our server under it, and in the player's iCloud). Game Center is optional.
 
 ## App Privacy
-No ads, no analytics, no tracking. The only data that leaves the device is for "hints from friends"
-(random invite codes, and a salted hash of the IP address kept for 2 days; see the privacy policy):
+No ads, no analytics, no tracking. Data that leaves the device: "coins from friends" (random invite
+codes, a salted hash of the IP address kept for 2 days) and the backup (game progress under a random
+recovery code; see the privacy policy). From 0.14.0 the answers are:
 - **Data Used to Track You:** none. Answer "No" to tracking.
-- **Identifiers → User ID** (the random invite code): purpose **App Functionality**; **not linked**
-  to the user's identity; **not used for tracking**.
-- Nothing else is collected.
+- **Identifiers → User ID** (the random invite code / recovery code): purpose **App Functionality**;
+  **not linked** to the user's identity; **not used for tracking**.
+- **Usage Data → Product Interaction** (levels, stars, streaks in the backup): **App Functionality**;
+  not linked; not used for tracking.
+- **User Content → Other User Content** (the optional name on certificates, in the backup):
+  **App Functionality**; not linked; not used for tracking.
+- Game Center scores go to Apple (Apple's own disclosure; nothing to add here).
 
 ## In-app purchase
-None for now. If a "remove_ads" product was already created in App Store Connect, leave it unsubmitted
-(do not attach it to this version).
+None: the app is free (Amir, 2026-10-14). If a "remove_ads" product was created in App Store Connect,
+leave it unsubmitted.
+
+## Game Center (0.14.0, after the 0.13.0 review)
+Leaderboards to create (App Store Connect → the app → Services → Game Center), "Best score",
+integer, high to low: `adadi.best_streak` (Best daily streak), `adadi.levels` (Levels completed),
+`adadi.stars` (Stars). Then add them to the 0.14.0 version page (Game Center section).

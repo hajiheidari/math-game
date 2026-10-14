@@ -101,9 +101,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get tryAgain => 'حاول مجددًا';
 
   @override
-  String get watchAdForHint => 'شاهد إعلانًا للحصول على تلميح';
-
-  @override
   String streakDays(int count, String countText) {
     String _temp0 = intl.Intl.pluralLogic(
       count,
@@ -127,9 +124,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get digits => 'الأرقام';
 
   @override
-  String get digitsAuto => 'تلقائي';
-
-  @override
   String get digitsWestern => 'غربية';
 
   @override
@@ -146,9 +140,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get contactSupport => 'التواصل مع الدعم';
-
-  @override
-  String get removeAds => 'إزالة الإعلانات';
 
   @override
   String get previewTitle => 'معاينة التصميم';
@@ -199,26 +190,7 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get noHintsAvailable =>
-      'لا تتوفر تلميحات الآن. حاول مرة أخرى بعد قليل.';
-
-  @override
-  String get watchAd => 'مشاهدة الإعلان';
-
-  @override
-  String get extraLife => 'شاهد إعلانًا للحصول على محاولة إضافية';
-
-  @override
-  String get restorePurchases => 'استعادة المشتريات';
-
-  @override
-  String get adsRemoved => 'تمت إزالة الإعلانات. شكرًا لك!';
-
-  @override
   String get privacyChoices => 'خيارات الخصوصية';
-
-  @override
-  String get purchaseUnavailable => 'الشراء غير متاح حاليًا.';
 
   @override
   String get tutorialTitle => 'طريقة اللعب';
@@ -249,10 +221,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get skip => 'تخطٍّ';
 
   @override
-  String get shareResult => 'أرِها لأصدقائك';
+  String get shareResult => 'تحدَّ أصدقاءك';
 
   @override
-  String get shareBeatMe => 'هل تستطيع التفوق علي؟';
+  String get shareBeatMe => 'هل تستطيع التغلب على وقتي؟';
 
   @override
   String get shareNoMistakes => 'بلا أخطاء';
@@ -269,26 +241,196 @@ class AppLocalizationsAr extends AppLocalizations {
   }
 
   @override
-  String get friendHintsTitle => 'تلميحات مجانية من أصدقائك';
-
-  @override
-  String friendHintsBody(String max) {
-    return 'شارك رابطك أو نتيجتك. كل صديق يفتحه يمنحك تلميحًا (حتى $max في اليوم).';
-  }
-
-  @override
   String friendHintsToday(String count, String max) {
-    return 'اليوم: $count من $max';
+    return 'من الأصدقاء اليوم: $count/$max';
   }
 
   @override
-  String friendHintsReceived(String count) {
-    return 'أرسل لك أصدقاؤك تلميحات: +$count';
-  }
-
-  @override
-  String get shareForHints => 'كل صديق يفتحه يمنحك تلميحًا.';
+  String get shareForHints => 'كل صديق يفتحه يمنحك عملة.';
 
   @override
   String get invite => 'ادعُ';
+
+  @override
+  String get zoomIn => 'تكبير';
+
+  @override
+  String get zoomOut => 'الحجم العادي';
+
+  @override
+  String get coinsTitle => 'عملات للتلميحات';
+
+  @override
+  String coinsBody(String max) {
+    return 'كل تلميح يكلّف عملة واحدة. كل صديق يفتح رابط التحدي أو الدعوة يمنحك عملة (حتى $max في اليوم).';
+  }
+
+  @override
+  String get watchAdForCoin => 'شاهد إعلانًا: +1 عملة';
+
+  @override
+  String friendCoinsReceived(String count) {
+    return 'أرسل لك أصدقاؤك عملات: +$count';
+  }
+
+  @override
+  String get challengeTitle => 'تحدٍّ';
+
+  @override
+  String challengeToBeat(String time) {
+    return 'الوقت المطلوب تجاوزه: $time';
+  }
+
+  @override
+  String get challengeWon => 'تفوّقت على صديقك! 🎉';
+
+  @override
+  String get challengeLost => 'كان صديقك أسرع هذه المرة. جولة أخرى؟';
+
+  @override
+  String get challengeTie => 'تعادل!';
+
+  @override
+  String get challengeYou => 'أنت';
+
+  @override
+  String get challengeFriend => 'صديقك';
+
+  @override
+  String get challengeReceived => 'وصلك تحدٍّ!';
+
+  @override
+  String challengeBody(String time) {
+    return 'حلّ صديقك هذا اللغز في $time. هل يمكنك التغلب عليه؟';
+  }
+
+  @override
+  String get challengeStart => 'ابدأ';
+
+  @override
+  String get later => 'لاحقًا';
+
+  @override
+  String get leaderboards => 'لوحات الصدارة';
+
+  @override
+  String get certificates => 'الشهادات';
+
+  @override
+  String get certNameLabel => 'اسمك على الشهادات';
+
+  @override
+  String get certNameHelp => 'اختياري. يبقى على هاتفك، وفي ما تشاركه فقط.';
+
+  @override
+  String get certHowTo => 'واصل الحل لتحصل على المزيد، ثم شاركها في قصتك.';
+
+  @override
+  String get certShare => 'شاركها في القصة';
+
+  @override
+  String get certShareLine => 'هل تستطيع الحصول على واحدة؟ العب عددي مجانًا:';
+
+  @override
+  String get certEarned => 'حصلت على شهادة! 🎉';
+
+  @override
+  String get certOpen => 'افتحها';
+
+  @override
+  String get certCertificate => 'شهادة تقدير';
+
+  @override
+  String get certOfAchievement => 'وإنجاز';
+
+  @override
+  String get certPresentedTo => 'تُمنح بكل فخر إلى';
+
+  @override
+  String get certNoName => 'لاعب في عددي';
+
+  @override
+  String get certTagline => 'عددي · كلمات متقاطعة رياضية';
+
+  @override
+  String certStreakTitle(String n) {
+    return 'سلسلة $n يومًا';
+  }
+
+  @override
+  String certStreakBody(String n) {
+    return 'لحلّ لغز اليوم $n يومًا متتاليًا.';
+  }
+
+  @override
+  String certLevelsTitle(String n) {
+    return '$n مرحلة';
+  }
+
+  @override
+  String certLevelsBody(String n) {
+    return 'لإكمال $n مرحلة في عددي.';
+  }
+
+  @override
+  String get certExpertTitle => 'عقل خبير';
+
+  @override
+  String certExpertBody(String n) {
+    return 'لإكمال $n مراحل في مستوى الخبير.';
+  }
+
+  @override
+  String get certAllDailyTitle => 'بطل اليوم';
+
+  @override
+  String get certAllDailyBody => 'لحلّ ألغاز اليوم الأربعة في يوم واحد.';
+
+  @override
+  String get backupTitle => 'النسخ الاحتياطي';
+
+  @override
+  String get backupAuto =>
+      'يُحفظ تقدّمك أيضًا في iCloud (آيفون وآيباد) أو نسخة Google الاحتياطية (أندرويد).';
+
+  @override
+  String get backupCodeLabel => 'رمز الاسترداد الخاص بك';
+
+  @override
+  String get backupHelp =>
+      'احتفظ بهذا الرمز. على هاتف جديد أو على الويب، أدخله أدناه لاستعادة مراحلك ونجومك وسلسلتك وعملاتك.';
+
+  @override
+  String get backupCopy => 'نسخ الرمز';
+
+  @override
+  String get backupCopied => 'تم نسخ الرمز.';
+
+  @override
+  String get backupGetting => 'جارٍ الحصول على الرمز…';
+
+  @override
+  String get backupOffline => 'لا يوجد اتصال. حاول مرة أخرى عند الاتصال.';
+
+  @override
+  String get backupRestoreTitle => 'الاستعادة برمز';
+
+  @override
+  String get backupRestore => 'استعادة';
+
+  @override
+  String get backupBadCode => 'هذا الرمز غير مكتمل. يتكون من 12 حرفًا ورقمًا.';
+
+  @override
+  String get backupConfirm =>
+      'ستُضاف النسخة الاحتياطية إلى التقدّم على هذا الجهاز (لن يضيع شيء). هل تتابع؟';
+
+  @override
+  String get backupYesRestore => 'نعم، استعادة';
+
+  @override
+  String get backupDone => 'تم! عاد تقدّمك.';
+
+  @override
+  String get backupNotFound => 'لم يُعثر على نسخة احتياطية لهذا الرمز.';
 }

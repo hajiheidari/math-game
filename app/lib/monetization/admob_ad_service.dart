@@ -7,12 +7,12 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'ad_config.dart';
 import 'ad_service.dart';
 
-/// AdMob with Google UMP consent and Apple ATT.
+/// AdMob rewarded ads with Google UMP consent and Apple ATT. Not used by
+/// any build yet (the App Store / Play network is still to be chosen).
 class AdMobAdService implements AdService {
   bool _started = false;
   bool _canRequestAds = false;
   RewardedAd? _rewarded;
-  InterstitialAd? _interstitial;
 
   @override
   Future<void> start(AdAudience audience) async {
@@ -25,7 +25,6 @@ class AdMobAdService implements AdService {
     await MobileAds.instance.updateRequestConfiguration(_config(audience));
     await MobileAds.instance.initialize();
     _loadRewarded();
-    _loadInterstitial();
   }
 
   @override
@@ -84,17 +83,6 @@ class AdMobAdService implements AdService {
     );
   }
 
-  void _loadInterstitial() {
-    InterstitialAd.load(
-      adUnitId: AdConfig.interstitialUnitId,
-      request: const AdRequest(),
-      adLoadCallback: InterstitialAdLoadCallback(
-        onAdLoaded: (ad) => _interstitial = ad,
-        onAdFailedToLoad: (_) => _retry(_loadInterstitial),
-      ),
-    );
-  }
-
   void _retry(void Function() load) => Timer(const Duration(seconds: 60), load);
 
   @override
@@ -121,26 +109,6 @@ class AdMobAdService implements AdService {
     );
     ad.show(onUserEarnedReward: (_, _) => earned = true);
     return result.future;
-  }
-
-  @override
-  Future<void> showInterstitial() {
-    final ad = _interstitial;
-    if (ad == null) return Future.value();
-    _interstitial = null;
-    final closed = Completer<void>();
-    void finish(InterstitialAd ad) {
-      ad.dispose();
-      _loadInterstitial();
-      if (!closed.isCompleted) closed.complete();
-    }
-
-    ad.fullScreenContentCallback = FullScreenContentCallback(
-      onAdDismissedFullScreenContent: finish,
-      onAdFailedToShowFullScreenContent: (ad, _) => finish(ad),
-    );
-    ad.show();
-    return closed.future;
   }
 
   @override

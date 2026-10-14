@@ -10,7 +10,6 @@ import 'package:numcross/app/app_prefs.dart';
 import 'package:numcross/app/crash_guard.dart';
 import 'package:numcross/game/game_screen.dart';
 import 'package:numcross/monetization/admob_ad_service.dart';
-import 'package:numcross/monetization/store_purchase_service.dart';
 import 'package:numcross/app_root.dart';
 import 'package:numcross/screens/menu_screen.dart';
 import 'package:numcross_engine/numcross_engine.dart';
@@ -151,7 +150,6 @@ void main() {
         child: AdadiApp.fromPrefs(
           await AppPrefs.load(),
           ads: AdMobAdService.new,
-          purchases: StorePurchaseService.new,
         ),
       ),
     );

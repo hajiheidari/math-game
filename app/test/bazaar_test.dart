@@ -1,7 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:numcross/monetization/adivery_ad_service.dart';
-import 'package:numcross/monetization/bazaar_config.dart';
-import 'package:numcross/monetization/bazaar_purchase_service.dart';
 import 'package:numcross/store.dart';
 
 void main() {
@@ -16,19 +14,10 @@ void main() {
     expect(AdiveryAdService.configured, isTrue);
   });
 
-  test('without the RSA key the Bazaar purchase stays off', () async {
-    if (BazaarConfig.rsaKey.isNotEmpty) return; // covered on devices then
-    final store = BazaarPurchaseService();
-    await store.start();
-    expect(store.available, isFalse);
-    expect(await store.buyRemoveAds(), isFalse);
-  });
-
   test('ads that never loaded resolve at once, never block the game', () async {
     final ads = AdiveryAdService(); // not started: nothing loaded
     expect(ads.rewardedReady, isFalse);
     expect(await ads.showRewarded(), isFalse);
-    await ads.showInterstitial();
     expect(await ads.privacyOptionsRequired(), isFalse);
   });
 }

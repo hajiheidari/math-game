@@ -9,7 +9,7 @@
   "marketingUrl": "https://espadna.com/adadi-app/",
   "copyright": "2026 Amir HajiHeidari",
   "promotionalText": "A crossword where every row and column is an equation. Fill in the numbers, make every sum true, and keep your daily streak going.",
-  "description": "Adadi is a crossword made of numbers. Every row and every column is an equation: pick tiles from the bank and place them so that all the equations are true at once.\n\n• Addition, subtraction, multiplication and division in one grid\n• Every puzzle has exactly one answer: no guessing, just arithmetic and logic\n• A new daily puzzle every day, with a streak calendar\n• Four difficulties: Easy, Medium, Hard and Expert\n• Stuck? Free hints from friends: every friend who opens your invite or your result gives you one (up to 3 a day)\n• Share your wins with friends: a picture card and a challenge\n• English, Arabic, Persian and Urdu, with Western or local digits\n• Plays well on iPhone and iPad, offline\n• No sign-up: your progress stays on your device\n\nAdadi is free, with no ads and no purchases.",
+  "description": "Adadi is a crossword made of numbers. Every row and every column is an equation: pick tiles from the bank and place them so that all the equations are true at once.\n\n• Addition, subtraction, multiplication and division in one grid\n• Every puzzle has exactly one answer: no guessing, just arithmetic and logic\n• A new daily puzzle every day, with a streak calendar\n• Four difficulties: Easy, Medium, Hard and Expert\n• Challenge your friends: they play the very same puzzle against your time\n• Coins for hints: every friend who opens your challenge or invite gives you one (up to 3 a day)\n• Certificates for your streaks and milestones, made to share as a story\n• Game Center leaderboards: best streak, levels and stars\n• Your progress is safe: iCloud backup and a recovery code for a new phone\n• Big boards zoom in, so every cell is easy to tap\n• English, Arabic, Persian and Urdu, with Western or local digits\n• Plays well on iPhone and iPad, offline\n• No sign-up\n\nAdadi is free, with no ads and no purchases.",
   "keywords": "math,puzzle,crossword,numbers,brain,logic,equation,arithmetic,daily,sums,mental math,teens",
   "primaryCategory": "GAMES",
   "primarySubcategoryOne": "GAMES_PUZZLE",
@@ -19,10 +19,22 @@
     "contactFirstName": "Amir",
     "contactLastName": "HajiHeidari",
     "contactEmail": "espadna.support@gmail.com",
-    "notes": "No account is needed. On first launch the app asks for an age group (13+); choose \"18+\".\nNo ads and no in-app purchases. Hints: a player starts with none and gets one each time a friend opens a link they shared (Menu > Invite, or \"Show your friends\" after a win), up to 3 a day. The friend opens it in the web game (adadi.espadna.com); only random codes are sent to our server."
+    "notes": "No account is needed. On first launch the app asks for an age group (13+); choose \"18+\".\nNo ads and no in-app purchases. Hints cost coins: a player starts with none and gets one each time a friend opens a link they shared (Menu > Invite, or \"Challenge your friends\" after a win), up to 3 a day. The friend opens it in the web game (adadi.espadna.com) and plays the same puzzle against the sender's time; only random codes are sent to our server. Settings > Backup shows a recovery code (the progress is saved on our server under it, and in the player's iCloud). Game Center is optional."
   },
   "screenshots": {
-    "APP_IPHONE_67": ["iphone-1.png", "iphone-2.png", "iphone-3.png", "iphone-4.png", "iphone-5.png"],
-    "APP_IPAD_PRO_3GEN_129": ["ipad-1.png", "ipad-2.png", "ipad-3.png", "ipad-4.png", "ipad-5.png"]
+    "APP_IPHONE_67": [
+      "iphone-1.png",
+      "iphone-2.png",
+      "iphone-3.png",
+      "iphone-4.png",
+      "iphone-5.png"
+    ],
+    "APP_IPAD_PRO_3GEN_129": [
+      "ipad-1.png",
+      "ipad-2.png",
+      "ipad-3.png",
+      "ipad-4.png",
+      "ipad-5.png"
+    ]
   }
 }

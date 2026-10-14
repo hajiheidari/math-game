@@ -66,6 +66,98 @@ class GameBoard extends StatelessWidget {
   }
 }
 
+/// Large boards (hard and expert) can be zoomed: pinch, or the zoom button
+/// (2x around the middle, then pan with a finger). Tiles still drop onto
+/// the zoomed cells. Small boards are shown as they are.
+class ZoomableBoard extends StatefulWidget {
+  final GameController game;
+  const ZoomableBoard({super.key, required this.game});
+
+  /// Boards at least this many cells wide or tall can be zoomed.
+  static const int minCells = 9;
+
+  static bool zoomable(GameController game) =>
+      game.puzzle.cols >= minCells || game.puzzle.rows >= minCells;
+
+  @override
+  State<ZoomableBoard> createState() => _ZoomableBoardState();
+}
+
+class _ZoomableBoardState extends State<ZoomableBoard> {
+  final _zoom = TransformationController();
+  Size _viewport = Size.zero;
+
+  @override
+  void initState() {
+    super.initState();
+    _zoom.addListener(_changed);
+  }
+
+  void _changed() => setState(() {});
+
+  @override
+  void dispose() {
+    _zoom.dispose();
+    super.dispose();
+  }
+
+  bool get _zoomed => _zoom.value.getMaxScaleOnAxis() > 1.01;
+
+  void _toggle() {
+    if (_zoomed) {
+      _zoom.value = Matrix4.identity();
+      return;
+    }
+    const scale = 2.0;
+    final c = _viewport.center(Offset.zero);
+    _zoom.value = Matrix4.identity()
+      ..translateByDouble(c.dx * (1 - scale), c.dy * (1 - scale), 0, 1)
+      ..scaleByDouble(scale, scale, 1, 1);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final board = GameBoard(game: widget.game);
+    if (!ZoomableBoard.zoomable(widget.game)) return Center(child: board);
+    final t = AppLocalizations.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        _viewport = constraints.biggest;
+        return Stack(
+          children: [
+            Positioned.fill(
+              child: InteractiveViewer(
+                key: const ValueKey('board-zoom'),
+                transformationController: _zoom,
+                minScale: 1,
+                maxScale: 3,
+                child: Center(child: board),
+              ),
+            ),
+            PositionedDirectional(
+              end: 0,
+              bottom: 0,
+              child: Material(
+                color: scheme.surfaceContainerHigh.withValues(alpha: 0.92),
+                shape: CircleBorder(
+                  side: BorderSide(color: scheme.outlineVariant),
+                ),
+                child: IconButton(
+                  key: const ValueKey('zoom'),
+                  tooltip: _zoomed ? t.zoomOut : t.zoomIn,
+                  icon: Icon(_zoomed ? Icons.zoom_out : Icons.zoom_in),
+                  onPressed: _toggle,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
 /// The tiles to place, with a sort toggle.
 class TileBank extends StatelessWidget {
   final GameController game;
@@ -76,6 +168,12 @@ class TileBank extends StatelessWidget {
   const TileBank({super.key, required this.game, this.onPick});
 
   static const double tileWidth = 56, tileHeight = 48;
+
+  /// Banks with more tiles than this use smaller tiles, so a big board keeps
+  /// more of the screen.
+  static const int compactAbove = 12;
+
+  bool get _compact => game.bankOrder.length > compactAbove;
 
   @override
   Widget build(BuildContext context) {
@@ -103,8 +201,8 @@ class TileBank extends StatelessWidget {
             // Tiles may flow RTL; every number is its own LTR digit run.
             Wrap(
               alignment: WrapAlignment.center,
-              spacing: 8,
-              runSpacing: 8,
+              spacing: _compact ? 6 : 8,
+              runSpacing: _compact ? 6 : 8,
               children: [for (final i in game.bankOrder) _tile(context, i)],
             ),
           ],
@@ -124,10 +222,17 @@ class TileBank extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           border: Border.all(color: scheme.outlineVariant),
         ),
-        child: const SizedBox(width: tileWidth, height: tileHeight),
+        child: SizedBox(
+          width: _compact ? TileFace.compactWidth : tileWidth,
+          height: _compact ? TileFace.compactHeight : tileHeight,
+        ),
       );
     }
-    final face = TileFace(text: text, selected: game.selectedTile == index);
+    final face = TileFace(
+      text: text,
+      selected: game.selectedTile == index,
+      compact: _compact,
+    );
     return Draggable<int>(
       key: ValueKey('tile-$index'),
       data: index,
@@ -156,11 +261,17 @@ class TileFace extends StatelessWidget {
   final String text;
   final bool selected;
   final bool lifted;
+
+  /// Smaller tile for long banks ([TileBank.compactAbove]).
+  final bool compact;
+  static const double compactWidth = 48, compactHeight = 40;
+
   const TileFace({
     super.key,
     required this.text,
     this.selected = false,
     this.lifted = false,
+    this.compact = false,
   });
 
   @override
@@ -168,8 +279,8 @@ class TileFace extends StatelessWidget {
     final s = Theme.of(context).colorScheme;
     return AnimatedContainer(
       duration: const Duration(milliseconds: 120),
-      width: TileBank.tileWidth,
-      height: TileBank.tileHeight,
+      width: compact ? compactWidth : TileBank.tileWidth,
+      height: compact ? compactHeight : TileBank.tileHeight,
       decoration: BoxDecoration(
         color: selected ? s.primary : s.surfaceContainerLowest,
         borderRadius: BorderRadius.circular(12),
@@ -194,7 +305,7 @@ class TileFace extends StatelessWidget {
           child: Text(
             text,
             style: numeralStyle(context).copyWith(
-              fontSize: 20,
+              fontSize: compact ? 18 : 20,
               fontWeight: FontWeight.w600,
               color: selected ? s.onPrimary : s.onSurface,
               fontFeatures: const [FontFeature.tabularFigures()],

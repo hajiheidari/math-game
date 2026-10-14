@@ -7,10 +7,13 @@ import '../app/app_scope.dart';
 import '../app/feedback.dart';
 import '../app/palette.dart';
 import '../app/progress_store.dart';
+import '../certificates/certificates.dart';
+import '../challenge/challenge.dart';
 import '../i18n/locale_controller.dart';
 import '../l10n/app_localizations.dart';
 import '../monetization/monetization.dart';
-import '../rewards/friend_hints_ui.dart';
+import '../rewards/coins_ui.dart';
+import '../screens/certificates_screen.dart';
 import '../share/share_result.dart';
 import 'game_controller.dart';
 import 'game_widgets.dart';
@@ -29,13 +32,18 @@ class GameScreen extends StatefulWidget {
   /// Where wins and unfinished games are saved. Null = nothing is saved.
   final ProgressStore? progress;
 
+  /// A friend's challenge: their puzzle, played against their time. Saved
+  /// in its own slot; it never counts as the player's level or daily.
+  final Challenge? versus;
+
   const GameScreen({
     super.key,
     required this.band,
     required this.difficulty,
     required this.level,
     this.progress,
-  }) : date = null;
+  }) : date = null,
+       versus = null;
 
   const GameScreen.daily({
     super.key,
@@ -43,7 +51,15 @@ class GameScreen extends StatefulWidget {
     required this.difficulty,
     required DateTime this.date,
     this.progress,
-  }) : level = 0;
+  }) : level = 0,
+       versus = null;
+
+  GameScreen.challenge({super.key, required Challenge challenge, this.progress})
+    : band = challenge.band,
+      difficulty = challenge.difficulty,
+      level = challenge.level,
+      date = challenge.date,
+      versus = challenge;
 
   bool get isDaily => date != null;
 
@@ -57,7 +73,6 @@ class _GameScreenState extends State<GameScreen> with WidgetsBindingObserver {
   Timer? _errorFlash;
   bool _resultShown = false;
   int _savedRevision = 0;
-  bool _extraLifeUsed = false;
 
   /// Null when the screen runs without the app shell (tests): hints are free.
   Monetization? get _money => AppScope.maybeOf(context)?.monetization;
@@ -107,7 +122,9 @@ class _GameScreenState extends State<GameScreen> with WidgetsBindingObserver {
     }
   }
 
-  String get _slot => widget.isDaily
+  String get _slot => widget.versus != null
+      ? ProgressStore.challengeSlot(widget.versus!)
+      : widget.isDaily
       ? ProgressStore.dailySlot(widget.band.id, widget.difficulty)
       : ProgressStore.levelSlot(widget.band.id, widget.difficulty);
 
@@ -154,25 +171,32 @@ class _GameScreenState extends State<GameScreen> with WidgetsBindingObserver {
     _lastRemaining = _game.remainingBlanks;
   }
 
+  /// Certificates earned by this win (shown after the result dialog).
+  Future<List<Cert>> _newCerts = Future.value(const []);
+
   void _recordResult() {
-    final won = _game.status == GameStatus.won;
-    // Wins earn no hints (friends do, see FriendHints); this only paces
-    // interstitials in the Bazaar build.
-    if (won && !widget.isDaily) _money?.onLevelWon();
-    final progress = widget.progress;
-    if (progress == null) return;
-    final band = widget.band.id, d = widget.difficulty;
-    progress.clearGame(_slot);
-    if (!won) return;
-    if (widget.isDaily) {
-      progress.recordDaily(widget.date!, d);
-    } else {
-      progress.recordWin(band, d, widget.level, _game.stars);
-    }
+    if (_game.status == GameStatus.won) _newCerts = _recordWin();
+    widget.progress?.clearGame(_slot);
   }
 
-  /// Hint: free without the app shell; otherwise one from the bank. Out of
-  /// hints: collect any friends have earned, else explain how to get some.
+  Future<List<Cert>> _recordWin() async {
+    final progress = widget.progress;
+    if (progress == null) return const [];
+    final d = widget.difficulty;
+    final daily = widget.isDaily && widget.versus == null;
+    if (widget.versus != null) {
+      // A friend's puzzle: not the player's level or daily.
+    } else if (daily) {
+      await progress.recordDaily(widget.date!, d);
+    } else {
+      await progress.recordWin(widget.band.id, d, widget.level, _game.stars);
+    }
+    final app = mounted ? AppScope.maybeOf(context) : null;
+    return await app?.onWin(daily: daily, difficulty: d) ?? const [];
+  }
+
+  /// Hint: free without the app shell; otherwise it costs a coin. Out of
+  /// coins: collect any friends have earned, else show how to get some.
   Future<void> _onHint() async {
     final app = AppScope.maybeOf(context);
     if (app == null) {
@@ -187,10 +211,7 @@ class _GameScreenState extends State<GameScreen> with WidgetsBindingObserver {
       return;
     }
     _game.pause();
-    await showFriendHintsDialog(
-      context,
-      theme: Palette.calm(Theme.of(context)),
-    );
+    await showCoinsDialog(context, theme: Palette.calm(Theme.of(context)));
     if (mounted) _game.resume();
   }
 
@@ -204,9 +225,9 @@ class _GameScreenState extends State<GameScreen> with WidgetsBindingObserver {
         child: _ResultDialog(
           game: _game,
           isDaily: widget.isDaily,
-          canBuyExtraLife:
-              !_extraLifeUsed && (_money?.ads.rewardedReady ?? false),
-          streak: widget.isDaily
+          versus: widget.versus,
+          band: widget.band,
+          streak: widget.isDaily && widget.versus == null
               ? widget.progress?.currentStreak(widget.date!)
               : null,
           difficulty: widget.difficulty,
@@ -216,11 +237,12 @@ class _GameScreenState extends State<GameScreen> with WidgetsBindingObserver {
       ),
     );
     if (!mounted) return;
+    final certs = await _newCerts;
+    _newCerts = Future.value(const []);
+    if (certs.isNotEmpty && mounted) await showNewCertificates(context, certs);
+    if (!mounted) return;
     switch (action) {
       case _ResultAction.next:
-        // Between levels only, paced by the brief's rules.
-        await _money?.maybeShowInterstitial();
-        if (!mounted) return;
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
             builder: (_) => GameScreen(
@@ -233,16 +255,6 @@ class _GameScreenState extends State<GameScreen> with WidgetsBindingObserver {
         );
       case _ResultAction.retry:
         _game.restart();
-      case _ResultAction.extraLife:
-        final earned = await _money?.ads.showRewarded() ?? false;
-        if (!mounted) return;
-        if (earned) {
-          _extraLifeUsed = true;
-          _game.continueAfterLoss();
-        } else {
-          _resultShown = false;
-          _onGameChanged(); // show the result again
-        }
       case _ResultAction.menu || null:
         Navigator.of(context).pop();
     }
@@ -263,7 +275,9 @@ class _GameScreenState extends State<GameScreen> with WidgetsBindingObserver {
           return Scaffold(
             appBar: AppBar(
               title: Text(
-                widget.isDaily
+                widget.versus != null
+                    ? t.challengeTitle
+                    : widget.isDaily
                     ? t.menuDaily
                     : t.levelNumber(locale.n(widget.level)),
               ),
@@ -290,17 +304,17 @@ class _GameScreenState extends State<GameScreen> with WidgetsBindingObserver {
               child: Column(
                 children: [
                   _Toolbar(game: _game, onHint: _onHint, coins: _money?.coins),
+                  if (widget.versus case final vs?)
+                    _VersusBar(game: _game, versus: vs),
                   Expanded(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 12,
                         vertical: 8,
                       ),
-                      child: Center(
-                        child: paused
-                            ? _PausedPanel(onResume: _game.resume)
-                            : GameBoard(game: _game),
-                      ),
+                      child: paused
+                          ? Center(child: _PausedPanel(onResume: _game.resume))
+                          : ZoomableBoard(game: _game),
                     ),
                   ),
                   if (!paused) TileBank(game: _game, onPick: _feedback?.tap),
@@ -399,7 +413,43 @@ class _PausedPanel extends StatelessWidget {
   }
 }
 
-enum _ResultAction { next, retry, menu, extraLife }
+/// Challenge: the friend's time to beat, under the toolbar.
+class _VersusBar extends StatelessWidget {
+  final GameController game;
+  final Challenge versus;
+  const _VersusBar({required this.game, required this.versus});
+
+  @override
+  Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context);
+    final locale = LocaleScope.of(context);
+    final scheme = Theme.of(context).colorScheme;
+    final behind = game.elapsed > versus.time;
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12, 0, 12, 4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.sports_score, size: 18, color: scheme.primary),
+          const SizedBox(width: 6),
+          Flexible(
+            child: Text(
+              t.challengeToBeat(locale.n(formatClock(versus.time))),
+              key: const ValueKey('versus-time'),
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontWeight: FontWeight.w700,
+                color: behind ? scheme.onSurfaceVariant : scheme.primary,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+enum _ResultAction { next, retry, menu }
 
 class _ResultDialog extends StatelessWidget {
   final GameController game;
@@ -408,8 +458,10 @@ class _ResultDialog extends StatelessWidget {
   /// Daily streak after this result (daily wins only).
   final int? streak;
 
-  /// Offer "watch an ad for one more mistake" (lost levels only).
-  final bool canBuyExtraLife;
+  /// The friend's challenge this game answered, if any.
+  final Challenge? versus;
+
+  final BandConfig band;
 
   /// What a win shares (see [ResultShare]).
   final Difficulty difficulty;
@@ -420,13 +472,15 @@ class _ResultDialog extends StatelessWidget {
     required this.game,
     this.isDaily = false,
     this.streak,
-    this.canBuyExtraLife = false,
+    this.versus,
+    required this.band,
     required this.difficulty,
     required this.level,
     this.date,
   });
 
   ResultShare get _share => ResultShare(
+    band: band,
     isDaily: isDaily,
     date: date,
     level: level,
@@ -536,15 +590,9 @@ class _ResultDialog extends StatelessWidget {
                 ],
               ),
             ],
-            if (!won && canBuyExtraLife) ...[
-              const SizedBox(height: 12),
-              OutlinedButton.icon(
-                key: const ValueKey('extra-life'),
-                onPressed: () =>
-                    Navigator.pop(context, _ResultAction.extraLife),
-                icon: const Icon(Icons.play_circle_outline),
-                label: Text(t.extraLife, textAlign: TextAlign.center),
-              ),
+            if (won && versus != null) ...[
+              const SizedBox(height: 10),
+              _VersusResult(mine: game.elapsed, theirs: versus!.time),
             ],
             const SizedBox(height: 14),
             Row(
@@ -606,7 +654,7 @@ class _ResultDialog extends StatelessWidget {
       ),
       actionsAlignment: MainAxisAlignment.spaceBetween,
       actions: [
-        if (won && isDaily)
+        if (won && (isDaily || versus != null))
           TextButton(
             key: const ValueKey('result-primary'),
             onPressed: () => Navigator.pop(context, _ResultAction.menu),
@@ -617,15 +665,69 @@ class _ResultDialog extends StatelessWidget {
             onPressed: () => Navigator.pop(context, _ResultAction.menu),
             child: Text(t.menu),
           ),
-          FilledButton(
-            key: const ValueKey('result-primary'),
-            onPressed: () => Navigator.pop(
-              context,
-              won ? _ResultAction.next : _ResultAction.retry,
+          if (won || versus == null)
+            FilledButton(
+              key: const ValueKey('result-primary'),
+              onPressed: () => Navigator.pop(
+                context,
+                won ? _ResultAction.next : _ResultAction.retry,
+              ),
+              child: Text(won ? t.nextLevel : t.tryAgain),
             ),
-            child: Text(won ? t.nextLevel : t.tryAgain),
+        ],
+      ],
+    );
+  }
+}
+
+/// "You 2:31 · Friend 3:05" and who won.
+class _VersusResult extends StatelessWidget {
+  final Duration mine;
+  final Duration theirs;
+  const _VersusResult({required this.mine, required this.theirs});
+
+  @override
+  Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context);
+    final locale = LocaleScope.of(context);
+    final text = Theme.of(context).textTheme;
+    final scheme = Theme.of(context).colorScheme;
+    final verdict = verdictFor(mine, theirs);
+    Widget side(String who, Duration time, bool best) => Expanded(
+      child: Column(
+        children: [
+          Text(who, style: text.labelMedium),
+          Text(
+            locale.n(formatClock(time)),
+            style: text.titleLarge?.copyWith(
+              fontWeight: best ? FontWeight.w900 : FontWeight.w500,
+              color: best ? scheme.primary : scheme.onSurfaceVariant,
+              fontFeatures: const [FontFeature.tabularFigures()],
+            ),
           ),
         ],
+      ),
+    );
+    return Column(
+      children: [
+        Text(
+          switch (verdict) {
+            Verdict.win => t.challengeWon,
+            Verdict.lose => t.challengeLost,
+            Verdict.tie => t.challengeTie,
+          },
+          key: const ValueKey('versus-verdict'),
+          textAlign: TextAlign.center,
+          style: text.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+        ),
+        const SizedBox(height: 6),
+        Row(
+          children: [
+            side(t.challengeYou, mine, verdict != Verdict.lose),
+            Text('vs', style: text.labelLarge),
+            side(t.challengeFriend, theirs, verdict != Verdict.win),
+          ],
+        ),
       ],
     );
   }

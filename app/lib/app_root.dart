@@ -9,29 +9,22 @@ import 'app/app_prefs.dart';
 import 'app/app_scope.dart';
 import 'app/crash_guard.dart';
 import 'app/palette.dart';
+import 'challenge/challenge.dart';
 import 'i18n/languages.dart';
 import 'i18n/locale_controller.dart';
 import 'l10n/app_localizations.dart';
 import 'monetization/ad_service.dart';
 import 'monetization/monetization.dart';
-import 'monetization/purchase_service.dart';
 import 'store.dart';
 import 'screens/age_gate_screen.dart';
 import 'screens/menu_screen.dart';
 
 /// Starts the app with the given store services (see lib/main.dart).
-void runAdadi({
-  AdService Function()? ads,
-  PurchaseService Function()? purchases,
-}) {
+void runAdadi({AdService Function()? ads}) {
   CrashGuard.run(() async {
     registerFontLicenses();
     final prefs = await AppPrefs.load();
-    runApp(
-      CrashOverlay(
-        child: AdadiApp.fromPrefs(prefs, ads: ads, purchases: purchases),
-      ),
-    );
+    runApp(CrashOverlay(child: AdadiApp.fromPrefs(prefs, ads: ads)));
   });
 }
 
@@ -43,14 +36,9 @@ class AdadiApp extends StatelessWidget {
 
   /// Restores saved language/digits (or the device language on first run)
   /// and saves them whenever they change.
-  /// [ads] and [purchases] are the store's services (lib/main.dart: AdMob and
-  /// App Store / Google Play; lib/main_bazaar.dart: Adivery and Cafe Bazaar).
-  /// They are only created on phones; web, desktop and tests run without.
-  factory AdadiApp.fromPrefs(
-    AppPrefs prefs, {
-    AdService Function()? ads,
-    PurchaseService Function()? purchases,
-  }) {
+  /// [ads] is the store's rewarded-ad network (lib/main_bazaar.dart:
+  /// Adivery). Only created on phones; web, desktop and tests run without.
+  factory AdadiApp.fromPrefs(AppPrefs prefs, {AdService Function()? ads}) {
     final device =
         WidgetsBinding.instance.platformDispatcher.locale.languageCode;
     // Web links choose the language: adadi.espadna.com/?lang=fa (the
@@ -70,7 +58,7 @@ class AdadiApp extends StatelessWidget {
     locale.addListener(
       () => prefs.setLocale(locale.language.code, locale.digitMode),
     );
-    // Real ads and store only on phones; web/desktop builds run ad-free.
+    // Real ads only on phones; web/desktop builds run ad-free.
     final mobile =
         !kIsWeb &&
         (defaultTargetPlatform == TargetPlatform.android ||
@@ -78,15 +66,18 @@ class AdadiApp extends StatelessWidget {
     final monetization = Monetization(
       prefs.shared,
       ads: mobile ? ads?.call() : null,
-      purchases: mobile ? purchases?.call() : null,
     );
     final app = AppController(
       prefs,
       monetization: monetization,
       feedback: GameFeedback(prefs.shared, sound: AssetSoundPlayer()),
     );
-    // Opened from a friend's link (?r=code): the friend gets a hint.
-    if (kIsWeb) app.hints.reportVisit(Uri.base);
+    // Opened from a friend's link (?r=code): the friend gets a coin. A
+    // challenge (?c=) opens their puzzle once the menu shows.
+    if (kIsWeb) {
+      app.hints.reportVisit(Uri.base);
+      app.pendingChallenge = Challenge.fromUri(Uri.base);
+    }
     return AdadiApp(locale: locale, app: app);
   }
 

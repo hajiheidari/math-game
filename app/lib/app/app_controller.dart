@@ -1,8 +1,14 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:numcross_engine/numcross_engine.dart';
 
+import '../backup/backup.dart';
+import '../certificates/certificates.dart';
+import '../challenge/challenge.dart';
 import '../monetization/monetization.dart';
 import '../rewards/friend_hints.dart';
+import '../services/game_center.dart';
 import 'app_prefs.dart';
 import 'feedback.dart';
 import 'progress_store.dart';
@@ -33,8 +39,18 @@ class AppController extends ChangeNotifier {
   /// Sound and vibration.
   final GameFeedback feedback;
 
-  /// Hints earned by friends opening the player's links.
+  /// Coins earned by friends opening the player's links.
   late final FriendHints hints;
+
+  /// Recovery code, iCloud copy.
+  late final Backup backup;
+
+  late final Certificates certificates;
+
+  final GameCenter gameCenter;
+
+  /// A friend's challenge to open once the menu shows (web: `?c=`).
+  Challenge? pendingChallenge;
 
   AppController(
     this.prefs, {
@@ -42,12 +58,62 @@ class AppController extends ChangeNotifier {
     Monetization? monetization,
     GameFeedback? feedback,
     FriendHints? hints,
+    Backup? backup,
+    GameCenter? gameCenter,
   }) : monetization = monetization ?? Monetization(prefs.shared),
        feedback = feedback ?? GameFeedback(prefs.shared),
+       gameCenter = gameCenter ?? GameCenter(),
        _blocked = prefs.isBlocked,
        _band = _bandOrNull(prefs.bandId),
        progress = ProgressStore(prefs.shared) {
     this.hints = hints ?? FriendHints(prefs.shared, this.monetization);
+    certificates = Certificates(prefs.shared, progress, now: now);
+    this.backup = backup ?? Backup(prefs.shared, onRestored: _reloadAll);
+  }
+
+  /// Another save was merged into storage: everything reads it again.
+  void _reloadAll() {
+    progress.reload();
+    certificates.reload();
+    monetization.reload();
+    hints.reload();
+    notifyListeners();
+  }
+
+  /// Once the menu shows: iCloud copy, Game Center, backup, certificates.
+  /// Returns certificates earned just now (e.g. after a restore).
+  Future<List<Cert>> onMenu() async {
+    if (_blocked) return const [];
+    await backup.restoreFromCloud();
+    unawaited(gameCenter.signIn().then((_) => _submitScores()));
+    unawaited(backup.sync());
+    return certificates.check();
+  }
+
+  /// After every won puzzle. Returns certificates earned just now.
+  Future<List<Cert>> onWin({
+    required bool daily,
+    required Difficulty difficulty,
+  }) async {
+    if (_blocked) return const [];
+    unawaited(backup.sync(force: daily));
+    unawaited(_submitScores());
+    return certificates.check();
+  }
+
+  Future<void> _submitScores() async {
+    final m = Milestones.of(progress);
+    var stars = 0;
+    for (final b in kBands) {
+      for (final d in Difficulty.values) {
+        stars += progress.of(b.id, d).totalStars;
+      }
+    }
+    await gameCenter.submit(
+      bestStreak: m.bestStreak,
+      levels: m.levels,
+      stars: stars,
+    );
   }
 
   static BandConfig? _bandOrNull(String? id) {

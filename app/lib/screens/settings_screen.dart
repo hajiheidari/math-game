@@ -10,7 +10,7 @@ import '../i18n/locale_controller.dart';
 import '../l10n/app_localizations.dart';
 import '../monetization/ad_config.dart';
 import '../preview_screen.dart';
-import '../store.dart';
+import 'backup_section.dart';
 import 'tutorial_screen.dart';
 
 import 'package:url_launcher/url_launcher.dart';
@@ -50,30 +50,38 @@ class SettingsScreen extends StatelessWidget {
                 ],
               ),
             ),
-            header(t.digits),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: [
-                  for (final (mode, label) in [
-                    (DigitMode.auto, t.digitsAuto),
-                    (DigitMode.western, '${t.digitsWestern} (123)'),
-                    (
-                      DigitMode.native,
-                      '${t.digitsNative} (${localizeDigits('123', locale.language.nativeDigits)})',
-                    ),
-                  ])
-                    ChoiceChip(
-                      key: ValueKey('digits-${mode.name}'),
-                      label: Text(label),
-                      selected: locale.digitMode == mode,
-                      onSelected: (_) => locale.digitMode = mode,
-                    ),
-                ],
+            // Only languages with their own digits get a choice (English has
+            // nothing to switch, so the option looked broken there).
+            if (locale.language.nativeDigits != DigitSet.western) ...[
+              header(t.digits),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  children: [
+                    for (final (set, mode, label) in [
+                      (
+                        locale.language.nativeDigits,
+                        DigitMode.native,
+                        '${t.digitsNative} (${localizeDigits('123', locale.language.nativeDigits)})',
+                      ),
+                      (
+                        DigitSet.western,
+                        DigitMode.western,
+                        '${t.digitsWestern} (123)',
+                      ),
+                    ])
+                      ChoiceChip(
+                        key: ValueKey('digits-${mode.name}'),
+                        label: Text(label),
+                        selected: locale.digits == set,
+                        onSelected: (_) => locale.digitMode = mode,
+                      ),
+                  ],
+                ),
               ),
-            ),
+            ],
             header(t.ageGroup),
             RadioGroup<BandConfig>(
               groupValue: app.band,
@@ -121,6 +129,8 @@ class SettingsScreen extends StatelessWidget {
               ),
             ),
             const Divider(height: 32),
+            const BackupSection(),
+            const Divider(height: 32),
             const _PurchaseAndPrivacySection(),
             if (kDebugMode) ...[
               const Divider(height: 32),
@@ -140,7 +150,7 @@ class SettingsScreen extends StatelessWidget {
   }
 }
 
-/// Remove ads, restore purchases, consent choices and the privacy policy.
+/// Consent choices (ad network), the privacy policy and support.
 class _PurchaseAndPrivacySection extends StatefulWidget {
   const _PurchaseAndPrivacySection();
 
@@ -165,81 +175,38 @@ class _PurchaseAndPrivacySectionState
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context);
     final money = AppScope.of(context).monetization;
-    return ListenableBuilder(
-      listenable: money,
-      builder: (context, _) {
-        final purchases = money.purchases;
-        return Column(
-          children: [
-            // No ads in the App Store / Play / web build for now: nothing
-            // to remove or restore there.
-            if (!kStore.hasAds)
-              const SizedBox.shrink()
-            else if (money.adsRemoved)
-              ListTile(
-                key: const ValueKey('ads-removed'),
-                leading: const Icon(Icons.check_circle_outline),
-                title: Text(t.adsRemoved),
-              )
-            else
-              ListTile(
-                key: const ValueKey('remove-ads'),
-                leading: const Icon(Icons.block),
-                title: Text(t.removeAds),
-                trailing: purchases.removeAdsPrice == null
-                    ? null
-                    : Text(purchases.removeAdsPrice!),
-                onTap: () async {
-                  final started = await purchases.buyRemoveAds();
-                  if (!started && context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text(t.purchaseUnavailable)),
-                    );
-                  }
-                },
-              ),
-            if (kStore.hasAds)
-              ListTile(
-                key: const ValueKey('restore'),
-                leading: const Icon(Icons.restore),
-                title: Text(t.restorePurchases),
-                onTap: purchases.restore,
-              ),
-            if (_privacyOptions)
-              ListTile(
-                key: const ValueKey('privacy-choices'),
-                leading: const Icon(Icons.tune),
-                title: Text(t.privacyChoices),
-                onTap: money.ads.showPrivacyOptions,
-              ),
-            ListTile(
-              key: const ValueKey('privacy-policy'),
-              leading: const Icon(Icons.privacy_tip_outlined),
-              title: Text(t.privacyPolicy),
-              onTap: () => launchUrl(
-                Uri.parse(kPrivacyPolicyUrl),
-                mode: LaunchMode.externalApplication,
-              ),
+    return Column(
+      children: [
+        if (_privacyOptions)
+          ListTile(
+            key: const ValueKey('privacy-choices'),
+            leading: const Icon(Icons.tune),
+            title: Text(t.privacyChoices),
+            onTap: money.ads.showPrivacyOptions,
+          ),
+        ListTile(
+          key: const ValueKey('privacy-policy'),
+          leading: const Icon(Icons.privacy_tip_outlined),
+          title: Text(t.privacyPolicy),
+          onTap: () => launchUrl(
+            Uri.parse(kPrivacyPolicyUrl),
+            mode: LaunchMode.externalApplication,
+          ),
+        ),
+        ListTile(
+          key: const ValueKey('contact-support'),
+          leading: const Icon(Icons.mail_outline),
+          title: Text(t.contactSupport),
+          subtitle: const Text(kSupportEmail, textDirection: TextDirection.ltr),
+          onTap: () => launchUrl(
+            Uri(
+              scheme: 'mailto',
+              path: kSupportEmail,
+              queryParameters: {'subject': 'Adadi'},
             ),
-            ListTile(
-              key: const ValueKey('contact-support'),
-              leading: const Icon(Icons.mail_outline),
-              title: Text(t.contactSupport),
-              subtitle: const Text(
-                kSupportEmail,
-                textDirection: TextDirection.ltr,
-              ),
-              onTap: () => launchUrl(
-                Uri(
-                  scheme: 'mailto',
-                  path: kSupportEmail,
-                  queryParameters: {'subject': 'Adadi'},
-                ),
-              ),
-            ),
-          ],
-        );
-      },
+          ),
+        ),
+      ],
     );
   }
 }

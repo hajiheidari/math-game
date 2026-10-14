@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Android Auto Backup (Android 6-11): the game's progress lives in
+     shared_preferences (FlutterSharedPreferences.xml). Restored after a
+     reinstall or on a new phone when the player's Google backup is on. -->
+<full-backup-content>
+    <include domain="sharedpref" path="." />
+</full-backup-content>
