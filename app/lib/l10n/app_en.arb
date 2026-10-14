@@ -283,5 +283,13 @@
   "backupConfirm": "The backup is added to the progress on this device (nothing here is lost). Continue?",
   "backupYesRestore": "Yes, restore",
   "backupDone": "Done! Your progress is back.",
-  "backupNotFound": "No backup was found for this code."
+  "backupNotFound": "No backup was found for this code.",
+  "shareHints": "Hints: {count}",
+  "@shareHints": {
+    "placeholders": {
+      "count": {
+        "type": "String"
+      }
+    }
+  }
 }

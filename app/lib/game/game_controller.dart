@@ -64,8 +64,15 @@ class GameController extends ChangeNotifier {
   bool get canUndo => _undoStack.isNotEmpty && _status == GameStatus.playing;
   int get remainingBlanks => _blanks.length - _filled.length;
 
-  int get stars =>
-      computeStars(config, mistakes: _mistakes, seconds: _elapsed.inSeconds);
+  /// A puzzle solved with a hint earns at most 2 stars (Amir, 2026-10-14).
+  int get stars {
+    final s = computeStars(
+      config,
+      mistakes: _mistakes,
+      seconds: _elapsed.inSeconds,
+    );
+    return _hintsUsed > 0 && s > 2 ? 2 : s;
+  }
 
   // --- Actions -------------------------------------------------------------
 
@@ -175,13 +182,26 @@ class GameController extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Clears the board. The clock, mistakes and hints used carry on: emptying
+  /// a board whose answers were seen (hints) and refilling it fast must not
+  /// give 3 stars or a record time (Amir, 2026-10-14).
   void restart() {
+    if (_status != GameStatus.playing && _status != GameStatus.paused) return;
+    _clearBoard();
+  }
+
+  /// "Try again" after running out of mistakes: a fresh set of mistakes, but
+  /// the clock and hints used still count.
+  void tryAgain() {
+    if (_status != GameStatus.lost) return;
+    _mistakes = 0;
+    _clearBoard();
+  }
+
+  void _clearBoard() {
     _filled.clear();
     _hinted.clear();
     _undoStack.clear();
-    _mistakes = 0;
-    _hintsUsed = 0;
-    _elapsed = Duration.zero;
     _status = GameStatus.playing;
     _selectedTile = null;
     _selectedCell = null;

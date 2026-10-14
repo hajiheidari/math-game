@@ -46,7 +46,7 @@ class ProgressStore extends ChangeNotifier {
   }
 
   /// Records a completed level. Completing the next level unlocks the one
-  /// after it; replays only improve the best stars.
+  /// after it; replays of a completed level change nothing.
   Future<void> recordWin(
     String band,
     Difficulty d,
@@ -54,14 +54,10 @@ class ProgressStore extends ChangeNotifier {
     int stars,
   ) async {
     final current = of(band, d).stars.toList();
-    if (level == current.length + 1) {
-      current.add(stars);
-    } else if (level >= 1 && level <= current.length) {
-      if (stars <= current[level - 1]) return;
-      current[level - 1] = stars;
-    } else {
-      return; // not unlocked: ignore
-    }
+    // Only the first win counts: a replay knows the answers (Amir,
+    // 2026-10-14), so it is practice and never improves the stars.
+    if (level != current.length + 1) return;
+    current.add(stars);
     await _p.setString(_progressKey(band, d), current.join());
     notifyListeners();
   }

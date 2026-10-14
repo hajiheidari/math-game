@@ -431,4 +431,9 @@ class AppLocalizationsUr extends AppLocalizations {
 
   @override
   String get backupNotFound => 'اس کوڈ کا کوئی بیک اپ نہیں ملا۔';
+
+  @override
+  String shareHints(String count) {
+    return 'اشارے: $count';
+  }
 }

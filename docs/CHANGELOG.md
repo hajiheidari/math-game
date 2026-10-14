@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.14.1 — No shortcuts
+- Restart (↻) only clears the board: the clock, mistakes and hints used keep counting, so seeing
+  the answers with hints and refilling fast no longer gives 3 stars or a record time. "Try again"
+  after a loss gives fresh mistakes but keeps the clock. (Amir)
+- A puzzle solved with a hint gets at most 2 stars; the shared result says how many hints.
+- Replaying a completed level is practice: it no longer changes its stars.
+- Certificates not earned yet show their real design, faded, with a lock and the progress.
+- The undo arrow points left in Persian, Arabic and Urdu too.
+
 ## 0.14.0 — Challenges, coins, backup, certificates
 - **Challenge a friend** (like Tiaro): every shared win is a challenge link
   (`?c=<band><difficulty><l|d><level|date>-<seconds>&r=<invite code>`, `lib/challenge/`). The

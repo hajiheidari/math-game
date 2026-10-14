@@ -839,6 +839,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'No backup was found for this code.'**
   String get backupNotFound;
+
+  /// No description provided for @shareHints.
+  ///
+  /// In en, this message translates to:
+  /// **'Hints: {count}'**
+  String shareHints(String count);
 }
 
 class _AppLocalizationsDelegate

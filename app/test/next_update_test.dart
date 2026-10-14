@@ -17,6 +17,7 @@ import 'package:numcross/certificates/certificate_painter.dart';
 import 'package:numcross/certificates/certificates.dart';
 import 'package:numcross/challenge/challenge.dart';
 import 'package:numcross/game/board_view.dart';
+import 'package:numcross/game/game_controller.dart';
 import 'package:numcross/i18n/languages.dart';
 import 'package:numcross/i18n/locale_controller.dart';
 import 'package:numcross/l10n/app_localizations.dart';
@@ -390,5 +391,29 @@ void main() {
     // A friend's puzzle is not the player's level 1.
     expect(prefs.shared.getString('progress/13-15/easy'), isNull);
     await tester.pumpWidget(const SizedBox());
+  });
+
+  group('no cheating with restart and hints', () {
+    GameController game() => GameController(
+      generateLevel(band13to15, Difficulty.easy, 1),
+      band13to15[Difficulty.easy],
+    );
+
+    test('restart keeps the clock, mistakes and hints used', () {
+      final g = game();
+      g.tick(const Duration(minutes: 4));
+      g.hint();
+      g.restart();
+      expect(g.elapsed, const Duration(minutes: 4));
+      expect(g.hintsUsed, 1);
+      expect(g.remainingBlanks, g.puzzle.blanks.length);
+    });
+
+    test('a hint caps the result at 2 stars', () {
+      final g = game();
+      expect(g.stars, 3);
+      g.hint();
+      expect(g.stars, 2);
+    });
   });
 }

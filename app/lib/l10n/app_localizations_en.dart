@@ -434,4 +434,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get backupNotFound => 'No backup was found for this code.';
+
+  @override
+  String shareHints(String count) {
+    return 'Hints: $count';
+  }
 }

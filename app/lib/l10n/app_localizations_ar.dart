@@ -433,4 +433,9 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get backupNotFound => 'لم يُعثر على نسخة احتياطية لهذا الرمز.';
+
+  @override
+  String shareHints(String count) {
+    return 'تلميحات: $count';
+  }
 }

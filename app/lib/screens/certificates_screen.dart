@@ -150,7 +150,11 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
                           ),
                         )
                       else
-                        _Locked(kind: k, progress: m.progress(k)),
+                        _Locked(
+                          kind: k,
+                          progress: m.progress(k),
+                          name: certs.name,
+                        ),
                   ],
                 ),
                 const SizedBox(height: 8),
@@ -168,56 +172,97 @@ class _CertificatesScreenState extends State<CertificatesScreen> {
   }
 }
 
+/// A certificate not earned yet: the real design, faded and locked, with how
+/// far along the player is, so they see what they are working towards.
 class _Locked extends StatelessWidget {
   final CertKind kind;
   final int progress;
-  const _Locked({required this.kind, required this.progress});
+  final String name;
+  const _Locked({
+    required this.kind,
+    required this.progress,
+    required this.name,
+  });
 
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context);
     final locale = LocaleScope.of(context);
-    final scheme = Theme.of(context).colorScheme;
     final text = Theme.of(context).textTheme;
-    final (heading, body) = certWords(t, locale, kind);
     final shown = progress.clamp(0, kind.goal);
-    return Container(
+    final n = DateTime.now();
+    final preview = CertificatePainter(
+      certTexts(t, locale, Cert(kind, DateTime(n.year, n.month, n.day)), name),
+      locale.language,
+    );
+    return ClipRRect(
       key: ValueKey('cert-locked-${kind.name}'),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: scheme.surfaceContainerHigh,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: scheme.outlineVariant),
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
+      borderRadius: BorderRadius.circular(12),
+      child: Stack(
+        fit: StackFit.expand,
         children: [
-          Icon(
-            Icons.workspace_premium_outlined,
-            size: 48,
-            color: scheme.outline,
+          // Faded, mostly grey: clearly not yours yet.
+          Opacity(
+            opacity: 0.55,
+            child: ColorFiltered(
+              colorFilter: const ColorFilter.matrix([
+                0.5, 0.4, 0.1, 0, 0, //
+                0.3, 0.6, 0.1, 0, 0, //
+                0.3, 0.4, 0.3, 0, 0, //
+                0, 0, 0, 1, 0, //
+              ]),
+              child: CustomPaint(painter: preview),
+            ),
           ),
-          const SizedBox(height: 10),
-          Text(
-            heading,
-            textAlign: TextAlign.center,
-            style: text.titleSmall?.copyWith(fontWeight: FontWeight.w800),
+          PositionedDirectional(
+            top: 8,
+            end: 8,
+            child: Container(
+              padding: const EdgeInsets.all(6),
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: 0.5),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.lock, color: Colors.white, size: 20),
+            ),
           ),
-          const SizedBox(height: 6),
-          Text(
-            body,
-            textAlign: TextAlign.center,
-            style: text.bodySmall?.copyWith(color: scheme.onSurfaceVariant),
-          ),
-          const SizedBox(height: 12),
-          LinearProgressIndicator(
-            value: shown / kind.goal,
-            borderRadius: BorderRadius.circular(4),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            '${locale.n(shown)}/${locale.n(kind.goal)}',
-            style: text.labelMedium,
+          PositionedDirectional(
+            start: 8,
+            end: 8,
+            bottom: 8,
+            child: Container(
+              padding: const EdgeInsets.fromLTRB(8, 6, 8, 6),
+              decoration: BoxDecoration(
+                color: Colors.black.withValues(alpha: 0.55),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    certWords(t, locale, kind).$1,
+                    textAlign: TextAlign.center,
+                    maxLines: 2,
+                    style: text.labelLarge?.copyWith(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  LinearProgressIndicator(
+                    value: shown / kind.goal,
+                    color: const Color(0xFFE9C46A),
+                    backgroundColor: Colors.white24,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    '${locale.n(shown)}/${locale.n(kind.goal)}',
+                    style: text.labelMedium?.copyWith(color: Colors.white),
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),

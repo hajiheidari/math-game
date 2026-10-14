@@ -137,7 +137,7 @@ void main() {
     expect(g.bankOrder, original);
   });
 
-  test('clock runs only while playing; restart resets everything', () {
+  test('clock runs only while playing; restart clears only the board', () {
     final g = newGame();
     g.tick(const Duration(seconds: 5));
     g.pause();
@@ -148,8 +148,8 @@ void main() {
     g.place(wrongTile(g, cell), cell);
     g.place(rightTile(g, cell), cell);
     g.restart();
-    expect(g.elapsed, Duration.zero);
-    expect(g.mistakes, 0);
+    expect(g.elapsed, const Duration(seconds: 5), reason: 'no fresh clock');
+    expect(g.mistakes, 1, reason: 'mistakes still count');
     expect(g.remainingBlanks, g.puzzle.blanks.length);
     expect(g.status, GameStatus.playing);
   });

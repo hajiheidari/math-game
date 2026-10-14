@@ -254,7 +254,7 @@ class _GameScreenState extends State<GameScreen> with WidgetsBindingObserver {
           ),
         );
       case _ResultAction.retry:
-        _game.restart();
+        _game.tryAgain();
       case _ResultAction.menu || null:
         Navigator.of(context).pop();
     }
@@ -364,7 +364,8 @@ class _Toolbar extends StatelessWidget {
           IconButton(
             key: const ValueKey('undo'),
             tooltip: t.undo,
-            icon: const Icon(Icons.undo),
+            // Same left-pointing arrow in RTL languages too (Amir).
+            icon: const Icon(Icons.undo, textDirection: TextDirection.ltr),
             onPressed: game.canUndo ? game.undo : null,
           ),
           IconButton(
@@ -488,6 +489,7 @@ class _ResultDialog extends StatelessWidget {
     stars: game.stars,
     elapsed: game.elapsed,
     mistakes: game.mistakes,
+    hints: game.hintsUsed,
     streak: streak,
   );
 

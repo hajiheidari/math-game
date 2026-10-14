@@ -33,6 +33,9 @@ class ResultShare {
   final Duration elapsed;
   final int mistakes;
 
+  /// Hints used (shown in the shared stats, so a challenge is fair).
+  final int hints;
+
   /// Daily streak after this win (daily only).
   final int? streak;
 
@@ -45,6 +48,7 @@ class ResultShare {
     required this.stars,
     required this.elapsed,
     required this.mistakes,
+    this.hints = 0,
     this.streak,
   });
 
@@ -98,6 +102,7 @@ class ResultShare {
       t.shareNoMistakes
     else
       '${t.mistakesLabel} ${locale.n(mistakes)}',
+    if (hints > 0) t.shareHints(locale.n(hints)),
   ].join(' · ');
 
   String? streakText(AppLocalizations t, LocaleController locale) =>

@@ -432,4 +432,9 @@ class AppLocalizationsFa extends AppLocalizations {
 
   @override
   String get backupNotFound => 'برای این کد پشتیبانی پیدا نشد.';
+
+  @override
+  String shareHints(String count) {
+    return 'راهنما: $count';
+  }
 }

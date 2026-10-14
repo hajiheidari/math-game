@@ -23,7 +23,7 @@ int wrongTile(GameController g, Pos cell) => g.bankOrder.firstWhere(
 
 void main() {
   group('ProgressStore', () {
-    test('wins unlock the next level; replays keep the best stars', () async {
+    test('wins unlock the next level; replays change nothing', () async {
       final s = await newStore();
       expect(s.of('18+', Difficulty.hard).nextLevel, 1);
       await s.recordWin('18+', Difficulty.hard, 1, 2);
@@ -33,10 +33,10 @@ void main() {
       expect(p.totalStars, 5);
 
       await s.recordWin('18+', Difficulty.hard, 1, 1); // worse: ignored
-      await s.recordWin('18+', Difficulty.hard, 1, 3); // better: kept
+      await s.recordWin('18+', Difficulty.hard, 1, 3); // replay: ignored too
       await s.recordWin('18+', Difficulty.hard, 9, 3); // locked: ignored
       p = s.of('18+', Difficulty.hard);
-      expect(p.stars, [3, 3]);
+      expect(p.stars, [2, 3]);
       expect(
         s.of('18+', Difficulty.easy).nextLevel,
         1,
