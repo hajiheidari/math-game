@@ -29,7 +29,7 @@ I am an individual developer and tested it myself on my iPhone, in the web versi
 - restart no longer gives 3 stars after seeing the answers
 
 5. Standalone or suite
-Standalone. This is my personal developer account; Espadna is my brand name. My only published app is Dorehami: Pantomime & Heads Up, a charades and word-guessing game. I built my other games over the past weeks, one at a time, each with its own code, rules and art, and submitted the finished ones close together. That is why Adadi, Tiaro, Mafia God and Shah Dozd Vazir reached review at the same time. I will space out future submissions. Adadi is the only one about arithmetic and the only one with age-based difficulty.
+Standalone. This is my personal developer account; Espadna is my brand name. My only published app is Dorehami: Pantomime & Heads Up, a charades and word-guessing game. I built my other games over the past weeks, one at a time, each with its own code, rules and art, and submitted the finished ones close together. That is why Adadi, Tiaro, Mafia God, Shah Dozd Vazir and Ludo Dosti reached review at the same time. I will space out future submissions. Adadi is the only one about arithmetic and the only one with age-based difficulty.
 
 6. Could it be part of another app?
 No. The nearest is Tiaro, a logic puzzle about placing crowns on a coloured grid, with no numbers. Adadi is an arithmetic crossword with number tiles, decoys and age groups. They have different rules, controls, engines and audiences, and players search for math puzzles and logic puzzles separately.
