@@ -1,77 +1,46 @@
-# Reply to App Review: Guidelines 4.3 and 4.2.6 (Adadi)
+Hello, and thank you for the review. Adadi is my own original work, not a copy or a template, so I am replying instead of resubmitting.
 
-Paste the English text below into App Store Connect → Adadi → App Review
-(Resolution Center) → Reply. Do **not** resubmit; Apple asks for a reply
-when the app is not spam. Answer 5 lists Shah Dozd Vazir, Tiaro and Mafia God;
-add or remove apps to match what is on this developer account. Keep the
-paragraph about submitting several apps together the same in every reply.
+1. What it does
+Adadi is a math crossword: every row and every column is an equation (for example 7 x 6 = 42), and the equations cross like the words of a crossword. The player drags number tiles from a bank into the empty cells until every equation is true at once.
 
----
+Every puzzle comes from my own generator and is checked by my own solver:
+- Each puzzle has exactly one solution.
+- The tile bank includes near-miss decoys, so trial and error alone does not work.
+- Difficulty follows the player's age group (13-15, 16-17, 18+) and level: the number ranges, the operators and how dense the grid is.
 
-Hello, and thank you for the review. I believe Adadi is not a duplicate, not an opportunistic variant and not built from a template, so I am replying instead of resubmitting. My answers:
+There is a daily puzzle at four difficulties with a streak calendar, plus endless levels.
 
-**1. What the app does and the problem it solves**
+2. Users
+Teenagers and adults (the app is 13+, with an age gate) who like number puzzles or want to keep their mental arithmetic sharp. Besides English, it is made for Arabic, Persian and Urdu speakers, with right-to-left text and a choice of Western or local digits.
 
-Adadi is a math crossword: a grid where every row and every column is an equation (for example 7 × 6 = 42), crossing each other like the words of a crossword. The player drags number tiles from a bank into the empty cells until every equation is true at once. It turns mental arithmetic, which most people stop practising after school, into a short daily puzzle that rewards reasoning instead of speed alone.
+3. What is different
+- A crossword built entirely of crossing equations, freshly generated with one guaranteed answer. Each number depends on two equations at once, which is different from sudoku or arithmetic drills.
+- Difficulty that adapts to the player's age group.
+- Full Arabic, Persian and Urdu, with a Persian solar calendar for the streak.
+- No ads and no purchases. Hints come from friends who open a challenge the player shared, and each friend plays the same puzzle against the sender's time.
 
-Every puzzle is made by my own generator and checked by my own solver:
+4. Testing
+I am an individual developer and tested it myself on my iPhone, in the web version and on Android, over many builds. An automated player-journey test also runs the whole app on an Android emulator for every change. That testing led to these fixes:
+- a start-up crash on Android
+- digits drawn with the emoji font on iPhone
+- an invite button that only copied the link on iPhone
+- a menu cut off on small phones
+- cells too small on hard boards (now narrower operator rows and pinch zoom)
+- restart no longer gives 3 stars after seeing the answers
 
-- Each puzzle has exactly one solution, and the tile bank includes near-miss decoys (±1, swapped digits, doubled values), so it cannot be solved by trial and error alone.
-- Difficulty is set per age group (13–15, 16–17, 18+) and level: number ranges, which operators appear, and how dense the grid is. For the youngest group, multiplication stays within the 12 × 12 table.
+5. Standalone or suite
+Standalone. This is my personal developer account; Espadna is my brand name. My only published app is Dorehami: Pantomime & Heads Up, a charades and word-guessing game. I built my other games over the past weeks, one at a time, each with its own code, rules and art, and submitted the finished ones close together. That is why Adadi, Tiaro, Mafia God and Shah Dozd Vazir reached review at the same time. I will space out future submissions. Adadi is the only one about arithmetic and the only one with age-based difficulty.
 
-There is a new daily puzzle at four difficulties with a streak calendar, and endless levels. Hints are earned, never bought. There are certificates for streaks and milestones, Game Center leaderboards, and a backup (iCloud plus a recovery code).
+6. Could it be part of another app?
+No. The nearest is Tiaro, a logic puzzle about placing crowns on a coloured grid, with no numbers. Adadi is an arithmetic crossword with number tiles, decoys and age groups. They have different rules, controls, engines and audiences, and players search for math puzzles and logic puzzles separately.
 
-**2. Intended users**
+7. Code shared with my other apps
+None of significance. Adadi is its own Flutter codebase. Its puzzle engine (with over 80 tests), screens, art and texts were written for it. Its Game Center and iCloud code is its own. Only the open-source font Vazirmatn and my brand name are in common.
 
-Teenagers and adults (the app is 13+ and has an age gate) who like number puzzles or want to keep their mental arithmetic sharp: students practising times tables and order of operations, parents, and adults who play a daily puzzle on the way to work. Besides English, it is made for speakers of Arabic, Persian and Urdu, with right-to-left text and a choice of Western or local digits.
+8. Third-party code
+Only standard frameworks: Flutter, open-source Flutter packages and Apple's GameKit. No template or app-generation service was used. The puzzles, texts and art are my own.
 
-**3. The need it addresses**
+9. Client or third party
+No. I am an individual developer, and the idea, content and branding are mine. Nothing was supplied by a client, partner or template provider.
 
-- **The puzzle itself.** A crossword built entirely of crossing equations, generated fresh and guaranteed to have one answer, is different from a sudoku, a KenKen or a plain arithmetic drill: the crossings make every number depend on two equations at once.
-- **Age-appropriate difficulty.** The rules change with the player's age group, not only with "easy/hard".
-- **Languages and digits.** Full Arabic, Persian and Urdu (right to left, local digits, a Persian solar calendar for the daily streak) as well as English. Math puzzle apps are rarely localised for these players.
-- **Fair and free.** No ads and no purchases. Hints come from friends who open a challenge the player shared; each friend gets the very same puzzle to beat the sender's time.
-
-**4. Beta testing and feedback applied**
-
-I am an individual developer working alone, so I did the testing myself: I installed each TestFlight build on my iPhone, and Android test builds on my Android phone, and played daily puzzles and levels in every language. An automated "player journey" test also runs the whole app on an Android emulator for every change. Problems I found and fixed before the build under review:
-
-- An early Android build installed but did not open on my phone; I traced and fixed the start-up crash.
-- On iPhone, digits were drawn with the emoji font ("1 0 0 %"), so I removed that font fallback.
-- "Invite" only copied the link on iPhone instead of opening the share sheet, so I fixed sharing.
-- Small phones cut off parts of the menu (found by the emulator test), so the menu now fits on one screen.
-- Hard and expert boards had cells too small to tap, so I narrowed the operator rows and added pinch zoom.
-- The digit setting appeared in English, where it did nothing, so it is now shown only for languages with their own digits.
-- Restarting a puzzle could be used to get 3 stars after seeing the answers, so restart now keeps the clock, mistakes and hints.
-- I tried several colour themes and chose the calm turquoise one now in the app.
-- I removed all ads and purchases from the App Store version, so it is completely free.
-
-**5. Standalone or part of a suite**
-
-Adadi is a standalone game. This is my personal developer account; Espadna is the name I publish my games under. I built my apps separately, one at a time, each with its own code, rules and art. Once my developer account was ready, I submitted the ones that were finished within a short time, which is why several reached review together. I will space out future submissions. My other apps on the App Store:
-
-- Tiaro: a daily logic puzzle about placing crowns on a coloured grid. There are no numbers and no arithmetic.
-- Shah Dozd Vazir: a hidden-role party game for 4 to 6 people around one phone.
-- Mafia God: a narrator tool for the in-person Mafia party game.
-
-Adadi is the only one about arithmetic, and the only one with an age gate and age-based difficulty.
-
-**6. Could it be an in-app purchase or an addition to another app?**
-
-No. The nearest app is Tiaro, but it is a different puzzle with different rules, controls, audience and engine. Tiaro is a logic grid with no numbers, for adults who like daily logic puzzles. Adadi is an arithmetic crossword with drag-and-drop number tiles, decoys and age groups from 13 up. Players search for "math puzzle" and "logic puzzle" separately, and a teenager practising times tables would not look for a crown puzzle.
-
-**7. Code, frameworks or assets shared with my other apps**
-
-None of significance. Adadi is its own Flutter codebase. Its puzzle engine (layout builder, filler, unique-solution solver, decoys, seeded daily puzzles; over 80 engine tests) and all its screens, art and texts were written for Adadi. Its Game Center and iCloud code is in its own AppDelegate. The only things in common with my other apps are the open-source font Vazirmatn and my brand name.
-
-**8. Codebase, SDK or content shared with a third party**
-
-No, beyond standard frameworks: Flutter and standard open-source Flutter packages (storage, sharing, sound), plus Apple's GameKit. No template, white-label product or app-generation service was used. The puzzles come from my own generator; the texts and art are my own.
-
-**9. Created for a client or third party?**
-
-No. I am an individual developer and this is my own account; Espadna is just my brand name, not a company or a client. The idea, the content and the branding are mine. Nothing was supplied by a client, partner or template provider.
-
-Thank you for taking another look. I am happy to provide a short video of the app in use if that helps.
-
----
+Thank you for taking another look. I am happy to send a short video of the app in use.
