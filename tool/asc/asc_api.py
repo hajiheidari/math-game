@@ -56,3 +56,5 @@ def call(method: str, path: str, body=None, params=None):
     return r.json() if r.content else {}
 
 
+def rel(type_, id_):
+    return {'data': {'type': type_, 'id': id_}}
