@@ -11,6 +11,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:numcross/app/progress_store.dart';
+import 'package:numcross/challenge/challenge.dart';
 import 'package:numcross/share/share_result.dart';
 import 'package:numcross_engine/numcross_engine.dart';
 
@@ -101,6 +102,12 @@ void main() {
     'progress/18+/easy': '3333333332',
     'progress/18+/medium': '33233',
     'progress/18+/hard': '32',
+    // Already earned, so no "new certificate" dialog covers the menu.
+    'certs': jsonEncode([
+      {'k': 'streak7', 'd': '2026-10-03'},
+      {'k': 'streak30', 'd': '2026-10-10'},
+    ]),
+    'certs/name': 'Sara',
   };
 
   for (final entry in devices.entries) {
@@ -112,16 +119,13 @@ void main() {
       tester.view.devicePixelRatio = entry.value.ratio;
       addTearDown(tester.view.reset);
 
-      Future<void> launch(String lang) async {
+      Future<void> launch(String lang, {Challenge? challenge}) async {
         // A fresh app (the same widget tree would keep the old screens).
         await tester.pumpWidget(const SizedBox());
         mockStorage(storage(lang));
-        await tester.pumpWidget(
-          RepaintBoundary(
-            key: _shot,
-            child: await launchApp(now: () => today),
-          ),
-        );
+        final app = await launchApp(lang: lang, now: () => today);
+        app.app.pendingChallenge = challenge;
+        await tester.pumpWidget(RepaintBoundary(key: _shot, child: app));
         await _settle(tester);
       }
 
@@ -167,6 +171,26 @@ void main() {
       }
       await _settle(tester);
       await _save(tester, '$device-5');
+
+      // 6. A friend's challenge: the same puzzle against their time.
+      await launch(
+        'en',
+        challenge: Challenge(
+          band: band18plus,
+          difficulty: Difficulty.hard,
+          level: 7,
+          time: const Duration(minutes: 3, seconds: 42),
+        ),
+      );
+      await _save(tester, '$device-6');
+
+      // 7. A certificate to share as a story.
+      await launch('en');
+      await tester.tap(find.byKey(const ValueKey('certificates')));
+      await _settle(tester);
+      await tester.tap(find.byKey(const ValueKey('cert-streak30')));
+      await _settle(tester);
+      await _save(tester, '$device-7');
 
       await tester.pumpWidget(const SizedBox());
     });

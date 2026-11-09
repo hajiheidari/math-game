@@ -12,6 +12,10 @@ on:
         description: Also submit the version for App Review
         type: boolean
         default: false
+      game_center:
+        description: Also set up the Game Center leaderboards (tool/asc/game_center.py)
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -26,6 +30,14 @@ jobs:
         with:
           python-version: '3.12'
       - run: pip install --quiet pyjwt cryptography requests
+      - name: Game Center leaderboards
+        if: inputs.game_center
+        continue-on-error: true
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+        run: python3 tool/asc/game_center.py
       - name: Fill the page
         env:
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
