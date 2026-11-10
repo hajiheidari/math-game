@@ -60,8 +60,8 @@ recovery code; see the privacy policy). From 0.14.0 the answers are:
 - **Data Used to Track You:** none. Answer "No" to tracking.
 - **Identifiers → User ID** (the random invite code / recovery code): purpose **App Functionality**;
   **not linked** to the user's identity; **not used for tracking**.
-- **Usage Data → Product Interaction** (levels, stars, streaks in the backup): **App Functionality**;
-  not linked; not used for tracking.
+- **User Content → Gameplay Content** (the saved game in the backup: levels, stars, streaks,
+  coins): **App Functionality**; not linked; not used for tracking.
 - **User Content → Other User Content** (the optional name on certificates, in the backup):
   **App Functionality**; not linked; not used for tracking.
 - Game Center scores go to Apple (Apple's own disclosure; nothing to add here).
